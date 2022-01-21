@@ -40,7 +40,7 @@ public class UserController {
 		} catch (UsernameNotFoundException e) {
 			List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 			authorities.add(new SimpleGrantedAuthority("ROLE_ADM"));
-			UserDetails user = new User("joao", encoder.encode("joao"), authorities);
+			UserDetails user = new User("joao", encoder.encode("102938AS"), authorities);
 			manager.createUser(user);
 			Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
