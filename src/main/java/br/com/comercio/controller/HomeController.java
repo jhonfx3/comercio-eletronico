@@ -8,9 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.mercadopago.exceptions.MPException;
-import com.mercadopago.resources.Payment;
-import com.mercadopago.resources.Payment.Status;
-import com.mercadopago.resources.datastructures.payment.Payer;
 
 import br.com.comercio.model.Produto;
 import br.com.comercio.repository.ProdutoRepository;

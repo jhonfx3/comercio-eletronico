@@ -43,7 +43,7 @@ public class ProdutoCocntroller {
 		}
 		model.addAttribute("sucesso", "Produto cadastrado com sucesso");
 		produtoRepository.save(produto);
-		return "redirect:formulario";
+		return "redirect:/";
 	}
 	
 }

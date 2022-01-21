@@ -41,7 +41,7 @@ public class CarrinhoController {
 		model.addAttribute("totalPrazo", carrinho.getTotalCarrinho(TipoPreco.PRAZO));
 		model.addAttribute("tipos", TipoPreco.values());
 		model.addAttribute("profileAtivo", profileAtivo);
-		return "carrinho/itens";
+		return "redirect:/carrinho";
 	}
 
 	@GetMapping
@@ -62,6 +62,7 @@ public class CarrinhoController {
 		if (mercadoPagoPublicKeyHeroku != null) {
 			model.addAttribute("mercadopagoPublicKey", mercadoPagoPublicKeyHeroku);
 		} else {
+			System.out.println(mercadopagoPublicKey);
 			model.addAttribute("mercadopagoPublicKey", mercadopagoPublicKey);
 		}
 

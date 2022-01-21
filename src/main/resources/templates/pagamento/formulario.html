@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script src="https://www.mercadopago.com/v2/security.js" view=""></script>
 <title>Formulário de pagamento</title>
 <link th:replace="~{base::bootstrap}">
 <style th:replace="~{base::estilos}"></style>
@@ -49,9 +51,8 @@
 
 		</form>
 	</div>
-	<input type="hidden" id="mercadopagoPublicKey" th:value="${mercadopagoPublicKey}"/>
-	<script src="https://sdk.mercadopago.com/js/v2"></script>
-	<script src="https://www.mercadopago.com/v2/security.js" view="search"></script>
+	<input type="hidden" id="mercadopagoPublicKey"
+		th:value="${mercadopagoPublicKey}" />
 	<script>
 		const publicKey = document.getElementById("mercadopagoPublicKey").value;
 		const mp = new MercadoPago(publicKey);
