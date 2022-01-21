@@ -20,7 +20,8 @@
 	<link th:fragment="fonts"
 		href="https://fonts.googleapis.com/css2?family=Handlee&display=swap"
 		rel="stylesheet">
-
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 </div>
 
 
@@ -29,10 +30,8 @@
 		<div class="col-4 col-sm-4">
 			<!-- Image and text -->
 			<nav class="navbar navbar-light">
-				<a class="navbar-brand" th:href="@{/}"> <img
-					src="https://i.pinimg.com/originals/2b/35/a4/2b35a4763a31b6f5f40d9de9d7e05f88.jpg"
-					width="30" height="30" class="d-inline-block align-top" alt="">
-					<span class="text-white">Comércio</span>
+				<a class="navbar-brand" th:href="@{/}"> <span class="text-white"><i
+						class="bi bi-house"></i>Home</span>
 				</a>
 			</nav>
 		</div>
@@ -47,13 +46,14 @@
 		</div>
 		<div class="col-4 ml-9 col-sm-4">
 			<a sec:authorize="!isAuthenticated()" th:href="@{login}"><span
-				class="logo text-white">Login</span></a> <a
+				class="logo text-white"><i class="bi bi-person-circle"></i> Login</span></a> <a
 				onclick="document.querySelector('#form-logout').submit()"
 				sec:authorize="isAuthenticated()" href="#"><span
-				class="logo text-white">Logout</span></a>
+				class="logo text-white"><i class="bi bi-person-circle"></i> Logout</span></a>
 			<form id="form-logout" th:action="@{/logout}" method="post"></form>
 
-			<a th:href="@{/carrinho}"><span class="logo text-white">Carrinho</span></a>
+			<a th:href="@{/carrinho}"><span class="logo text-white"><i
+					class="bi-cart-fill me-1"></i>Carrinho</span></a>
 		</div>
 	</div>
 </div>

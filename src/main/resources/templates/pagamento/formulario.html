@@ -2,12 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
+<title>Formulário de pagamento</title>
 <script src="https://sdk.mercadopago.com/js/v2"></script>
 <script src="https://www.mercadopago.com/v2/security.js" view=""></script>
-<title>Formulário de pagamento</title>
-<link th:replace="~{base::bootstrap}">
-<style th:replace="~{base::estilos}"></style>
-<style th:replace="~{base::fonts}"></style>
+<th:block th:include="~{base::head}">/>
+
 </head>
 <body>
 

@@ -24,7 +24,6 @@ public class ComercioApplication implements CommandLineRunner {
 		if (mercadoPagoAccessTokenHeroku != null) {
 			MercadoPago.SDK.setAccessToken(mercadoPagoAccessTokenHeroku);
 		} else {
-			System.out.println(mercadoPagoAccessToken);
 			MercadoPago.SDK.setAccessToken(mercadoPagoAccessToken);
 		}
 	}

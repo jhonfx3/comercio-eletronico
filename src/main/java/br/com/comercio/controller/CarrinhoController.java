@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.WebApplicationContext;
@@ -31,6 +32,19 @@ public class CarrinhoController {
 
 	@Autowired
 	private CarrinhoDeCompras carrinho;
+
+	@GetMapping("/limpar")
+	public String limpar() {
+		carrinho.limpaCarrinho();
+		return "redirect:/carrinho";
+	}
+
+	@GetMapping("/remover/{id}")
+	public String remover(@PathVariable("id") Long produtoId) {
+		Produto produto = ProdutoRepository.findByIdProduto(produtoId);
+		carrinho.remove(produto);
+		return "redirect:/carrinho";
+	}
 
 	@PostMapping("/adiciona")
 	public String adiciona(Model model, Long produtoId) {

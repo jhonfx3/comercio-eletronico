@@ -23,6 +23,10 @@ public class CarrinhoDeCompras implements Serializable {
 		itens.put(item, getQuantidade(item) + 1);
 	}
 
+	public void remove(Produto produto) {
+		itens.remove(new CarrinhoItem(produto));
+	}
+
 	public int getQuantidade(CarrinhoItem item) {
 		if (!itens.containsKey(item)) {
 			itens.put(item, 0);
@@ -42,13 +46,13 @@ public class CarrinhoDeCompras implements Serializable {
 	public Collection<CarrinhoItem> getItens() {
 		return itens.keySet();
 	}
-	
-	public Map<CarrinhoItem,Integer> getItensMap(){
+
+	public Map<CarrinhoItem, Integer> getItensMap() {
 		return this.itens;
 	}
-	
+
 	public void limpaCarrinho() {
 		this.itens.clear();
 	}
-	
+
 }

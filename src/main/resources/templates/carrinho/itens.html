@@ -3,82 +3,106 @@
 
 <head>
 <title>Carrinho de compras</title>
-<style th:include="~{base::estilos}">
-</style>
-<link th:replace="~{base::bootstrap}">
-<link th:replace="~{base::fonts}">
+<th:block th:include="~{base::head}">/>
+
+
+
+
+
+
+
+
+
+
+
+
+
 </head>
-
-
 
 <body>
 	<div th:replace="~{base::cabecalho}"></div>
-	<div class="row">
-		<div class="col-6">
-			<div class="card">
-				<div class="card-body">
-					<table id="tabela" class="table">
-						<thead>
-							<tr>
-								<th scope="col">Produto</th>
-								<th scope="col">Preco a VISTA</th>
-								<th scope="col">Preco a PRAZO</th>
-								<th scope="col">Quantidade</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="item: ${itens}">
-								<td th:text="${item.key.produto.nome}"></td>
-								<td th:text="${item.key.produto.precos[0].valor}"></td>
-								<td th:text="${item.key.produto.precos[1].valor}"></td>
-								<td th:text="${item.value}"></td>
-							</tr>
-						</tbody>
-					</table>
+	<main>
+		<div th:if="${!itens.isEmpty}" class="row">
+			<div class="col-6">
+				<div class="card">
+					<div class="card-body">
+						<table id="tabela" class="table">
+							<thead>
+								<tr>
+									<th scope="col">Produto</th>
+									<th scope="col"></th>
+									<th scope="col">Preco a VISTA</th>
+									<th scope="col">Preco a PRAZO</th>
+									<th scope="col">Quantidade</th>
+									<th scope="col"></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item: ${itens}">
+									<td th:text="${item.key.produto.nome}"></td>
+									<td><a
+										th:href="@{'/produto/detalhe/' + ${item.key.produto.id}}">
+											<img th:height="150px" th:width="150px"
+											th:src="${item.key.produto.urlImagem}">
+									</a></td>
+									<td th:text="${item.key.produto.precos[0].valor}"></td>
+									<td th:text="${item.key.produto.precos[1].valor}"></td>
+									<td th:text="${item.value}"></td>
+									<td><div>
+											<a th:href="@{'/carrinho/remover/' + ${item.key.produto.id}}"><i
+												class="bi bi-trash"></i>Remover</a>
+										</div></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="col-6">
-			<div class="card">
-				<div class="card-body">
-					Total VISTA R$: <label class="text-green" th:text="${totalVista}"></label>
-					Total PRAZO R$: <label th:text="${totalPrazo}"></label>
-					<div th:if="${profileAtivo} == 'dev' ">
-						<form th:action="@{/carrinho/formulario}" method="post">
+			<div class="col-6">
+				<div class="card">
+					<div class="card-body">
+						Total VISTA R$: <label class="text-green" th:text="${totalVista}"></label>
+						Total PRAZO R$: <label th:text="${totalPrazo}"></label>
+						<div th:if="${profileAtivo} == 'dev' ">
+							<form th:action="@{/carrinho/formulario}" method="post">
+								<div th:each="tipo: ${tipos}"
+									class="form-check form-check-inline">
+									<input class="form-check-input" type="radio"
+										th:name="formaPagamento" th:value="${tipo}" checked> <label
+										for="formaPagamento" class="form-check-label"
+										th:text="${tipo}"></label>
+								</div>
+								<button id="btnCadastrar" class="btn btn-primary" type="submit">Finalizar
+									compra</button>
+								<a class="btn btn-primary" th:href="@{/carrinho/limpar}"
+									type="submit">Limpar carrinho</a>
+							</form>
+						</div>
+						<div th:unless="${profileAtivo} == 'dev' ">
 							<div th:each="tipo: ${tipos}"
 								class="form-check form-check-inline">
 								<input class="form-check-input" type="radio"
 									th:name="formaPagamento" th:value="${tipo}" checked> <label
 									for="formaPagamento" class="form-check-label" th:text="${tipo}"></label>
 							</div>
-							<button id="btnCadastrar" class="btn btn-primary" type="submit">Finalizar
-								compra</button>
-						</form>
-					</div>
-					<div th:unless="${profileAtivo} == 'dev' ">
-						<div th:each="tipo: ${tipos}" class="form-check form-check-inline">
-							<input class="form-check-input" type="radio"
-								th:name="formaPagamento" th:value="${tipo}" checked> <label
-								for="formaPagamento" class="form-check-label" th:text="${tipo}"></label>
+							<a href="#"><button id="btnCadastrar" class="btn btn-primary"
+									type="submit">Finalizar compra</button></a> <a
+								class="btn btn-primary" th:href="@{/carrinho/limpar}"
+								type="submit">Limpar carrinho</a>
 						</div>
-						<a href="#"><button id="btnCadastrar" class="btn btn-primary"
-								type="submit">Finalizar compra</button></a>
 					</div>
 				</div>
 			</div>
+
 		</div>
-
-	</div>
-
-	<script type="text/javascript">
-		var button = document.getElementById('btnCadastrar');
-		var tabela = document.getElementById('tabela');
-		console.log(tabela.rows.lenght);
-		if (tabela.rows.length == 1) {
-			button.disabled = true;
-		}
-	</script>
-
-
+		<div class="card" th:unless="${!itens.isEmpty}">
+			<div class="card-body">
+				<span>Você não adicionou nenhum produto ao carrinho <a
+					class="btn btn-primary" th:href="@{/}"><i class="bi bi-house"></i>Comprar</a>
+				</span>
+			</div>
+		</div>
+	</main>
+	<div th:replace="~{base::rodape}"></div>
 </body>
 </html>
