@@ -7,11 +7,20 @@
 
 
 <body>
-	<div th:replace="~{base::cabecalho}"></div>
-	<div class="jumbotron">
-		<h1 class="display-5" th:text="'Código do erro '+ ${status}"></h1>
-		<h2 class="display-4">Nossos desenvolvedores estão trabalhando nisso</h2>
-		<a th:href="@{/home}">Página principal</a>
+	<div class="container-fluid">
+		<header>
+			<div th:replace="~{base::cabecalho}"></div>
+		</header>
+		<main>
+			<div class="jumbotron">
+				<h1 class="display-5" th:text="'Código do erro '+ ${status}"></h1>
+				<h2 class="display-4">Nossos desenvolvedores estão trabalhando
+					nisso</h2>
+				<a th:href="@{/home}">Página principal</a>
+			</div>
+
+		</main>
+		<div th:replace="~{base::rodape}"></div>
 	</div>
 </body>
 </html>

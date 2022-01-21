@@ -17,7 +17,7 @@ import br.com.comercio.repository.ProdutoRepository;
 
 @Controller
 @RequestMapping("produto")
-public class ProdutoCocntroller {
+public class ProdutoController {
 	@Autowired
 	private ProdutoRepository produtoRepository;
 

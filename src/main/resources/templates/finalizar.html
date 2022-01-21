@@ -7,9 +7,16 @@
 
 
 <body>
-	<div th:replace="~{base::cabecalho}"></div>
-	<div class="jumbotron">
-		<h2 class="display-4">Compra finalizada com sucesso!</h2>
+	<div class="container-fluid">
+		<header>
+			<div th:replace="~{base::cabecalho}"></div>
+		</header>
+		<main>
+			<div class="jumbotron">
+				<h2 class="display-4">Compra finalizada com sucesso!</h2>
+			</div>
+		</main>
+		<div th:replace="~{base::rodape}"></div>
 	</div>
 </body>
 </html>

@@ -10,50 +10,53 @@
 <style th:replace="~{base::fonts}"></style>
 </head>
 <body>
-	<div th:replace="~{base::cabecalho}"></div>
 
-	<div class="container">
-		<form id="form-checkout">
-			<div class="form-group">
-				<input type="text" class="form-control" name="cardNumber"
-					id="form-checkout__cardNumber" />
+	<div class="container-fluid">
+		<header>
+			<div th:replace="~{base::cabecalho}"></div>
+		</header>
+		<main>
+			<form id="form-checkout">
+				<div class="form-group">
+					<input type="text" class="form-control" name="cardNumber"
+						id="form-checkout__cardNumber" />
 
-			</div>
-			<div class="form-group">
-				<input type="text" class="form-control" name="cardExpirationMonth"
-					id="form-checkout__cardExpirationMonth" /> <input type="text"
-					class="form-control" name="cardExpirationYear"
-					id="form-checkout__cardExpirationYear" />
-			</div>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" name="cardExpirationMonth"
+						id="form-checkout__cardExpirationMonth" /> <input type="text"
+						class="form-control" name="cardExpirationYear"
+						id="form-checkout__cardExpirationYear" />
+				</div>
 
-			<div class="form-group">
-				<input type="text" class="form-control" name="cardholderName"
-					id="form-checkout__cardholderName" />
-			</div>
+				<div class="form-group">
+					<input type="text" class="form-control" name="cardholderName"
+						id="form-checkout__cardholderName" />
+				</div>
 
-			<div class="form-group">
-				<input type="email" class="form-control" name="cardholderEmail"
-					id="form-checkout__cardholderEmail" /> <input type="text"
-					class="form-control" name="securityCode"
-					id="form-checkout__securityCode" />
-			</div>
+				<div class="form-group">
+					<input type="email" class="form-control" name="cardholderEmail"
+						id="form-checkout__cardholderEmail" /> <input type="text"
+						class="form-control" name="securityCode"
+						id="form-checkout__securityCode" />
+				</div>
 
-			<div class="form-group">
-				<select name="issuer" id="form-checkout__issuer"></select> <select
-					name="identificationType" id="form-checkout__identificationType"></select>
-				<input type="text" name="identificationNumber"
-					id="form-checkout__identificationNumber" /> <select
-					name="installments" id="form-checkout__installments"></select>
-			</div>
+				<div class="form-group">
+					<select name="issuer" id="form-checkout__issuer"></select> <select
+						name="identificationType" id="form-checkout__identificationType"></select>
+					<input type="text" name="identificationNumber"
+						id="form-checkout__identificationNumber" /> <select
+						name="installments" id="form-checkout__installments"></select>
+				</div>
 
-			<button class="btn btn-primary" type="submit"
-				id="form-checkout__submit">Pagar</button>
+				<button class="btn btn-primary" type="submit"
+					id="form-checkout__submit">Pagar</button>
 
-		</form>
-	</div>
-	<input type="hidden" id="mercadopagoPublicKey"
-		th:value="${mercadopagoPublicKey}" />
-	<script>
+			</form>
+
+			<input type="hidden" id="mercadopagoPublicKey"
+				th:value="${mercadopagoPublicKey}" />
+			<script>
 		const publicKey = document.getElementById("mercadopagoPublicKey").value;
 		const mp = new MercadoPago(publicKey);
 		// Add step #3
@@ -169,5 +172,8 @@ const cardForm = mp.cardForm({
     },
 });
 	</script>
+		</main>
+		<div th:replace="~{base::rodape}"></div>
+	</div>
 </body>
 </html>

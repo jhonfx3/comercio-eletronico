@@ -20,9 +20,6 @@ public class HomeController {
 
 	@GetMapping("/")
 	public String home(Model model) throws MPException {
-		System.out.println("Exibindo as variaveis de ambiente do heroku");
-		System.out.println(System.getenv("mercadoPagoAccessToken"));
-		System.out.println(System.getenv("mercadoPagoPublicKey"));
 		List<Produto> produtos = produtoRepository.findAll();
 		model.addAttribute("produtos", produtos);
 		return "home";
