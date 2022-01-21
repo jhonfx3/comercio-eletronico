@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Cadastro de produto</title>
+<link th:replace="~{base::bootstrap}">
+<style th:replace="~{base::estilos}"></style>
+<style th:replace="~{base::fonts}"></style>
+</head>
+<body>
+	<div th:replace="~{base::cabecalho}"></div>
+	<div class="container">
+		<div class="jumbotron">
+			<h1 class="display-4">Cadastro de produtos</h1>
+		</div>
+		<p th:text="${sucesso}"></p>
+			<form th:object="${produto}" th:action="@{/produto/novo}"
+				method="post">
+				<div class="form-group">
+					<label for="nome">Nome do produto</label> <input th:field="*{nome}"
+						type="text" th:errorClass="is-invalid"
+						placeholder="Nome do produto" class="form-control">
+					<div class="invalid-feedback" th:errors="*{nome}"></div>
+
+				</div>
+				<div class="form-group">
+					<label for="urlImagem">Url da imagem</label> <input type="text"
+						th:field="*{urlImagem}" placeholder="Url da imagem"
+						class="form-control">
+				</div>
+				<div class="form-group">
+					<label for="descricao">Descrição</label>
+					<textarea rows="" cols="" th:field="*{descricao}"
+						class="form-control" placeholder="Descrição do produto"></textarea>
+				</div>
+				<div th:each="tipo,status: ${tipos}" class="form-group">
+					Preço a <label th:text="${tipo}"></label> <input type="text"
+						class="form-control"
+						th:field="*{precos[__${status.index}__].valor}" /> <input
+						type="hidden" class="form-control"
+						th:name="|precos[${status.index}].tipo|" th:value="${tipo}" />
+				</div>
+				<button type="submit" class="btn btn-primary">Cadastrar</button>
+			</form>
+	</div>
+</body>
+</html>

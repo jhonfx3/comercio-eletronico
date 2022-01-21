@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<title>Página principal</title>
+<th:block th:include="~{base::head}">/>
+
+</head>
+<body>
+	<div th:replace="~{base::cabecalho}"></div>
+	<div class="container-fluid">
+		<div class="d-flex flex-row flex-wrap">
+			<div th:each="produto: ${produtos}" class="card mr-3"
+				style="width: 18rem;">
+				<img th:width="200px" th:height="200px"
+					th:src="${produto.urlImagem}" class="card-img-top" alt="...">
+				<div class="card-body">
+					<h5 class="card-title" th:text="${produto.nome}"></h5>
+					<p class="card-text" th:text="${produto.descricao}"></p>
+					<a th:href="@{'/produto/detalhe/' + ${produto.id}}"
+						class="btn btn-primary">Mais detalhes</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

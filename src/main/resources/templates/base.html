@@ -1,0 +1,59 @@
+
+<div th:fragment="head">
+
+	<style th:fragment="estilos">
+.logo-container {
+	background-color: #0320fc;
+	color: #FFF;
+}
+
+.logo {
+	font-family: 'Handlee', cursive;
+	font-size: 1.5rem;
+}
+</style>
+
+	<link th:fragment="bootstrap" rel="stylesheet"
+		href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+		integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+		crossorigin="anonymous">
+	<link th:fragment="fonts"
+		href="https://fonts.googleapis.com/css2?family=Handlee&display=swap"
+		rel="stylesheet">
+
+</div>
+
+
+<div th:fragment="cabecalho" class="logo-container">
+	<div class="row">
+		<div class="col-4 col-sm-4">
+			<!-- Image and text -->
+			<nav class="navbar navbar-light">
+				<a class="navbar-brand" th:href="@{/}"> <img
+					src="https://i.pinimg.com/originals/2b/35/a4/2b35a4763a31b6f5f40d9de9d7e05f88.jpg"
+					width="30" height="30" class="d-inline-block align-top" alt="">
+					<span class="text-white">Comércio</span>
+				</a>
+			</nav>
+		</div>
+		<div class="col-4 col-sm-4">
+			<form class="form d-flex flex-row" action="#">
+				<input class="form-control input-lg" type="search"
+					placeholder="Pesquise seu produto" aria-label="Search">
+				<button class="btn btn-outline-light my-2 my-sm-0 ml-1"
+					type="submit">Procurar</button>
+			</form>
+
+		</div>
+		<div class="col-4 ml-9 col-sm-4">
+			<a sec:authorize="!isAuthenticated()" th:href="@{login}"><span
+				class="logo text-white">Login</span></a> <a
+				onclick="document.querySelector('#form-logout').submit()"
+				sec:authorize="isAuthenticated()" href="#"><span
+				class="logo text-white">Logout</span></a>
+			<form id="form-logout" th:action="@{/logout}" method="post"></form>
+
+			<a th:href="@{/carrinho}"><span class="logo text-white">Carrinho</span></a>
+		</div>
+	</div>
+</div>

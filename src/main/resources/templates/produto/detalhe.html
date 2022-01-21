@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{base::head}">
+<meta charset="utf-8">
+<title>Detalhe do produto</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+	crossorigin="anonymous">
+</head>
+<body>
+	<div th:replace="~{base::cabecalho}"></div>
+	<div class="row">
+		<div class="col-6">
+			<div class="card">
+				<div class="card-body">
+					<img th:src="${produto.urlImagem}" class="img-fluid rounded-start"
+						alt="...">
+					<h5 class="card-title" th:text="${produto.nome}"></h5>
+					<p class="card-text" th:text="${produto.descricao}"></p>
+				</div>
+			</div>
+		</div>
+		<div class="col-6">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title"
+						th:text="${'R$ ' + #numbers.formatDecimal(produto.precos[0].valor, 3, 'POINT', 2, 'COMMA')}"></h5>
+					<p class="card-text">Ou em até 12 x sem juros</p>
+					<form th:action="@{/carrinho/adiciona}" method="post">
+						<input type="hidden" th:value="${produto.id }" name="produtoId">
+						<button type="submit" class="btn btn-primary">Comprar</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
