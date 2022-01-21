@@ -19,7 +19,13 @@ public class ComercioApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		MercadoPago.SDK.setAccessToken(mercadoPagoAccessToken);
+		String mercadoPagoAccessTokenHeroku = System.getenv("mercadoPagoAccessToken");
+		// Estou usando Heroku
+		if (mercadoPagoAccessTokenHeroku != null) {
+			MercadoPago.SDK.setAccessToken(mercadoPagoAccessTokenHeroku);
+		} else {
+			MercadoPago.SDK.setAccessToken(mercadoPagoAccessToken);
+		}
 	}
 
 	/*

@@ -55,9 +55,16 @@ public class CarrinhoController {
 	}
 
 	@PostMapping("/formulario")
-	public String retornaFormPagamento(Model model,String formaPagamento) {
+	public String retornaFormPagamento(Model model, String formaPagamento) {
 		System.out.println("Forma pagamento ->" + formaPagamento);
-		model.addAttribute("mercadopagoPublicKey", mercadopagoPublicKey);
+		String mercadoPagoPublicKeyHeroku = System.getenv("mercadopagoPublicKey");
+		// Quer dizer que estou no heroku
+		if (mercadoPagoPublicKeyHeroku != null) {
+			model.addAttribute("mercadopagoPublicKey", mercadoPagoPublicKeyHeroku);
+		} else {
+			model.addAttribute("mercadopagoPublicKey", mercadopagoPublicKey);
+		}
+
 		return "pagamento/formulario";
 	}
 }
