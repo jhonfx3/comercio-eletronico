@@ -5,6 +5,7 @@
 <title>Cadastro de produto</title>
 <th:block th:include="~{base::head}">/>
 
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -15,7 +16,9 @@
 			<div class="jumbotron">
 				<h1 class="display-4">Cadastro de produtos</h1>
 			</div>
-			<p th:text="${sucesso}"></p>
+			<div>
+				<h3 th:text="${sucesso}" class="text-success"></h3>
+			</div>
 			<form th:object="${produto}" th:action="@{/produto/novo}"
 				method="post">
 				<div class="form-group">

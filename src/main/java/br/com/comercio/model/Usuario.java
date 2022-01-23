@@ -35,6 +35,10 @@ public class Usuario implements UserDetails {
 		this.username = username;
 	}
 
+	public Usuario() {
+		setEnabled(true);
+	}
+
 	@Override
 	public String getPassword() {
 		return this.password;

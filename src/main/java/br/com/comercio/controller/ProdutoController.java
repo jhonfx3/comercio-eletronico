@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.comercio.enums.TipoPreco;
 import br.com.comercio.model.Produto;
@@ -35,15 +36,15 @@ public class ProdutoController {
 	}
 
 	@PostMapping("novo")
-	public String novo(@Valid Produto produto, BindingResult result, Model model) {
+	public String novo(@Valid Produto produto, BindingResult result, Model model, RedirectAttributes attributes) {
 		model.addAttribute("tipos", TipoPreco.values());
 		if (result.hasErrors()) {
 			System.out.println("Deu erro!");
 			return "produto/formulario";
 		}
-		model.addAttribute("sucesso", "Produto cadastrado com sucesso");
+		attributes.addFlashAttribute("sucesso", "Produto cadastrado com sucesso");
 		produtoRepository.save(produto);
-		return "redirect:/";
+		return "redirect:formulario";
 	}
-	
+
 }
