@@ -1,7 +1,5 @@
 package br.com.comercio;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,12 +8,21 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import br.com.comercio.conf.UserDetailsServiceImplements;
+
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	/*
+	 * Eu precisava disso quando utilizava o jdbc authentication que aprendi no
+	 * curso de spring boot versão nova
+	 * 
+	 * @Autowired private DataSource dataSource;
+	 */
+
 	@Autowired
-	private DataSource dataSource;
+	private UserDetailsServiceImplements userDetailsService;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -28,10 +35,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		// BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		// UserDetails user =
 		// User.builder().username("maria").password(encoder.encode("maria")).roles("ADM").build();
-		auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(encoder);
+		// auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(encoder);
+		auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
 	}
 
 }

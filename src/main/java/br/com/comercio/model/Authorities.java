@@ -2,21 +2,27 @@ package br.com.comercio.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
-public class Authorities {
+public class Authorities implements GrantedAuthority {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
 	@Id
 	private String authority;
 
-	@ManyToOne
-	@JoinColumn(name = "username")
-	private User username;
-
+	@Override
 	public String getAuthority() {
-		return authority;
+		return this.authority;
 	}
 
 	public void setAuthority(String authority) {

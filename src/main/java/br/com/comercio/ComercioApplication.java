@@ -15,6 +15,7 @@ public class ComercioApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ComercioApplication.class, args);
+		// System.out.println(new BCryptPasswordEncoder().encode("joao"));
 	}
 
 	@Override

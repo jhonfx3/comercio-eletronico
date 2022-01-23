@@ -5,12 +5,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import br.com.comercio.model.User;
+import br.com.comercio.model.Usuario;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<Usuario, String> {
 
-	@Query("SELECT u from User u WHERE u.username = :username")
-	User findByIdUser(@Param("username") String username);
-	
+	@Query("SELECT u from users u WHERE u.username = :username")
+	Usuario findByIdUser(@Param("username") String username);
+
 }
