@@ -17,6 +17,12 @@
 
 
 
+
+
+
+
+
+
 </head>
 
 <body>
@@ -85,9 +91,9 @@
 									th:name="formaPagamento" th:value="${tipo}" checked> <label
 									for="formaPagamento" class="form-check-label" th:text="${tipo}"></label>
 							</div>
-							<a href="#"><button id="btnCadastrar" class="btn btn-primary"
-									type="submit">Finalizar compra</button></a> <a
-								class="btn btn-primary" th:href="@{/carrinho/limpar}"
+							<a href="#"><button onclick="informarSobreACompra()"
+									id="btnCadastrar" class="btn btn-primary" type="submit">Finalizar
+									compra</button></a> <a class="btn btn-primary" th:href="@{/carrinho/limpar}"
 								type="submit">Limpar carrinho</a>
 						</div>
 					</div>
@@ -102,6 +108,11 @@
 				</span>
 			</div>
 		</div>
+		<script>
+			function informarSobreACompra() {
+				alert('Integrado com Mercado Pago, mas por razões legais e de testes não será dado continuidade a compra')
+			}
+		</script>
 	</main>
 	<div th:replace="~{base::rodape}"></div>
 </body>
