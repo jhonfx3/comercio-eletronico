@@ -26,7 +26,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/usuario/urlmagica").hasRole("ADM").antMatchers("/notificacao/**")
+		http.authorizeRequests().antMatchers("/usuario/urlmagica").permitAll().antMatchers("/notificacao/**")
 				.permitAll().antMatchers("/").permitAll().antMatchers("/produto/detalhe/**").permitAll()
 				.antMatchers("/carrinho").permitAll().anyRequest().authenticated().and()
 				.formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/", true).permitAll())
