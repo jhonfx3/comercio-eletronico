@@ -49,7 +49,7 @@ public class UserController {
 
 	@GetMapping("/formulario")
 	public String formulario() {
-		return "/usuario/formulario";
+		return "usuario/formulario";
 	}
 
 	private void criarUsuario(Usuario usuario) {
