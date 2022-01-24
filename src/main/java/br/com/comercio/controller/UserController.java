@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.comercio.model.Authorities;
@@ -16,6 +17,7 @@ import br.com.comercio.repository.AuthoritiesRepository;
 import br.com.comercio.repository.UserRepository;
 
 @Controller
+@RequestMapping("usuario")
 public class UserController {
 	@Autowired
 	private AuthoritiesRepository authoritiesRepository;
@@ -45,8 +47,8 @@ public class UserController {
 		return "redirect:/usuario/formulario";
 	}
 
-	@GetMapping("/usuario/formulario")
-	public String formulario(Usuario usuario) {
+	@GetMapping("/formulario")
+	public String formulario() {
 		return "/usuario/formulario";
 	}
 
