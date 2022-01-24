@@ -2,40 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
-<title>Cadastro de produto</title>
+<title>Cadastro de usuário</title>
 <th:block th:include="~{base::head}">/>
 
 </head>
 <body>
-	<div class="container-fluid">
-		<header>
-			<div th:replace="~{base::cabecalho}"></div>
-		</header>
-		<main>
-			<div class="jumbotron">
-				<h1 class="display-4">Cadastro de usuário</h1>
-			</div>
-			<div>
-				<h3 th:text="${sucesso}" class="text-success" ></h3>
-			</div>
-			<form th:action="@{/usuario/novo}" method="post">
-				<div class="row">
-					<div class="form-group col-sm-10">
-						<label for="username">Login</label> <input type="text"
-							class="form-control" placeholder="Login" name="username">
-					</div>
-				</div>
-				<div class="row">
-					<div class="form-group col-sm-10">
-						<label for="password">Senha</label><input type="password"
-							class="form-control" placeholder="senha" name="password">
-					</div>
-				</div>
-				<button type="submit" class="btn btn-primary">Cadastrar</button>
-			</form>
-
-		</main>
-		<div th:replace="~{base::rodape}"></div>
-	</div>
+	
 </body>
 </html>
