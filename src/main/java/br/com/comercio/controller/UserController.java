@@ -40,7 +40,7 @@ public class UserController {
 		return "home";
 	}
 
-	@PostMapping("/usuario/novo")
+	@PostMapping("/novo")
 	public String novo(Usuario usuario, RedirectAttributes attributes) {
 		criarUsuario(usuario);
 		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " cadastrado com sucesso");
