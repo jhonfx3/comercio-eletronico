@@ -20,6 +20,8 @@
 
 
 
+
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -37,11 +39,11 @@
 						<p class="card-text" th:text="${produto.descricao}"></p>
 						<a th:href="@{'/produto/detalhe/' + ${produto.id}}"
 							class="btn btn-primary">Detalhes</a>
-						<form method="post"
+						<form sec:authorize="hasRole('ROLE_ADM')" method="post"
 							th:action="@{'/produto/editar/' + ${produto.id}}">
 							<button type="submit" class="btn btn-success">Editar</button>
 						</form>
-						<form method="post"
+						<form sec:authorize="hasRole('ROLE_ADM')" method="post"
 							th:action="@{'/produto/excluir/' + ${produto.id}}">
 							<button type="submit" class="btn btn-danger">Excluir</button>
 						</form>

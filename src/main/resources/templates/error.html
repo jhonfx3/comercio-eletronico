@@ -3,6 +3,7 @@
 
 <head>
 <th:block th:include="~{base::head}">/>
+
 </head>
 
 
@@ -12,13 +13,13 @@
 			<div th:replace="~{base::cabecalho}"></div>
 		</header>
 		<main>
-			<div class="jumbotron">
-				<h1 class="display-5" th:text="'Código do erro '+ ${status}"></h1>
-				<h2 class="display-4">Nossos desenvolvedores estão trabalhando
-					nisso</h2>
-				<a th:href="@{/home}">Página principal</a>
+			<div class="alert alert-danger" role="alert">
+				<h1 class="alert-heading">
+					Página não encontrada <i class="bi bi-x-lg"></i>
+				</h1>
 			</div>
-
+			<a th:href="@{/}" class="btn btn-primary btn-lg"><i
+				class="bi bi-house"></i>Home</a>
 		</main>
 		<div th:replace="~{base::rodape}"></div>
 	</div>

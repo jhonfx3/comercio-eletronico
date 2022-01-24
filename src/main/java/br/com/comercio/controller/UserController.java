@@ -1,5 +1,6 @@
 package br.com.comercio.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +31,28 @@ public class UserController {
 		System.out.println("chamando url magica");
 		try {
 			usuarioRepository.findById("joao").get();
+			authoritiesRepository.findById("ROLE_ADM").get();
+			authoritiesRepository.findById("ROLE_USER").get();
 		} catch (Exception e) {
+			Authorities adm = new Authorities();
+			Authorities user = new Authorities();
+			adm.setAuthority("ROLE_ADM");
+			user.setAuthority("ROLE_USER");
+			authoritiesRepository.save(adm);
+			authoritiesRepository.save(user);
 			Usuario usuario = new Usuario();
 			usuario.setUsername("joao");
 			usuario.setPassword("102938AS");
-			criarUsuario(usuario);
-			System.out.println("joao salvo com sucesso");
+			criarUsuario(usuario, Arrays.asList(adm, user));
+			System.out.println("joao + role salvo com sucesso");
 		}
 		return "home";
 	}
 
 	@PostMapping("/novo")
 	public String novo(Usuario usuario, RedirectAttributes attributes) {
-		criarUsuario(usuario);
+		Authorities userAuthority = authoritiesRepository.findById("ROLE_USER").get();
+		criarUsuario(usuario, Arrays.asList(userAuthority));
 		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " cadastrado com sucesso");
 		return "redirect:/usuario/formulario";
 	}
@@ -52,9 +62,8 @@ public class UserController {
 		return "usuario/formulario";
 	}
 
-	private void criarUsuario(Usuario usuario) {
+	private void criarUsuario(Usuario usuario, List<Authorities> authorities) {
 		usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
-		List<Authorities> authorities = authoritiesRepository.findAll();
 		usuario.setAuthorities(authorities);
 		usuarioRepository.save(usuario);
 	}

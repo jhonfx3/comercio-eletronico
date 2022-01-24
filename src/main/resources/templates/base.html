@@ -50,8 +50,8 @@
 				class="logo text-white"><i class="bi bi-person-circle"></i>
 					Login</span></a> <a onclick="document.querySelector('#form-logout').submit()"
 				sec:authorize="isAuthenticated()" href="#"><span
-				class="logo text-white"><i class="bi bi-person-circle"></i>
-					Logout</span></a>
+				class="logo text-white"><i class="bi bi-person-circle"></i> <span
+					sec:authentication="name"></span> logout</span></a>
 			<form id="form-logout" th:action="@{/logout}" method="post"></form>
 
 			<a th:href="@{/carrinho}"><span class="logo text-white"><i
@@ -61,6 +61,6 @@
 </div>
 
 <footer th:fragment="rodape">
-	<span class="logo">Projeto de portifólio. Não existe comércio em
-		funcionamento</span>
+	<span class="logo">Projeto de portifólio. Não existe comércio
+		em funcionamento</span>
 </footer>
