@@ -6,6 +6,14 @@
 <th:block th:include="~{base::head}">/>
 
 
+
+
+
+
+
+
+
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -14,38 +22,21 @@
 		</header>
 		<main>
 			<div class="jumbotron">
-				<h1 class="display-4">Cadastro de produtos</h1>
+				<h1 th:if="${idProdutoEditar == null}" class="display-4">Cadastrar
+					Produto</h1>
+				<h1 th:if="${idProdutoEditar != null}" class="display-4">Editar
+					Produto</h1>
 			</div>
 			<div>
 				<h3 th:text="${sucesso}" class="text-success"></h3>
 			</div>
-			<form th:object="${produto}" th:action="@{/produto/novo}"
-				method="post">
-				<div class="form-group">
-					<label for="nome">Nome do produto</label> <input th:field="*{nome}"
-						type="text" th:errorClass="is-invalid"
-						placeholder="Nome do produto" class="form-control">
-					<div class="invalid-feedback" th:errors="*{nome}"></div>
-
-				</div>
-				<div class="form-group">
-					<label for="urlImagem">Url da imagem</label> <input type="text"
-						th:field="*{urlImagem}" placeholder="Url da imagem"
-						class="form-control">
-				</div>
-				<div class="form-group">
-					<label for="descricao">Descrição</label>
-					<textarea rows="" cols="" th:field="*{descricao}"
-						class="form-control" placeholder="Descrição do produto"></textarea>
-				</div>
-				<div th:each="tipo,status: ${tipos}" class="form-group">
-					Preço a <label th:text="${tipo}"></label> <input type="text"
-						class="form-control"
-						th:field="*{precos[__${status.index}__].valor}" /> <input
-						type="hidden" class="form-control"
-						th:name="|precos[${status.index}].tipo|" th:value="${tipo}" />
-				</div>
-				<button type="submit" class="btn btn-primary">Cadastrar</button>
+			<form th:object="${produto}" th:if="${idProdutoEditar == null}"
+				th:action="@{/produto/novo}" method="post">
+				<div th:replace="~{fragments/produto::formulario('Cadastrar')}"></div>
+			</form>
+			<form th:object="${produto}" th:unless="${idProdutoEditar == null}"
+				th:action="@{/produto/editarProduto}" method="post">
+				<div th:replace="~{fragments/produto::formulario('Editar')}"></div>
 			</form>
 
 		</main>

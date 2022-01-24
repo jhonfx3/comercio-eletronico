@@ -1,0 +1,29 @@
+<th:block th:fragment="formulario(acao)">
+	<div class="form-group">
+		<label for="nome">Nome do produto</label> <input th:field="*{nome}"
+			type="text" th:errorClass="is-invalid" placeholder="Nome do produto"
+			class="form-control">
+		<div class="invalid-feedback" th:errors="*{nome}"></div>
+
+	</div>
+	<div class="form-group">
+		<label for="urlImagem">Url da imagem</label> <input type="text"
+			th:field="*{urlImagem}" placeholder="Url da imagem"
+			class="form-control">
+	</div>
+	<div class="form-group">
+		<label for="descricao">Descrição</label>
+		<textarea rows="" cols="" th:field="*{descricao}" class="form-control"
+			placeholder="Descrição do produto"></textarea>
+	</div>
+	<div th:each="tipo,status: ${tipos}" class="form-group">
+		Preço a <label th:text="${tipo}"></label> <input type="text"
+			class="form-control" th:field="*{precos[__${status.index}__].valor}" />
+		<input type="hidden" class="form-control"
+			th:name="|precos[${status.index}].tipo|" th:value="${tipo}" />
+	</div>
+	<input type="hidden" th:if="${idProdutoEditar} != 'null'"
+		name="idProdutoEditar" th:value="${idProdutoEditar}">
+	<button type="submit" class="btn btn-primary" th:text="${acao}"></button>
+
+</th:block>

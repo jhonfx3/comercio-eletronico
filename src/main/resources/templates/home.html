@@ -6,6 +6,20 @@
 <title>Página principal</title>
 <th:block th:include="~{base::head}">/>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -22,7 +36,15 @@
 						<h5 class="card-title" th:text="${produto.nome}"></h5>
 						<p class="card-text" th:text="${produto.descricao}"></p>
 						<a th:href="@{'/produto/detalhe/' + ${produto.id}}"
-							class="btn btn-primary">Mais detalhes</a>
+							class="btn btn-primary">Detalhes</a>
+						<form method="post"
+							th:action="@{'/produto/editar/' + ${produto.id}}">
+							<button type="submit" class="btn btn-success">Editar</button>
+						</form>
+						<form method="post"
+							th:action="@{'/produto/excluir/' + ${produto.id}}">
+							<button type="submit" class="btn btn-danger">Excluir</button>
+						</form>
 					</div>
 				</div>
 			</div>
