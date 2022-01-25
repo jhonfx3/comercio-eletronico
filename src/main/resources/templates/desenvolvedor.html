@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<title>Sobre o desenvolvedor</title>
+<script src="https://platform.linkedin.com/badges/js/profile.js" async
+	defer type="text/javascript"></script>
+<th:block th:include="~{base::head}">/>
+
+
+</head>
+<body>
+	<div class="container-fluid">
+		<header>
+			<div th:replace="~{base::cabecalho}"></div>
+		</header>
+		<main>
+			<div class="badge-base LI-profile-badge" data-locale="pt_BR"
+				data-size="large" data-theme="light" data-type="HORIZONTAL"
+				data-vanity="joaoferreira45" data-version="v1">
+				<a class="badge-base__link LI-simple-link"
+					href="https://br.linkedin.com/in/joaoferreira45?trk=profile-badge">João
+					Ferreira</a>
+			</div>
+		</main>
+		<div th:replace="~{base::rodape}"></div>
+	</div>
+</body>
+</html>

@@ -24,4 +24,9 @@ public class HomeController {
 		model.addAttribute("produtos", produtos);
 		return "home";
 	}
+
+	@GetMapping("/desenvolvedor")
+	public String sobreODesenvolvedor(Model model) throws MPException {
+		return "desenvolvedor";
+	}
 }

@@ -28,7 +28,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/usuario/urlmagica").permitAll().antMatchers("/notificacao/**")
 				.permitAll().antMatchers("/").permitAll().antMatchers("/produto/detalhe/**").permitAll()
-				.antMatchers("/carrinho").permitAll().anyRequest().authenticated().and()
+				.antMatchers("/carrinho").permitAll().antMatchers("/desenvolvedor").permitAll().anyRequest()
+				.authenticated().and()
 				.formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/", true).permitAll())
 				.logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/")).csrf().disable();
 	}
