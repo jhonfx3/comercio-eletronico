@@ -11,6 +11,8 @@ import javax.persistence.ManyToMany;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.comercio.interfaces.UniqueUsername;
+
 @Entity(name = "users")
 public class Usuario implements UserDetails {
 
@@ -19,6 +21,7 @@ public class Usuario implements UserDetails {
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
+	@UniqueUsername
 	private String username;
 	private String password;
 	private Boolean enabled;

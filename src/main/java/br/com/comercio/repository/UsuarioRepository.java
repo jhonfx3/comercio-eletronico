@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import br.com.comercio.model.Usuario;
 
 @Repository
-public interface UserRepository extends JpaRepository<Usuario, String> {
+public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 
 	@Query("SELECT u from users u WHERE u.username = :username")
 	Usuario findByIdUser(@Param("username") String username);

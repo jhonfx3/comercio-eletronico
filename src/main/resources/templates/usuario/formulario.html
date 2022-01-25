@@ -5,6 +5,11 @@
 <title>Cadastro de produto</title>
 <th:block th:include="~{base::head}">/>
 
+
+
+
+
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -16,13 +21,16 @@
 				<h1 class="display-4">Cadastro de usuário</h1>
 			</div>
 			<div>
-				<h3 th:text="${sucesso}" class="text-success" ></h3>
+				<h3 th:text="${sucesso}" class="text-success"></h3>
 			</div>
-			<form th:action="@{/usuario/novo}" method="post">
+			<form th:object="${usuario}" th:action="@{/usuario/novo}"
+				method="post">
 				<div class="row">
 					<div class="form-group col-sm-10">
-						<label for="username">Login</label> <input type="text"
-							class="form-control" placeholder="Login" name="username">
+						<label for="username">Login</label> <input
+							th:errorClass="is-invalid" type="text" class="form-control"
+							placeholder="Login" th:field="*{username}">
+						<div class="invalid-feedback" th:errors="*{username}"></div>
 					</div>
 				</div>
 				<div class="row">

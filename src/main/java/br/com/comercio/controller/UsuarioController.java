@@ -3,10 +3,13 @@ package br.com.comercio.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,16 +18,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import br.com.comercio.model.Authorities;
 import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.AuthoritiesRepository;
-import br.com.comercio.repository.UserRepository;
+import br.com.comercio.repository.UsuarioRepository;
 
 @Controller
 @RequestMapping("usuario")
-public class UserController {
+public class UsuarioController {
 	@Autowired
 	private AuthoritiesRepository authoritiesRepository;
 
 	@Autowired
-	private UserRepository usuarioRepository;
+	private UsuarioRepository usuarioRepository;
 
 	@GetMapping("/urlmagica")
 	public String urlMagica(Model model) {
@@ -50,7 +53,11 @@ public class UserController {
 	}
 
 	@PostMapping("/novo")
-	public String novo(Usuario usuario, RedirectAttributes attributes) {
+	public String novo(@Valid Usuario usuario, BindingResult result, RedirectAttributes attributes) {
+		if (result.hasErrors()) {
+			System.out.println("deu erro no usuario");
+			return "usuario/formulario";
+		}
 		Authorities userAuthority = authoritiesRepository.findById("ROLE_USER").get();
 		criarUsuario(usuario, Arrays.asList(userAuthority));
 		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " cadastrado com sucesso");
@@ -58,7 +65,7 @@ public class UserController {
 	}
 
 	@GetMapping("/formulario")
-	public String formulario() {
+	public String formulario(Usuario usuario) {
 		return "usuario/formulario";
 	}
 
