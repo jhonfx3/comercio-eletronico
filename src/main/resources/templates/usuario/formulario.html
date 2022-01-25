@@ -10,6 +10,17 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -37,6 +48,30 @@
 					<div class="form-group col-sm-10">
 						<label for="password">Senha</label><input type="password"
 							class="form-control" placeholder="senha" name="password">
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="cpf">Cpf</label><input type="text"
+							th:errorClass="is-invalid" class="form-control"
+							placeholder="Seu CPF" th:field=*{cpf}>
+						<div class="invalid-feedback" th:errors="*{cpf}"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="aniversario">Data de aniversário</label><input
+							th:errorClass="is-invalid" type="date" class="form-control"
+							placeholder="Data de nascimento" th:field="*{aniversario}">
+						<div class="invalid-feedback" th:errors="*{aniversario}"></div>
+
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="telefone">Telefone</label><input type="text"
+							class="form-control" placeholder="Telefone para contato"
+							name="telefone">
 					</div>
 				</div>
 				<button type="submit" class="btn btn-primary">Cadastrar</button>
