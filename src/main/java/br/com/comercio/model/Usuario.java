@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -11,14 +12,16 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Past;
 
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.comercio.interfaces.DataFormatValidacao;
 import br.com.comercio.interfaces.UniqueUsername;
 
-@Entity(name = "users")
+@Entity
 public class Usuario implements UserDetails {
 
 	/**
@@ -31,14 +34,26 @@ public class Usuario implements UserDetails {
 	private String password;
 	private Boolean enabled;
 	@CPF(message = "CPF informado é inválido")
+	@Column(unique = true)
+	@NaturalId
 	private String cpf;
 	private String rg;
 	private String telefone;
 
 	@javax.validation.constraints.NotNull(message = "A data de aniversário é obrigatória")
-	@Past(message = "Data de aniversário deve estar no passado")
+	@Past(message = "Data de nascimento deve estar no passado")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate aniversario;
+	@DataFormatValidacao(message = "A data informada é inválida")
+	private LocalDate nascimento;
+
+	public LocalDate getNascimento() {
+		return nascimento;
+	}
+
+	public void setNascimento(LocalDate nascimento) {
+		this.nascimento = nascimento;
+	}
+
 	@OneToMany
 	private List<Endereco> endereco;
 
@@ -67,11 +82,11 @@ public class Usuario implements UserDetails {
 	}
 
 	public LocalDate getAniversario() {
-		return aniversario;
+		return nascimento;
 	}
 
 	public void setAniversario(LocalDate aniversario) {
-		this.aniversario = aniversario;
+		this.nascimento = aniversario;
 	}
 
 	public List<Endereco> getEndereco() {

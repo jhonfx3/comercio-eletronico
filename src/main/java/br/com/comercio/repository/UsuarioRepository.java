@@ -10,7 +10,7 @@ import br.com.comercio.model.Usuario;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 
-	@Query("SELECT u from users u WHERE u.username = :username")
+	@Query("SELECT u from Usuario u WHERE u.username = :username")
 	Usuario findByIdUser(@Param("username") String username);
 
 }

@@ -20,8 +20,9 @@ public class DataFormatValidator implements ConstraintValidator<DataFormatValida
 		System.out.println("data format validator chamado");
 		try {
 
-			if(value == null) {
+			if (value == null) {
 				System.out.println("??");
+				// Deixo o NotNull encarregado de mostrar a mensagem de erro
 			}
 			LocalDate dataa = (LocalDate) value;
 			System.out.println(dataa.toString());
