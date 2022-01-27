@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.model.Usuario;
-import br.com.comercio.model.UsuarioRepositoryImpl;
 import br.com.comercio.repository.UsuarioRepository;
 
 @Configuration

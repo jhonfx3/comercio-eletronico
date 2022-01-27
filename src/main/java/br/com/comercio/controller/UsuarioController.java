@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.model.Authorities;
-import br.com.comercio.model.UsuarioRepositoryImpl;
 import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.AuthoritiesRepository;
 import br.com.comercio.repository.UsuarioRepository;

@@ -10,14 +10,15 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.interfaces.DataFormatValidacao;
 import br.com.comercio.interfaces.UniqueColumn;
 import br.com.comercio.interfaces.UniqueUsername;
@@ -31,6 +32,7 @@ public class Usuario implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@UniqueUsername
+	@NotEmpty(message = "Usuário é obrigatório")
 	private String username;
 	private String password;
 	private Boolean enabled;
