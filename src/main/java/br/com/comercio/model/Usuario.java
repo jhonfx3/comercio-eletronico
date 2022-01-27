@@ -19,6 +19,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.comercio.interfaces.DataFormatValidacao;
+import br.com.comercio.interfaces.UniqueColumn;
 import br.com.comercio.interfaces.UniqueUsername;
 
 @Entity
@@ -35,7 +36,7 @@ public class Usuario implements UserDetails {
 	private Boolean enabled;
 	@CPF(message = "CPF informado é inválido")
 	@Column(unique = true)
-	@NaturalId
+	@UniqueColumn(campo = "Cpf", tipoParametro = String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository = UsuarioRepositoryImpl.class, message = "CPF já existente")
 	private String cpf;
 	private String rg;
 	private String telefone;
