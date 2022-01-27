@@ -9,7 +9,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.model.Authorities;
 import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.AuthoritiesRepository;
@@ -88,9 +87,29 @@ public class UsuarioController {
 		return "redirect:/usuario/formulario";
 	}
 
+	@PostMapping("/editar")
+	public String editarUsuario(@Valid Usuario usuario, BindingResult result, RedirectAttributes attributes) {
+		if (result.hasErrors()) {
+			System.out.println("deu erro no usuario");
+			return "usuario/formularioEditar";
+		}
+		System.out.println("usuario id?" + usuario.getUsername());
+		usuarioRepository.save(usuario);
+		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " alterado com sucesso");
+		return "redirect:/usuario/formulario/editar";
+	}
+
 	@GetMapping("/formulario")
 	public String formulario(Usuario usuario) {
 		return "usuario/formulario";
+	}
+
+	@GetMapping("/formulario/editar")
+	public String formularioEditar(Usuario usuario, Model model) {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		Usuario usuario2 = usuarioRepository.findById(username).get();
+		model.addAttribute("usuario", usuario2);
+		return "usuario/formularioEditar";
 	}
 
 	private void criarUsuario(Usuario usuario, List<Authorities> authorities) {

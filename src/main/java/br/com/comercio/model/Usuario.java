@@ -34,6 +34,7 @@ public class Usuario implements UserDetails {
 	@UniqueUsername
 	@NotEmpty(message = "Usuário é obrigatório")
 	private String username;
+	@NotEmpty(message = "Senha é obrigatória")
 	private String password;
 	private Boolean enabled;
 	@CPF(message = "CPF informado é inválido")
