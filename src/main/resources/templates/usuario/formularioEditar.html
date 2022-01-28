@@ -35,6 +35,45 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -42,9 +81,6 @@
 			<div th:replace="~{base::cabecalho}"></div>
 		</header>
 		<main>
-			<div class="jumbotron">
-				<h1 class="display-4">Edite seus dados</h1>
-			</div>
 			<div>
 				<h3 th:text="${sucesso}" class="text-success"></h3>
 			</div>
@@ -94,19 +130,36 @@
 				<button type="submit" class="btn btn-primary">Editar</button>
 			</form>
 			<div class="form-check">
-				<input type="checkbox" class="form-check-input"
-					onChange="onClickCheckbox(this);"><label>Cadastrar
+				<input type="checkbox" id="checkbox" class="form-check-input"
+					onChange="onClickCheckbox(this);"><label for="checkbox">Cadastrar
 					endereço</label>
 			</div>
-			<form id="form-endereco" action="#" method="post">
+			<form id="form-endereco" th:object="${endereco}" th:action="@{/endereco/novo}" method="post">
 				<div class="row">
 					<div class="form-group col-sm-10">
-						<label for="rua">Rua</label> <input type="text"
-							class="form-control" placeholder="Nome da rua" name="rua">
+						<label for="rua">CEP</label> <input type="text" maxlength="9"
+							onkeyup="buscaCep();" class="form-control" placeholder="CEP"
+							id="cep" name="cep">
 					</div>
 					<div class="form-group col-sm-10">
-						<label for="rua">Cep</label> <input type="text"
-							class="form-control" placeholder="CEP" name="cep">
+						<label for="rua">Logradouro</label> <input type="text"
+							class="form-control" placeholder="Logradouro" id="logradouro"
+							name="rua">
+					</div>
+					<div class="form-group col-sm-10">
+						<label for="rua">Número</label> <input type="text"
+							class="form-control" placeholder="Número" id="numero"
+							name="numero">
+					</div>
+					<div class="form-group col-sm-10">
+						<label for="rua">Complemento</label> <input type="text"
+							class="form-control" placeholder="Complemento" id="complemento"
+							name="complemento">
+					</div>
+					<div class="form-group col-sm-10">
+						<label for="bairro">Bairro</label> <input type="text"
+							class="form-control" placeholder="Bairro" id="bairro"
+							name="bairro">
 					</div>
 				</div>
 
@@ -117,13 +170,48 @@
 				document.getElementById('form-endereco').style.display = "none";
 
 				function onClickCheckbox(checkbox) {
-					console.log("teste");
 					if (checkbox.checked == true) {
 						document.getElementById('form-endereco').style.display = "block";
 					} else {
 						document.getElementById('form-endereco').style.display = "none";
 
 					}
+				}
+
+				function buscaCep() {
+					var cep = document.getElementById("cep").value;
+					if(cep.match(/[0-9]{5}-[0-9]{3}/)){
+						console.log("formato de cep");
+					}
+					document.getElementById("cep").value = cep.replace(/^\d/, '');
+					document.getElementById("cep").value = cep.replace(/(\d{5})(\d)/, '$1-$2');
+
+					var json = {"cep":cep}
+					fetch("/cep/buscar", {
+						method : "POST",
+						headers : {
+							"Content-Type" : "application/json",
+						},
+						body : JSON.stringify(json),
+					}).then(response=>response.json())
+					.then(resposta=>{
+						if(resposta != ''){
+							//console.log(resposta);
+							var obj = JSON.parse(resposta);
+							var bairro = obj.bairro;
+							var logradouro = obj.logradouro;
+							document.getElementById("bairro").value = bairro;
+							document.getElementById("logradouro").value = logradouro;
+							document.getElementById("bairro").readOnly = true;
+							document.getElementById("logradouro").readOnly = true;
+						}else{
+							//console.log("CEP não encontrado");
+							//document.getElementById("bairro").value = '';
+						//	document.getElementById("logradouro").value = '';
+							document.getElementById("bairro").disabled = false;
+							//document.getElementById("logradouro").disabled = false;
+						}
+					})
 				}
 			</script>
 
