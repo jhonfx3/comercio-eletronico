@@ -15,9 +15,20 @@ public class Endereco {
 	private String cep;
 	private String bairro;
 	private String complemento;
+	private String referencia;
+	
 	public Long getId() {
 		return id;
 	}
+	
+	public String getReferencia() {
+		return referencia;
+	}
+
+	public void setReferencia(String referencia) {
+		this.referencia = referencia;
+	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
