@@ -9,11 +9,14 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -90,6 +93,10 @@ public class UsuarioController {
 	@PostMapping("/editar")
 	public String editarUsuario(@Valid Usuario usuario, BindingResult result, RedirectAttributes attributes) {
 		if (result.hasErrors()) {
+			List<FieldError> fieldErrors = result.getFieldErrors();
+			for (FieldError fieldError : fieldErrors) {
+				System.out.println(fieldError.getDefaultMessage());
+			}
 			System.out.println("deu erro no usuario");
 			return "usuario/formularioEditar";
 		}
@@ -101,15 +108,28 @@ public class UsuarioController {
 
 	@GetMapping("/formulario")
 	public String formulario(Usuario usuario) {
-		return "usuario/formulario";
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		// Verifica se o authentication é uma instancia de anonymous...
+		// Caso seja não existe ninguem logado então posso acessar a URL
+		if (authentication instanceof AnonymousAuthenticationToken) {
+			return "usuario/formulario";
+		} else {
+			return "redirect:/";
+		}
+
 	}
 
 	@GetMapping("/formulario/editar")
 	public String formularioEditar(Usuario usuario, Model model) {
-		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		Usuario usuario2 = usuarioRepository.findById(username).get();
-		model.addAttribute("usuario", usuario2);
+		Usuario usuarioLogado = getUsuarioLogado();
+		System.out.println("id  " + usuarioLogado.getUsername());
+		model.addAttribute("usuario", getUsuarioLogado());
 		return "usuario/formularioEditar";
+	}
+
+	private Usuario getUsuarioLogado() {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		return usuarioRepository.findById(username).get();
 	}
 
 	private void criarUsuario(Usuario usuario, List<Authorities> authorities) {

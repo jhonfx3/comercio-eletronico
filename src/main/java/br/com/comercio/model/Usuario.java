@@ -58,7 +58,7 @@ public class Usuario implements UserDetails {
 		this.nascimento = nascimento;
 	}
 
-	@OneToMany
+	@OneToMany(mappedBy = "usuario")
 	private List<Endereco> endereco;
 
 	public String getCpf() {

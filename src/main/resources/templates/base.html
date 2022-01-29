@@ -48,10 +48,14 @@
 		<div class="col-4 ml-9 col-sm-4">
 			<a sec:authorize="!isAuthenticated()" th:href="@{/login}"><span
 				class="logo text-white"><i class="bi bi-person-circle"></i>
-					Login</span></a> <a onclick="document.querySelector('#form-logout').submit()"
+					Login</span></a> <a class="logo text-white" th:href="@{/usuario/formulario}"
+				sec:authorize="!isAuthenticated()">Cadastre-se</a> <a
+				class="logo text-white" th:href="@{/usuario/formulario/editar}"
+				sec:authorize="isAuthenticated()">Meus dados</a> <a
+				onclick="document.querySelector('#form-logout').submit()"
 				sec:authorize="isAuthenticated()" href="#"><span
 				class="logo text-white"><i class="bi bi-person-circle"></i> <span
-					sec:authentication="name"></span> logout</span></a>
+					sec:authentication="name"></span> Logout</span></a>
 			<form id="form-logout" th:action="@{/logout}" method="post"></form>
 
 			<a th:href="@{/carrinho}"><span class="logo text-white"><i

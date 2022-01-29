@@ -74,6 +74,34 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -84,88 +112,85 @@
 			<div>
 				<h3 th:text="${sucesso}" class="text-success"></h3>
 			</div>
-			<form th:object="${usuario}" th:action="@{/usuario/editar}"
-				method="post">
-				<div class="row">
-					<div class="form-group col-sm-10">
-						<label for="username">Login</label> <input
-							th:errorClass="is-invalid" type="text" class="form-control"
-							placeholder="Login" th:field="*{username}">
-						<div class="invalid-feedback" th:errors="*{username}"></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="form-group col-sm-10">
-						<label for="password">Senha</label><input type="password"
-							th:errorClass="is-invalid" class="form-control"
-							placeholder="senha" th:field="*{password}">
-						<div class="invalid-feedback" th:errors="*{password}"></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="form-group col-sm-10">
-						<label for="cpf">CPF</label><input type="text" maxlength="14"
-							th:errorClass="is-invalid" class="form-control"
-							placeholder="Seu CPF" th:field=*{cpf}>
-						<div class="invalid-feedback" th:errors="*{cpf}"></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="form-group col-sm-10">
-						<label for="aniversario">Data de nascimento</label><input
-							th:errorClass="is-invalid" type="date" max="31-01-4000"
-							class="form-control" placeholder="Data de nascimento"
-							th:field="*{nascimento}" required>
-						<div class="invalid-feedback" th:errors="*{nascimento}"></div>
+			<div class="row">
+				<div class="col-6">
+					<form th:object="${usuario}" th:action="@{/usuario/editar}"
+						method="post">
+						<div class="form-group">
+							<label for="username">Login</label> <input
+								th:errorClass="is-invalid" type="text" class="form-control"
+								placeholder="Login" th:field="*{username}">
+							<div class="invalid-feedback" th:errors="*{username}"></div>
+						</div>
+						<div class="form-group">
+							<label for="cpf">CPF</label><input type="text" maxlength="14"
+								id="cpf" onkeyup="aplicaMascaraCpf(this);"
+								th:errorClass="is-invalid" class="form-control"
+								placeholder="Seu CPF" th:field=*{cpf}>
+							<div class="invalid-feedback" th:errors="*{cpf}"></div>
+						</div>
+						<div class="form-group">
+							<label for="aniversario">Data de nascimento</label><input
+								th:errorClass="is-invalid" type="date" max="31-01-4000"
+								class="form-control" placeholder="Data de nascimento"
+								th:field="*{nascimento}" required>
+							<div class="invalid-feedback" th:errors="*{nascimento}"></div>
 
-					</div>
+						</div>
+						<div class="form-group">
+							<label for="telefone">Telefone</label><input type="text"
+								class="form-control" placeholder="Telefone para contato"
+								name="telefone">
+						</div>
+						<button type="submit" class="btn btn-primary">Editar</button>
+						<input type="hidden" name="password" th:value="*{password}">
+					</form>
 				</div>
-				<div class="row">
-					<div class="form-group col-sm-10">
-						<label for="telefone">Telefone</label><input type="text"
-							class="form-control" placeholder="Telefone para contato"
-							name="telefone">
+				<div class="col-6">
+					<div class="form-check">
+						<input type="checkbox" id="checkbox" class="form-check-input"
+							onChange="onClickCheckbox(this);"><label for="checkbox">Cadastrar
+							endereço</label>
 					</div>
+					<form id="form-endereco" th:object="${endereco}"
+						th:action="@{/endereco/novo}" method="post">
+						<div class="form-group">
+							<label for="rua">CEP</label> <input type="text" maxlength="9"
+								onkeyup="buscaCep();" class="form-control" placeholder="CEP"
+								id="cep" name="cep">
+							<div class="form-group">
+								<label for="rua">Logradouro</label> <input type="text"
+									class="form-control" placeholder="Logradouro" id="logradouro"
+									name="rua">
+							</div>
+							<div class="form-group">
+								<label for="rua">Número</label> <input type="text"
+									maxlength="10" class="form-control"
+									onkeyup="aplicaMascaraNumero(this);" placeholder="Número"
+									id="numero" name="numero">
+							</div>
+							<div class="form-group">
+								<label for="rua">Complemento</label> <input type="text"
+									class="form-control" placeholder="Complemento" id="complemento"
+									name="complemento">
+							</div>
+							<div class="form-group">
+								<label for="rua">Referência</label> <input type="text"
+									class="form-control"
+									placeholder="Ponto de referência, ex: Em frente ao bar do Zézão"
+									id="referencia" name="referencia">
+							</div>
+							<div class="form-group">
+								<label for="bairro">Bairro</label> <input type="text"
+									class="form-control" placeholder="Bairro" id="bairro"
+									name="bairro">
+							</div>
+						</div>
+
+						<button type="submit" class="btn btn-primary">Cadastrar</button>
+					</form>
 				</div>
-				<button type="submit" class="btn btn-primary">Editar</button>
-			</form>
-			<div class="form-check">
-				<input type="checkbox" id="checkbox" class="form-check-input"
-					onChange="onClickCheckbox(this);"><label for="checkbox">Cadastrar
-					endereço</label>
 			</div>
-			<form id="form-endereco" th:object="${endereco}" th:action="@{/endereco/novo}" method="post">
-				<div class="row">
-					<div class="form-group col-sm-10">
-						<label for="rua">CEP</label> <input type="text" maxlength="9"
-							onkeyup="buscaCep();" class="form-control" placeholder="CEP"
-							id="cep" name="cep">
-					</div>
-					<div class="form-group col-sm-10">
-						<label for="rua">Logradouro</label> <input type="text"
-							class="form-control" placeholder="Logradouro" id="logradouro"
-							name="rua">
-					</div>
-					<div class="form-group col-sm-10">
-						<label for="rua">Número</label> <input type="text"
-							class="form-control" placeholder="Número" id="numero"
-							name="numero">
-					</div>
-					<div class="form-group col-sm-10">
-						<label for="rua">Complemento</label> <input type="text"
-							class="form-control" placeholder="Complemento" id="complemento"
-							name="complemento">
-					</div>
-					<div class="form-group col-sm-10">
-						<label for="bairro">Bairro</label> <input type="text"
-							class="form-control" placeholder="Bairro" id="bairro"
-							name="bairro">
-					</div>
-				</div>
-
-				<button type="submit" class="btn btn-primary">Cadastrar</button>
-			</form>
-
 			<script type="text/javascript">
 				document.getElementById('form-endereco').style.display = "none";
 
@@ -177,7 +202,21 @@
 
 					}
 				}
-
+				function aplicaMascaraNumero(evento){
+					var texto = evento.value;
+					texto = texto.replace(/[^0-9]/,'');
+					console.log(texto);
+					document.getElementById('numero').value = texto;
+				}
+				function aplicaMascaraCpf(evento){
+					var texto = evento.value;
+					texto = texto.replace(/\D/g,"");              
+					texto = texto.replace(/(\d{3})(\d)/, "$1.$2");
+					texto = texto.replace(/(\d{3})(\d)/, "$1.$2");
+					texto = texto.replace(/(\d{3})(\d{1,2})$/,"$1-$2");
+					console.log(texto);
+					document.getElementById('cpf').value = texto;
+				}
 				function buscaCep() {
 					var cep = document.getElementById("cep").value;
 					if(cep.match(/[0-9]{5}-[0-9]{3}/)){
