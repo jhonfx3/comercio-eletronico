@@ -102,6 +102,24 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -109,11 +127,9 @@
 			<div th:replace="~{base::cabecalho}"></div>
 		</header>
 		<main>
-			<div>
-				<h3 th:text="${sucesso}" class="text-success"></h3>
-			</div>
 			<div class="row">
 				<div class="col-6">
+					<h1 class="text-success" th:text="${sucesso}"></h1>
 					<form th:object="${usuario}" th:action="@{/usuario/editar}"
 						method="post">
 						<div class="form-group">
@@ -140,51 +156,60 @@
 						<div class="form-group">
 							<label for="telefone">Telefone</label><input type="text"
 								class="form-control" placeholder="Telefone para contato"
-								name="telefone">
+								th:field="*{telefone}">
 						</div>
 						<button type="submit" class="btn btn-primary">Editar</button>
 						<input type="hidden" name="password" th:value="*{password}">
 					</form>
 				</div>
 				<div class="col-6">
+					<div>
+						<h3 th:text="${sucessoEndereco}" class="text-success"></h3>
+					</div>
 					<div class="form-check">
 						<input type="checkbox" id="checkbox" class="form-check-input"
-							onChange="onClickCheckbox(this);"><label for="checkbox">Cadastrar
-							endereço</label>
+							onChange="onClickCheckbox(this);" checked><label
+							for="checkbox">Cadastrar endereço</label>
 					</div>
 					<form id="form-endereco" th:object="${endereco}"
 						th:action="@{/endereco/novo}" method="post">
 						<div class="form-group">
-							<label for="rua">CEP</label> <input type="text" maxlength="9"
-								onkeyup="buscaCep();" class="form-control" placeholder="CEP"
-								id="cep" name="cep">
-							<div class="form-group">
-								<label for="rua">Logradouro</label> <input type="text"
-									class="form-control" placeholder="Logradouro" id="logradouro"
-									name="rua">
-							</div>
-							<div class="form-group">
-								<label for="rua">Número</label> <input type="text"
-									maxlength="10" class="form-control"
-									onkeyup="aplicaMascaraNumero(this);" placeholder="Número"
-									id="numero" name="numero">
-							</div>
-							<div class="form-group">
-								<label for="rua">Complemento</label> <input type="text"
-									class="form-control" placeholder="Complemento" id="complemento"
-									name="complemento">
-							</div>
-							<div class="form-group">
-								<label for="rua">Referência</label> <input type="text"
-									class="form-control"
-									placeholder="Ponto de referência, ex: Em frente ao bar do Zézão"
-									id="referencia" name="referencia">
-							</div>
-							<div class="form-group">
-								<label for="bairro">Bairro</label> <input type="text"
-									class="form-control" placeholder="Bairro" id="bairro"
-									name="bairro">
-							</div>
+							<label for="cep">CEP</label><input type="text" maxlength="14"
+								id="cep" onkeyup="buscaCep()" th:errorClass="is-invalid"
+								class="form-control" placeholder="CEP" th:field=*{cep}>
+							<div class="invalid-feedback" th:errors="*{cep}"></div>
+						</div>
+						<div class="invalid-feedback" th:errors="*{cep}"></div>
+						<div class="form-group">
+							<label for="rua">Logradouro</label> <input type="text"
+								th:errorClass="is-invalid" class="form-control"
+								placeholder="Logradouro" id="logradouro"
+								th:field="*{logradouro}">
+							<div class="invalid-feedback" th:errors="*{logradouro}"></div>
+						</div>
+						<div class="form-group">
+							<label for="rua">Número</label> <input type="text" maxlength="10"
+								th:errorClass="is-invalid" class="form-control"
+								onkeyup="aplicaMascaraNumero(this);" placeholder="Número"
+								id="numero" th:field="*{numero}">
+							<div class="invalid-feedback" th:errors="*{numero}"></div>
+						</div>
+						<div class="form-group">
+							<label for="rua">Complemento</label> <input type="text"
+								class="form-control" placeholder="Complemento" id="complemento"
+								name="complemento">
+						</div>
+						<div class="form-group">
+							<label for="rua">Referência</label> <input type="text"
+								class="form-control"
+								placeholder="Ponto de referência, ex: Em frente ao bar do Zézão"
+								id="referencia" name="referencia">
+						</div>
+						<div class="form-group">
+							<label for="bairro">Bairro</label> <input type="text"
+								th:errorClass="is-invalid" class="form-control"
+								placeholder="Bairro" id="bairro" th:field="*{bairro}">
+							<div class="invalid-feedback" th:errors="*{bairro}"></div>
 						</div>
 
 						<button type="submit" class="btn btn-primary">Cadastrar</button>
@@ -193,7 +218,8 @@
 			</div>
 			<script type="text/javascript">
 				document.getElementById('form-endereco').style.display = "none";
-
+				checkbox = document.getElementById('checkbox');
+				onClickCheckbox(checkbox);
 				function onClickCheckbox(checkbox) {
 					if (checkbox.checked == true) {
 						document.getElementById('form-endereco').style.display = "block";

@@ -6,16 +6,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Endereco {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@NotEmpty(message = "O número é obrigatório")
+	@NotNull(message = "O número é obrigatório")
 	private Integer numero;
 	@NotEmpty(message = "Logradouro é obrigatório")
-	private String rua;
+	private String logradouro;
 	@NotEmpty(message = "O CEP obrigatório")
 	private String cep;
 	@NotEmpty(message = "O bairro é obrigatório")
@@ -58,12 +59,12 @@ public class Endereco {
 		this.numero = numero;
 	}
 
-	public String getRua() {
-		return rua;
+	public String getLogradouro() {
+		return logradouro;
 	}
 
-	public void setRua(String rua) {
-		this.rua = rua;
+	public void setLogradouro(String logradouro) {
+		this.logradouro = logradouro;
 	}
 
 	public String getCep() {

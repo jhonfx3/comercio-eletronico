@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,28 +19,28 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import br.com.comercio.impl.UsuarioRepositoryImpl;
+import br.com.comercio.hibernategroups.EditarUsuario;
+import br.com.comercio.hibernategroups.PersistirUsuario;
 import br.com.comercio.interfaces.DataFormatValidacao;
-import br.com.comercio.interfaces.UniqueColumn;
-import br.com.comercio.interfaces.UniqueUsername;
+import br.com.comercio.interfaces.UniqueUsernameEditar;
+import br.com.comercio.interfaces.UniqueUsernamePersistir;
 
 @Entity
 public class Usuario implements UserDetails {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	@UniqueUsername
 	@NotEmpty(message = "Usuário é obrigatório")
+	@UniqueUsernameEditar(groups = EditarUsuario.class)
+	@UniqueUsernamePersistir(groups = PersistirUsuario.class)
 	private String username;
 	@NotEmpty(message = "Senha é obrigatória")
 	private String password;
 	private Boolean enabled;
 	@CPF(message = "CPF informado é inválido")
 	@Column(unique = true)
-	@UniqueColumn(campo = "Cpf", tipoParametro = String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository = UsuarioRepositoryImpl.class, message = "CPF já existente")
+	// @UniqueColumn(groups = PersistirUsuario.class, campo = "Cpf", tipoParametro =
+	// String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository =
+	// UsuarioRepositoryImpl.class, message = "CPF já existente")
 	private String cpf;
 	private String rg;
 	private String telefone;
@@ -101,7 +102,7 @@ public class Usuario implements UserDetails {
 		this.endereco = endereco;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	private List<Authorities> authorities;
 
 	@Override
@@ -126,8 +127,9 @@ public class Usuario implements UserDetails {
 		return serialVersionUID;
 	}
 
-	public void setAuthorities(List<Authorities> authorities) {
-		this.authorities = authorities;
+
+	public void setAuthorities(Collection<? extends GrantedAuthority> collection) {
+		this.authorities = (List<Authorities>) collection;
 	}
 
 	public void setPassword(String password) {

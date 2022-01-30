@@ -9,13 +9,13 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import br.com.comercio.validator.UsuarioValidator;
+import br.com.comercio.validator.UsuarioValidatorPersistir;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = UsuarioValidator.class)
+@Constraint(validatedBy = UsuarioValidatorPersistir.class)
 @Documented
-public @interface UniqueUsername {
+public @interface UniqueUsernamePersistir {
 
 	String message() default "Usuário já existente";
 

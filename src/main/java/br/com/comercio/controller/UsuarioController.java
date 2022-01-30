@@ -6,8 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -24,7 +23,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import br.com.comercio.hibernategroups.EditarUsuario;
+import br.com.comercio.hibernategroups.PersistirUsuario;
 import br.com.comercio.model.Authorities;
+import br.com.comercio.model.Endereco;
 import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.AuthoritiesRepository;
 import br.com.comercio.repository.UsuarioRepository;
@@ -79,7 +81,8 @@ public class UsuarioController {
 	}
 
 	@PostMapping("/novo")
-	public String novo(@Valid Usuario usuario, BindingResult result, RedirectAttributes attributes) {
+	public String novo(@Validated(PersistirUsuario.class) Usuario usuario, BindingResult result,
+			RedirectAttributes attributes) {
 		if (result.hasErrors()) {
 			System.out.println("deu erro no usuario");
 			return "usuario/formulario";
@@ -91,16 +94,20 @@ public class UsuarioController {
 	}
 
 	@PostMapping("/editar")
-	public String editarUsuario(@Valid Usuario usuario, BindingResult result, RedirectAttributes attributes) {
+	public String editarUsuario(@Validated(EditarUsuario.class) Usuario usuario, BindingResult result,
+			RedirectAttributes attributes, Endereco endereco, Model model) {
 		if (result.hasErrors()) {
 			List<FieldError> fieldErrors = result.getFieldErrors();
 			for (FieldError fieldError : fieldErrors) {
 				System.out.println(fieldError.getDefaultMessage());
 			}
 			System.out.println("deu erro no usuario");
+			model.addAttribute("endereco", endereco);
 			return "usuario/formularioEditar";
 		}
-		System.out.println("usuario id?" + usuario.getUsername());
+		Usuario usuarioLogado = getUsuarioLogado();
+		usuarioLogado.getAuthorities();
+		usuario.setAuthorities(usuarioLogado.getAuthorities());
 		usuarioRepository.save(usuario);
 		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " alterado com sucesso");
 		return "redirect:/usuario/formulario/editar";
@@ -120,7 +127,7 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/formulario/editar")
-	public String formularioEditar(Usuario usuario, Model model) {
+	public String formularioEditar(Usuario usuario, Model model, Endereco endereco) {
 		Usuario usuarioLogado = getUsuarioLogado();
 		System.out.println("id  " + usuarioLogado.getUsername());
 		model.addAttribute("usuario", getUsuarioLogado());

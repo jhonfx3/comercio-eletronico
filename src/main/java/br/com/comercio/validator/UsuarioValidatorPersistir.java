@@ -5,16 +5,15 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.comercio.interfaces.UniqueUsername;
+import br.com.comercio.interfaces.UniqueUsernamePersistir;
 import br.com.comercio.repository.UsuarioRepository;
 
-public class UsuarioValidator implements ConstraintValidator<UniqueUsername, Object> {
+public class UsuarioValidatorPersistir implements ConstraintValidator<UniqueUsernamePersistir, Object> {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
 	@Override
-	public void initialize(UniqueUsername usuario) {
-
+	public void initialize(UniqueUsernamePersistir usuario) {
 	}
 
 	@Override
