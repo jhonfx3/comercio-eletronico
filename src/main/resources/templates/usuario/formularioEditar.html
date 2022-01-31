@@ -3,122 +3,8 @@
 <head>
 <meta charset="utf-8">
 <title>Formulário de usuário</title>
+<script type="text/javascript" th:src="@{/js/mascaras.js}"></script>
 <th:block th:include="~{base::head}">/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </head>
 <body>
@@ -175,7 +61,7 @@
 						th:action="@{/endereco/novo}" method="post">
 						<div class="form-group">
 							<label for="cep">CEP</label><input type="text" maxlength="14"
-								id="cep" onkeyup="buscaCep()" th:errorClass="is-invalid"
+								id="cep" onkeyup="buscaCep(this);" th:errorClass="is-invalid"
 								class="form-control" placeholder="CEP" th:field=*{cep}>
 							<div class="invalid-feedback" th:errors="*{cep}"></div>
 						</div>
@@ -228,28 +114,8 @@
 
 					}
 				}
-				function aplicaMascaraNumero(evento){
-					var texto = evento.value;
-					texto = texto.replace(/[^0-9]/,'');
-					console.log(texto);
-					document.getElementById('numero').value = texto;
-				}
-				function aplicaMascaraCpf(evento){
-					var texto = evento.value;
-					texto = texto.replace(/\D/g,"");              
-					texto = texto.replace(/(\d{3})(\d)/, "$1.$2");
-					texto = texto.replace(/(\d{3})(\d)/, "$1.$2");
-					texto = texto.replace(/(\d{3})(\d{1,2})$/,"$1-$2");
-					console.log(texto);
-					document.getElementById('cpf').value = texto;
-				}
-				function buscaCep() {
-					var cep = document.getElementById("cep").value;
-					if(cep.match(/[0-9]{5}-[0-9]{3}/)){
-						console.log("formato de cep");
-					}
-					document.getElementById("cep").value = cep.replace(/^\d/, '');
-					document.getElementById("cep").value = cep.replace(/(\d{5})(\d)/, '$1-$2');
+				function buscaCep(evento) {
+					var cep = aplicaMascaraCep(evento);
 
 					var json = {"cep":cep}
 					fetch("/cep/buscar", {

@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.comercio.hibernategroups.EditarUsuario;
 import br.com.comercio.hibernategroups.PersistirUsuario;
+import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.model.Authorities;
 import br.com.comercio.model.Endereco;
 import br.com.comercio.model.Usuario;
@@ -40,12 +41,14 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
+	@Autowired
+	private UsuarioRepositoryImpl usuarioImpl;
+
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
 			@Override
 			public void setAsText(String text) throws IllegalArgumentException {
-				System.out.println("oi");
 				try {
 					setValue(LocalDate.parse(text, DateTimeFormatter.ISO_DATE));
 				} catch (Exception e) {
@@ -108,7 +111,7 @@ public class UsuarioController {
 		Usuario usuarioLogado = getUsuarioLogado();
 		usuarioLogado.getAuthorities();
 		usuario.setAuthorities(usuarioLogado.getAuthorities());
-		usuarioRepository.save(usuario);
+		usuarioImpl.updateUser(usuario);
 		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " alterado com sucesso");
 		return "redirect:/usuario/formulario/editar";
 	}
