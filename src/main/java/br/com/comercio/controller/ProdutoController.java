@@ -27,28 +27,30 @@ public class ProdutoController {
 	@Autowired
 	private ProdutoRepository produtoRepository;
 
-	@GetMapping("formulario")
-	public String formulario(Produto produto, Model model, HttpServletRequest request) {
+	@GetMapping("formulario/{acao}")
+	public String formulario(@PathVariable("acao") String acao, Produto produto, Model model,
+			HttpServletRequest request) {
 		model.addAttribute("tipos", TipoPreco.values());
-		/*
-		 * Se eu percebo que existe um parameter de produto significa que estou editando
-		 * um produto e não cadastrando
-		 */
-		if (request.getParameter("produto") != null) {
-			model.addAttribute("idProdutoEditar", request.getParameter("produto"));
-			List<Preco> precos = produto.getPrecos();
-			/*
-			 * Preciso ordenar em ordem alfabética senão ocorre inversão de valores na hora
-			 * de renderizar na página de edição.
-			 */
-			precos.sort(new Comparator<Preco>() {
-				@Override
-				public int compare(Preco p1, Preco p2) {
-					return p1.getTipo().compareTo(p2.getTipo());
-				}
-			});
+		if (acao.equals("cadastrar")) {
+			return "produto/formulario";
+		} else {
+			if (request.getParameter("produto") != null) {
+				model.addAttribute("idProdutoEditar", request.getParameter("produto"));
+				List<Preco> precos = produto.getPrecos();
+				/*
+				 * Preciso ordenar em ordem alfabética senão ocorre inversão de valores na hora
+				 * de renderizar na página de edição.
+				 */
+				precos.sort(new Comparator<Preco>() {
+					@Override
+					public int compare(Preco p1, Preco p2) {
+						return p1.getTipo().compareTo(p2.getTipo());
+					}
+				});
+			}
+			return "produto/formularioEditar";
 		}
-		return "produto/formulario";
+
 	}
 
 	@PostMapping("editar/{id}")
@@ -56,8 +58,9 @@ public class ProdutoController {
 		Produto produto = produtoRepository.findById(id).get();
 		model.addAttribute("produto", produto);
 		model.addAttribute("tipos", TipoPreco.values());
-		attr.addAttribute("produto", produto);
-		return "redirect:/produto/formulario";
+		model.addAttribute("idProdutoEditar", id);
+		attr.addAttribute("idProdutoEditar", id);
+		return "produto/formularioEditar";
 	}
 
 	@PostMapping("excluir/{id}")
@@ -83,7 +86,7 @@ public class ProdutoController {
 		}
 		produtoRepository.save(produto);
 		attributes.addFlashAttribute("sucesso", "Produto cadastrado com sucesso");
-		return "redirect:formulario";
+		return "redirect:formulario/cadastrar";
 	}
 
 	@PostMapping("editarProduto")
@@ -92,9 +95,9 @@ public class ProdutoController {
 		model.addAttribute("tipos", TipoPreco.values());
 		if (result.hasErrors()) {
 			System.out.println("Deu erro!");
-			// Passando o atributo para o formulario entender que é edição
-			attributes.addAttribute("produto", produto);
-			return "produto/formulario";
+			model.addAttribute("produto", produto);
+			model.addAttribute("idProdutoEditar", idProdutoEditar);
+			return "produto/formularioEditar";
 		}
 		// Tenho que setar um ID para o repository editar e não salvar
 		// um produto novo
@@ -104,7 +107,8 @@ public class ProdutoController {
 		// Tem que ser addattribute e não flash attribute
 		// senão com o passar das requisições o atributo é deletado
 		attributes.addAttribute("produto", produto);
-		return "redirect:formulario";
+		attributes.addAttribute("idProdutoEditar", idProdutoEditar);
+		return "redirect:formulario/editar";
 	}
 
 }

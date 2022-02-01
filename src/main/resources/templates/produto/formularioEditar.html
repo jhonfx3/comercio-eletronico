@@ -2,19 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
-<title>Cadastro de produto</title>
+<title>Edição de produto</title>
 <th:block th:include="~{base::head}">/>
-
-
-
-
-
-
-
-
-
-
-
 </head>
 <body>
 	<div class="container-fluid">
@@ -31,9 +20,9 @@
 			<div>
 				<h3 th:text="${sucesso}" class="text-success"></h3>
 			</div>
-			<form th:object="${produto}" th:action="@{/produto/novo}"
+			<form th:object="${produto}" th:action="@{/produto/editarProduto}"
 				method="post">
-				<div th:replace="~{fragments/produto::formulario('Cadastrar')}"></div>
+				<div th:replace="~{fragments/produto::formulario('Editar')}"></div>
 			</form>
 		</main>
 		<div th:replace="~{base::rodape}"></div>
