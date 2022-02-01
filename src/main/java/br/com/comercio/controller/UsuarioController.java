@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -91,6 +92,10 @@ public class UsuarioController {
 			RedirectAttributes attributes) {
 		if (result.hasErrors()) {
 			System.out.println("deu erro no usuario");
+			List<ObjectError> allErrors = result.getAllErrors();
+			for (ObjectError objectError : allErrors) {
+				System.out.println(objectError.getDefaultMessage());
+			}
 			return "usuario/formulario";
 		}
 		Authorities userAuthority = authoritiesRepository.findById("ROLE_USER").get();

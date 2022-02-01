@@ -25,7 +25,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.comercio.hibernategroups.EditarUsuario;
 import br.com.comercio.hibernategroups.PersistirUsuario;
+import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.interfaces.DataFormatValidacao;
+import br.com.comercio.interfaces.UniqueColumn;
+import br.com.comercio.interfaces.UniqueColumnEditar;
 import br.com.comercio.interfaces.UniqueUsernameEditar;
 import br.com.comercio.interfaces.UniqueUsernamePersistir;
 
@@ -39,15 +42,17 @@ public class Usuario implements UserDetails {
 	@UniqueUsernameEditar(groups = EditarUsuario.class)
 	@UniqueUsernamePersistir(groups = PersistirUsuario.class)
 	private String email;
+
 	@NotEmpty(message = "Senha é obrigatória")
 	private String password;
 	private Boolean enabled;
+
 	@CPF(message = "CPF informado é inválido")
 	@Column(unique = true)
-	// @UniqueColumn(groups = PersistirUsuario.class, campo = "Cpf", tipoParametro =
-	// String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository =
-	// UsuarioRepositoryImpl.class, message = "CPF já existente")
+	@UniqueColumnEditar(groups = EditarUsuario.class, campo = "Cpf", tipoParametro = String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository = UsuarioRepositoryImpl.class, message = "CPF já existente")
+	@UniqueColumn(groups = PersistirUsuario.class, campo = "Cpf", tipoParametro = String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository = UsuarioRepositoryImpl.class, message = "CPF já existente")
 	private String cpf;
+
 	private String rg;
 	private String telefone;
 

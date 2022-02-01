@@ -3,28 +3,8 @@
 <head>
 <meta charset="utf-8">
 <title>Formulário de usuário</title>
+<script type="text/javascript" th:src="@{/js/mascaras.js}"></script>
 <th:block th:include="~{base::head}">/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </head>
@@ -44,10 +24,10 @@
 				method="post">
 				<div class="row">
 					<div class="form-group col-sm-10">
-						<label for="username">Login</label> <input
+						<label for="username">E-mail</label> <input
 							th:errorClass="is-invalid" type="text" class="form-control"
-							placeholder="Login" th:field="*{username}">
-						<div class="invalid-feedback" th:errors="*{username}"></div>
+							placeholder="E-mail" th:field="*{email}">
+						<div class="invalid-feedback" th:errors="*{email}"></div>
 					</div>
 				</div>
 				<div class="row">
@@ -61,6 +41,7 @@
 				<div class="row">
 					<div class="form-group col-sm-10">
 						<label for="cpf">CPF</label><input type="text" maxlength="14"
+							id="cpf" onkeyup="aplicaMascaraCpf(this);"
 							th:errorClass="is-invalid" class="form-control"
 							placeholder="Seu CPF" th:field=*{cpf}>
 						<div class="invalid-feedback" th:errors="*{cpf}"></div>
