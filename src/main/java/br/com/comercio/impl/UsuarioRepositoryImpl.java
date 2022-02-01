@@ -1,7 +1,6 @@
 package br.com.comercio.impl;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -27,14 +26,15 @@ public class UsuarioRepositoryImpl extends SimpleJpaRepository<Usuario, String> 
 		return (Usuario) repository.findByCpf(cpf);
 	}
 
-	public Usuario findByUsername(String username) {
-		return (Usuario) repository.findByUsername(username);
-	}
-
 	public void updateUser(Usuario usuario) {
 		System.out.println(usuario.getCpf());
 		em.merge(usuario);
 		System.out.println("atualizei o usuario...");
+	}
+
+	public void teste(String emailAtualizar, String role) {
+		em.createQuery("UPDATE usuario_roles u set u.usuario_email = :emailAtualizar WHERE u.roles_authority = :role")
+				.setParameter("emailAtualizar", emailAtualizar).setParameter("role", role).executeUpdate();
 	}
 
 }

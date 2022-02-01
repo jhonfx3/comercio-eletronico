@@ -3,18 +3,21 @@ package br.com.comercio.controller;
 import java.beans.PropertyEditorSupport;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -100,18 +103,34 @@ public class UsuarioController {
 	public String editarUsuario(@Validated(EditarUsuario.class) Usuario usuario, BindingResult result,
 			RedirectAttributes attributes, Endereco endereco, Model model) {
 		if (result.hasErrors()) {
-			List<FieldError> fieldErrors = result.getFieldErrors();
-			for (FieldError fieldError : fieldErrors) {
-				System.out.println(fieldError.getDefaultMessage());
-			}
-			System.out.println("deu erro no usuario");
 			model.addAttribute("endereco", endereco);
 			return "usuario/formularioEditar";
 		}
 		Usuario usuarioLogado = getUsuarioLogado();
-		usuarioLogado.getAuthorities();
-		usuario.setAuthorities(usuarioLogado.getAuthorities());
+		usuario.setRoles(usuarioLogado.getRoles());
+		System.out.println("usuario email: " + usuario.getEmail());
+		System.out.println("usuario logado email: " + usuarioLogado.getEmail());
+
+		/*
+		 * Se eu identifico que o usuário trocou de e-mail significa que o Spring
+		 * JPA(Hibernate) vai identificar uma nova chave. Então ele irá criar um novo
+		 * registro, ele não interpreta como um registro existente no bd, porque
+		 * obviamente ainda não existe
+		 */
+		if (!usuario.getEmail().equals(usuarioLogado.getEmail())) {
+			System.out.println("entrei nesse if");
+			/*
+			 * Então eu preciso deletar o usuário do antigo e-mail do contrário será mantido
+			 * no banco de dados impedindo que novos usuários o usem
+			 */
+			usuarioRepository.deletaUsuario(usuarioLogado.getEmail());
+		}
 		usuarioImpl.updateUser(usuario);
+		// Caso eu perceba que o usuário trocou de e-mail
+		// Necessito atualizar o usuário logado
+		if (!usuario.getEmail().equals(usuarioLogado.getEmail())) {
+			atualizaUsuarioLogado(usuario);
+		}
 		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " alterado com sucesso");
 		return "redirect:/usuario/formulario/editar";
 	}
@@ -143,8 +162,23 @@ public class UsuarioController {
 	}
 
 	private void criarUsuario(Usuario usuario, List<Authorities> authorities) {
+		List<GrantedAuthority> grantedAuthorities = new ArrayList<>(); // use list if you wish
+		for (Authorities authority : authorities) {
+			Authorities autho = authoritiesRepository.findById(authority.getAuthority()).get();
+			grantedAuthorities.add(autho);
+		}
 		usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
-		usuario.setAuthorities(authorities);
+		usuario.setAuthorities(grantedAuthorities);
 		usuarioRepository.save(usuario);
+	}
+
+	// O nome do método é auto explicativo
+	// Mas explicando: Ele atualiza o usuário que está logado no sistema
+	private void atualizaUsuarioLogado(Usuario usuario) {
+		User user = new User(usuario.getUsername(), usuario.getPassword(), true, true, true, true,
+				usuario.getAuthorities());
+		Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, usuario.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
 	}
 }

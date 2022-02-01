@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.validator.constraints.URL;
+
 import br.com.comercio.enums.TipoPreco;
 import br.com.comercio.interfaces.ListaVazia;
 
@@ -23,7 +25,7 @@ public class Produto {
 	@ElementCollection
 	@ListaVazia
 	private List<Preco> precos;
-
+	@URL(message = "Url inválida")
 	private String urlImagem;
 	private String descricao;
 
@@ -75,7 +77,6 @@ public class Produto {
 		return result;
 	}
 
-	
 	public BigDecimal precoPara(TipoPreco tipo) {
 		if (tipo.equals(TipoPreco.VISTA)) {
 			return this.getPrecos().get(0).getValor();
@@ -85,7 +86,7 @@ public class Produto {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -103,6 +104,4 @@ public class Produto {
 		return true;
 	}
 
-	
-	
 }
