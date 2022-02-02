@@ -23,3 +23,13 @@ function aplicaMascaraCep(evento) {
 	evento.value = cep.replace(/(\d{5})(\d)/, '$1-$2');
 	return cep;
 }
+
+function aplicaMascaraTelefone(evento) {
+	var v = evento.value;
+	evento.value = v.replace(/\D/g, ""); //Remove tudo o que não é dígito
+	//evento.value = v.replace(/(\d{2})(\d)/, "($1)$2"); //Coloca parênteses em volta dos dois primeiros dígitos
+	//evento.value = v.replace(/(\d{5})(\d)/, "$1-$2"); //Coloca parênteses em volta dos dois primeiros dígitos
+	evento.value = v.replace(/(\d{2})(\d{5})(\d)/g, "($1)$2-$3"); //Coloca parênteses em volta dos dois primeiros dígitos
+
+}
+
