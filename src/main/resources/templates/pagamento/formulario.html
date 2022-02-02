@@ -7,6 +7,8 @@
 <script src="https://www.mercadopago.com/v2/security.js" view=""></script>
 <th:block th:include="~{base::head}">/>
 
+
+
 </head>
 <body>
 
@@ -52,16 +54,18 @@
 					id="form-checkout__submit">Pagar</button>
 
 			</form>
-
 			<input type="hidden" id="mercadopagoPublicKey"
 				th:value="${mercadopagoPublicKey}" />
-			<script>
+			<script th:inline="javascript">
 		const publicKey = document.getElementById("mercadopagoPublicKey").value;
 		const mp = new MercadoPago(publicKey);
+		const totalDaCompra = /*[[${totalDaCompra}]]*/'default';
+		console.log("Total da compra ->");
+		console.log(totalDaCompra);
 		// Add step #3
 		// Step #3
 const cardForm = mp.cardForm({
-	amount: "30.50",
+	amount: totalDaCompra,
     autoMount: true,
     form: {
         id: "form-checkout",
@@ -125,7 +129,7 @@ const cardForm = mp.cardForm({
                 identificationType,
             } = cardForm.getCardFormData();
 
-            fetch("/pagamento/formulario", {
+            fetch("/pagamento/gerar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

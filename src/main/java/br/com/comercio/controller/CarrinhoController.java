@@ -79,7 +79,7 @@ public class CarrinhoController {
 			System.out.println(mercadopagoPublicKey);
 			model.addAttribute("mercadopagoPublicKey", mercadopagoPublicKey);
 		}
-
+		model.addAttribute("totalDaCompra", String.valueOf(carrinho.getTotalCarrinho(TipoPreco.VISTA)));
 		return "pagamento/formulario";
 	}
 }
