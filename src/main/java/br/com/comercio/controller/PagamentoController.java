@@ -1,6 +1,7 @@
 package br.com.comercio.controller;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -81,8 +82,15 @@ public class PagamentoController {
 		// https://www.mercadopago.com.br/ajuda/Custos-de-parcelamento_322
 
 		Payment payment = new Payment();
-		payment.setTransactionAmount(cardPaymentDTO.getTransactionAmount()).setToken(cardPaymentDTO.getToken())
-				.setDescription(cardPaymentDTO.getProductDescription())
+
+		if (cardPaymentDTO.getInstallments() > 1) {
+			payment.setTransactionAmount(
+					calculaValorAPrazo(cardPaymentDTO.getTransactionAmount(), cardPaymentDTO.getInstallments()));
+		} else {
+			payment.setTransactionAmount(cardPaymentDTO.getTransactionAmount());
+		}
+
+		payment.setToken(cardPaymentDTO.getToken()).setDescription(cardPaymentDTO.getProductDescription())
 				.setInstallments(cardPaymentDTO.getInstallments())
 				.setPaymentMethodId(cardPaymentDTO.getPaymentMethodId());
 		Address endereco = new Address();
@@ -122,10 +130,58 @@ public class PagamentoController {
 		pedido.setUsuario(usuario);
 		pedido.setParcelas(pagamentoGerado.getInstallments());
 		pedido.setProdutos(produtos);
+		pedido.setValorParcela(
+				new BigDecimal(pagamentoGerado.getTransactionAmount() / pagamentoGerado.getInstallments()));
 		pedidoRepository.save(pedido);
 		// System.out.println(createdPayment.getExternalReference());
 		// MPApiResponse payment_methods = MercadoPago.SDK.Get("/v1/payment_methods");
 		return ResponseEntity.status(HttpStatus.CREATED).body(pagamentoRespostaDTO);
+	}
+
+	private float calculaValorAPrazo(float valorDaCompra, Integer quantidadeParcelas) {
+		float porcentagemDeAcrescimo = 0;
+
+		switch (quantidadeParcelas) {
+		case 2:
+			porcentagemDeAcrescimo = (float) 6.76;
+			break;
+		case 3:
+			porcentagemDeAcrescimo = (float) 8.44;
+			break;
+		case 4:
+			porcentagemDeAcrescimo = (float) 10.23;
+			break;
+		case 5:
+			porcentagemDeAcrescimo = (float) 11.93;
+			break;
+		case 6:
+			porcentagemDeAcrescimo = (float) 13.58;
+			break;
+		case 7:
+			porcentagemDeAcrescimo = (float) 15.01;
+			break;
+		case 8:
+			porcentagemDeAcrescimo = (float) 16.90;
+			break;
+		case 9:
+			porcentagemDeAcrescimo = (float) 18.86;
+			break;
+		case 10:
+			porcentagemDeAcrescimo = (float) 20.07;
+			break;
+		case 11:
+			porcentagemDeAcrescimo = (float) 21.92;
+			break;
+		case 12:
+			porcentagemDeAcrescimo = (float) 23.75;
+			break;
+		}
+		float valor;
+		valor = (valorDaCompra * porcentagemDeAcrescimo) / 100;
+		valorDaCompra += valor;
+		BigDecimal setScale = new BigDecimal(valorDaCompra).setScale(2, RoundingMode.HALF_UP);
+		System.out.println(setScale);
+		return new BigDecimal(valorDaCompra).setScale(2, RoundingMode.HALF_UP).floatValue();
 	}
 
 	/*

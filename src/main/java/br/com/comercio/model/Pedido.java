@@ -3,6 +3,7 @@ package br.com.comercio.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -24,6 +25,16 @@ public class Pedido {
 	@Enumerated(EnumType.STRING)
 	private StatusPedido status;
 	private Integer parcelas;
+	@Column(name = "valor_parcela")
+	private BigDecimal valorParcela;
+
+	public BigDecimal getValorParcela() {
+		return valorParcela;
+	}
+
+	public void setValorParcela(BigDecimal valorParcela) {
+		this.valorParcela = valorParcela;
+	}
 
 	public String getId() {
 		return id;
