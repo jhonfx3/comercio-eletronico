@@ -27,12 +27,14 @@ import com.mercadopago.resources.datastructures.payment.Item;
 import com.mercadopago.resources.datastructures.payment.Payer;
 
 import br.com.comercio.enums.StatusPedido;
+import br.com.comercio.enums.TipoPreco;
 import br.com.comercio.model.CardPaymentDTO;
 import br.com.comercio.model.CarrinhoDeCompras;
 import br.com.comercio.model.CarrinhoItem;
 import br.com.comercio.model.PaymentResponseDTO;
 import br.com.comercio.model.Pedido;
 import br.com.comercio.model.Produto;
+import br.com.comercio.model.ProdutoPedido;
 import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.PedidoRepository;
 import br.com.comercio.repository.UsuarioRepository;
@@ -64,12 +66,27 @@ public class PagamentoController {
 		ArrayList<Item> itens = new ArrayList<Item>();
 		List<Produto> produtos = new ArrayList<>();
 		Map<CarrinhoItem, Integer> itensMap = carrinho.getItensMap();
+		List<ProdutoPedido> listaProdutosPedido = new ArrayList<ProdutoPedido>();
+
 		String name = SecurityContextHolder.getContext().getAuthentication().getName();
 		Usuario usuario = usuarioRepository.findById(name).get();
 		for (Map.Entry<CarrinhoItem, Integer> entry : itensMap.entrySet()) {
 			System.out.println(entry.getKey().getProduto().getNome());
 			CarrinhoItem carrinhoItem = entry.getKey();
 			produtos.add(carrinhoItem.getProduto());
+			ProdutoPedido produtoPedido = new ProdutoPedido();
+			produtoPedido.setProduto(carrinhoItem.getProduto());
+			produtoPedido.setQuantidade(entry.getValue());
+
+			if (cardPaymentDTO.getInstallments() > 1) {
+				produtoPedido.setTotal(new BigDecimal(calculaValorAPrazo(
+						carrinhoItem.getTotalCarrinhoItem(entry.getValue(), TipoPreco.VISTA).floatValue(),
+						cardPaymentDTO.getInstallments())));
+			} else {
+				produtoPedido.setTotal(carrinhoItem.getTotalCarrinhoItem(entry.getValue(), TipoPreco.VISTA));
+			}
+
+			listaProdutosPedido.add(produtoPedido);
 			Item item = new Item();
 			item.setId(String.valueOf(carrinhoItem.getProduto().getId()));
 			item.setPictureUrl(carrinhoItem.getProduto().getUrlImagem());
@@ -129,10 +146,14 @@ public class PagamentoController {
 		pedido.setTotal(new BigDecimal(pagamentoGerado.getTransactionAmount()));
 		pedido.setUsuario(usuario);
 		pedido.setParcelas(pagamentoGerado.getInstallments());
-		pedido.setProdutos(produtos);
 		pedido.setValorParcela(
 				new BigDecimal(pagamentoGerado.getTransactionAmount() / pagamentoGerado.getInstallments()));
-		pedidoRepository.save(pedido);
+		Pedido pedidoSalvo = pedidoRepository.save(pedido);
+		for (ProdutoPedido produtoPedido : listaProdutosPedido) {
+			produtoPedido.setPedido(pedidoSalvo);
+		}
+		pedidoSalvo.setProdutos(listaProdutosPedido);
+		pedidoRepository.save(pedidoSalvo);
 		// System.out.println(createdPayment.getExternalReference());
 		// MPApiResponse payment_methods = MercadoPago.SDK.Get("/v1/payment_methods");
 		return ResponseEntity.status(HttpStatus.CREATED).body(pagamentoRespostaDTO);

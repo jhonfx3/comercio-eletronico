@@ -3,13 +3,14 @@ package br.com.comercio.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import br.com.comercio.enums.StatusPedido;
 
@@ -18,8 +19,10 @@ public class Pedido {
 	@Id
 	private String id;
 	private BigDecimal total;
-	@ManyToMany
-	private List<Produto> produtos;
+
+	@OneToMany(mappedBy = "pedido", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	private List<ProdutoPedido> produtos;
+
 	@ManyToOne
 	private Usuario usuario;
 	@Enumerated(EnumType.STRING)
@@ -76,11 +79,11 @@ public class Pedido {
 		this.total = total;
 	}
 
-	public List<Produto> getProdutos() {
+	public List<ProdutoPedido> getProdutos() {
 		return produtos;
 	}
 
-	public void setProdutos(List<Produto> produtos) {
+	public void setProdutos(List<ProdutoPedido> produtos) {
 		this.produtos = produtos;
 	}
 

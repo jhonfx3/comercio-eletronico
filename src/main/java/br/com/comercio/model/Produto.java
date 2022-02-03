@@ -3,11 +3,13 @@ package br.com.comercio.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.validator.constraints.URL;
@@ -28,6 +30,9 @@ public class Produto {
 	@URL(message = "Url inválida")
 	private String urlImagem;
 	private String descricao;
+
+	@OneToMany(mappedBy = "produto", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	private List<ProdutoPedido> pedidos;
 
 	public String getNome() {
 		return nome;
