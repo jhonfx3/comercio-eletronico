@@ -6,6 +6,7 @@
 <script type="text/javascript" th:src="@{/js/mascaras.js}"></script>
 <th:block th:include="~{base::head}">/>
 
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -13,6 +14,8 @@
 			<div th:replace="~{base::cabecalho}"></div>
 		</header>
 		<main>
+			<a th:href="@{/usuario/meus-pedidos}" class="btn btn-success">Meus
+				Pedidos</a>
 			<div class="row">
 				<div class="col-6">
 					<h1 class="text-success" th:text="${sucesso}"></h1>

@@ -161,7 +161,7 @@ const cardForm = mp.cardForm({
                   //  setTimeout(() => { $('.container__result').show(500).fadeIn(); }, 500);
                 })
                 .catch(error => {
-                    alert("Unexpected error\n"+JSON.stringify(error));
+                    alert("Ocorreu um erro na compra\n"+JSON.stringify(error));
                 });
         },
         onFetching: (resource) => {

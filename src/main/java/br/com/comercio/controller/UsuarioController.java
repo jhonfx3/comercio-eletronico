@@ -32,8 +32,10 @@ import br.com.comercio.hibernategroups.PersistirUsuario;
 import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.model.Authorities;
 import br.com.comercio.model.Endereco;
+import br.com.comercio.model.Pedido;
 import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.AuthoritiesRepository;
+import br.com.comercio.repository.PedidoRepository;
 import br.com.comercio.repository.UsuarioRepository;
 
 @Controller
@@ -44,6 +46,8 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	@Autowired
+	private PedidoRepository pedidoRepository;
 
 	@Autowired
 	private UsuarioRepositoryImpl usuarioImpl;
@@ -62,6 +66,14 @@ public class UsuarioController {
 			}
 		});
 
+	}
+
+	@GetMapping("/meus-pedidos")
+	public String pedidosUsuario(Model model) {
+		Usuario usuarioLogado = getUsuarioLogado();
+		List<Pedido> pedidos = pedidoRepository.findPedidosByUsuario(usuarioLogado.getEmail());
+		model.addAttribute("pedidos", pedidos);
+		return "usuario/pedidosUsuario";
 	}
 
 	@GetMapping("/urlmagica")

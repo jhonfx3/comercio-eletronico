@@ -3,7 +3,6 @@ package br.com.comercio.model;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,7 +30,7 @@ public class Produto {
 	private String urlImagem;
 	private String descricao;
 
-	@OneToMany(mappedBy = "produto", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OneToMany(mappedBy = "produto")
 	private List<ProdutoPedido> pedidos;
 
 	public String getNome() {

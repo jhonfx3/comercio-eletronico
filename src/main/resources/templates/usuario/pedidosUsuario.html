@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Seus Pedidos</title>
+<script type="text/javascript" th:src="@{/js/mascaras.js}"></script>
+<th:block th:include="~{base::head}">/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+	<div class="container-fluid">
+		<header>
+			<div th:replace="~{base::cabecalho}"></div>
+		</header>
+		<main>
+			<h1 class="text-info">Seus pedidos</h1>
+			<table id="tabela" class="table table-bordered">
+				<thead>
+					<tr>
+						<th scope="col">#Número do pedido</th>
+						<th scope="col">Status</th>
+						<th scope="col">Total</th>
+						<th scope="col">Valor da parcela</th>
+						<th scope="col">Quantidade de parcelas</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="pedido: ${pedidos}">
+						<td><a th:href="@{'/pedido/detalhe/'+${pedido.id}}"
+							th:text="${pedido.id}"></a></td>
+						<td th:text="${pedido.status}"></td>
+						<td th:text="${pedido.total}"></td>
+						<td th:text="${pedido.valorParcela}"></td>
+						<td th:text="${pedido.parcelas}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</main>
+		<div th:replace="~{base::rodape}"></div>
+	</div>
+</body>
+</html>

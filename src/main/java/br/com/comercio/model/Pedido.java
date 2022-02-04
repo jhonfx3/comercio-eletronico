@@ -20,7 +20,7 @@ public class Pedido {
 	private String id;
 	private BigDecimal total;
 
-	@OneToMany(mappedBy = "pedido", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@OneToMany(mappedBy = "pedido", cascade = CascadeType.MERGE)
 	private List<ProdutoPedido> produtos;
 
 	@ManyToOne
