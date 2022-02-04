@@ -9,6 +9,8 @@
 
 
 
+
+
 </head>
 <body>
 
@@ -154,11 +156,7 @@ const cardForm = mp.cardForm({
                     return response.json();
                 })
                 .then(result => {
-                  //  document.getElementById("payment-id").innerText = result.id;
-                  //  document.getElementById("payment-status").innerText = result.status;
-                  //  document.getElementById("payment-detail").innerText = result.detail;
-                  //  $('.container__payment').fadeOut(500);
-                  //  setTimeout(() => { $('.container__result').show(500).fadeIn(); }, 500);
+                 window.location.href = '/pedido/detalhe/'+result.id;
                 })
                 .catch(error => {
                     alert("Ocorreu um erro na compra\n"+JSON.stringify(error));
