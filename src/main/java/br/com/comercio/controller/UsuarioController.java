@@ -101,7 +101,13 @@ public class UsuarioController {
 
 	@PostMapping("/novo")
 	public String novo(@Validated(PersistirUsuario.class) Usuario usuario, BindingResult result,
-			RedirectAttributes attributes) {
+			RedirectAttributes attributes, String confirmarSenha) {
+		System.out.println("COnfirmar senha ->" + confirmarSenha);
+		if (!usuario.getPassword().equals("")) {
+			if (!usuario.getPassword().equals(confirmarSenha)) {
+				result.rejectValue("password", "SenhasNaobatem.usuario.senha");
+			}
+		}
 		if (result.hasErrors()) {
 			System.out.println("deu erro no usuario");
 			List<ObjectError> allErrors = result.getAllErrors();
