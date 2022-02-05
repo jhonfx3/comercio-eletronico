@@ -45,8 +45,7 @@
 						height="100px">
 					<p class="card-text"
 						th:text="'Quantidade: ' +${produtoPedido.quantidade}"></p>
-					<p class="card-text" th:if="${produtoPedido.quantidade}==1"
-						th:text="'Preço unitário R$ ' +${produtoPedido.produto.precos[0].valor}"></p>
+					<p class="card-text" th:text="'Preço unitário R$ ' +${produtoPedido.produto.precos[0].valor}"></p>
 					<p class="card-text" th:if="${pedido.parcelas} &gt; 1"
 						th:text="'Total R$( Acréscimo '+${acrescimo}+'% ) R$ ' + ${produtoPedido.total}"></p>
 					<p class="card-text" th:unless="${pedido.parcelas gt 1}"
