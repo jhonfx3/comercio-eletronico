@@ -2,6 +2,8 @@ package br.com.comercio.controller;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -148,6 +150,8 @@ public class PagamentoController {
 		pedido.setParcelas(pagamentoGerado.getInstallments());
 		pedido.setValorParcela(
 				new BigDecimal(pagamentoGerado.getTransactionAmount() / pagamentoGerado.getInstallments()));
+		pedido.setData(LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(pagamentoGerado.getDateCreated())));
+
 		Pedido pedidoSalvo = pedidoRepository.save(pedido);
 		for (ProdutoPedido produtoPedido : listaProdutosPedido) {
 			produtoPedido.setPedido(pedidoSalvo);

@@ -1,6 +1,7 @@
 package br.com.comercio.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -30,6 +31,16 @@ public class Pedido {
 	private Integer parcelas;
 	@Column(name = "valor_parcela")
 	private BigDecimal valorParcela;
+	@Column(name = "data_criacao")
+	private LocalDate data;
+
+	public LocalDate getData() {
+		return data;
+	}
+
+	public void setData(LocalDate data) {
+		this.data = data;
+	}
 
 	public BigDecimal getValorParcela() {
 		return valorParcela;
