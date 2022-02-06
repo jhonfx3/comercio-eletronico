@@ -36,6 +36,7 @@
 					<tr>
 						<th scope="col">#Número do pedido</th>
 						<th scope="col">Status</th>
+						<th scope="col">Meio de pagamento</th>
 						<th scope="col">Total</th>
 						<th scope="col">Valor da parcela</th>
 						<th scope="col">Quantidade de parcelas</th>
@@ -46,6 +47,7 @@
 						<td><a th:href="@{'/pedido/detalhe/'+${pedido.id}}"
 							th:text="${pedido.id}"></a></td>
 						<td th:text="${pedido.status}"></td>
+						<td th:text="${pedido.metodoPagamento}"></td>
 						<td th:text="${pedido.total}"></td>
 						<td th:text="${pedido.valorParcela}"></td>
 						<td th:text="${pedido.parcelas}"></td>

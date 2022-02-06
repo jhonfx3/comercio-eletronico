@@ -11,6 +11,14 @@
 
 
 
+
+
+
+
+
+
+
+
 </head>
 <body>
 
@@ -19,6 +27,24 @@
 			<div th:replace="~{base::cabecalho}"></div>
 		</header>
 		<main>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" id="cartao"
+					onChange="onClickCheckbox(this);" name="formaPagamento"
+					value="cartao" checked> <label class="form-check-label"
+					for="cartao">Cartão de crédito</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" id="pix"
+					onChange="onClickCheckbox(this);" name="formaPagamento" value="pix">
+				<label class="form-check-label" for="pix">PIX</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" id="boleto"
+					onChange="onClickCheckbox(this);" name="formaPagamento"
+					value="boleto"> <label class="form-check-label"
+					for="boleto">Boleto</label>
+			</div>
+
 			<form id="form-checkout">
 				<div class="form-group">
 					<input type="text" class="form-control" name="cardNumber"
@@ -56,16 +82,21 @@
 					id="form-checkout__submit">Pagar</button>
 
 			</form>
+
+			<div th:replace="~{fragments/pedido::formulario-pix}"></div>
+
+
 			<input type="hidden" id="mercadopagoPublicKey"
 				th:value="${mercadopagoPublicKey}" />
 			<script th:inline="javascript">
+			onClickCheckbox(document.getElementById("cartao"));	
+			document.getElementById("form-checkout-pix").addEventListener("submit", function(e) {
+			    e.preventDefault();
+			    realizaPagamento(document.getElementById('pix').value);
+			});
 		const publicKey = document.getElementById("mercadopagoPublicKey").value;
 		const mp = new MercadoPago(publicKey);
 		const totalDaCompra = /*[[${totalDaCompra}]]*/'default';
-		console.log("Total da compra ->");
-		console.log(totalDaCompra);
-		// Add step #3
-		// Step #3
 const cardForm = mp.cardForm({
 	amount: totalDaCompra,
     autoMount: true,
@@ -172,6 +203,61 @@ const cardForm = mp.cardForm({
         },
     },
 });
+		function onClickCheckbox(checkbox){
+			console.log(checkbox.value);
+			switch (checkbox.value){
+			case 'cartao':
+				document.getElementById('form-checkout').style.display = "block";
+				document.getElementById('form-checkout-pix').style.display = "none";
+				break;
+			case 'pix':
+				document.getElementById('form-checkout-pix').style.display = "block";
+				document.getElementById('form-checkout').style.display = "none";
+				console.log()	
+			break;
+			
+		}
+		}
+		
+		function realizaPagamento(tipo){
+			switch(tipo){
+			case 'cartao': 
+				break;
+			case 'pix': 
+			    const nome = document.getElementById("form-checkout-pix_nome").value;
+			    const sobrenome = document.getElementById("form-checkout-pix_sobrenome").value;
+			    const email = document.getElementById("form-checkout-pix_email").value;
+			    const tipoIdentificacao = document.getElementById("form-checkout-pix_tipoIdentificacao").value;
+			    const numeroIdentificacao = document.getElementById("form-checkout-pix_numeroIdentificacao").value;
+			    fetch("/pagamento/gerar", {
+	                method: "POST",
+	                headers: {
+	                    "Content-Type": "application/json",
+	                },
+	                body: JSON.stringify({
+	                    paymentMethodId: "pix",
+	                    description: "produto muito bom",
+	                    transactionAmount: Number(totalDaCompra),
+	                    payer: {
+	                        email: "joaquim@hotmail.com",
+	                        identification: {
+	                            type: tipoIdentificacao,
+	                            number: numeroIdentificacao,
+	                        },
+	                    },
+	                }),
+	            })
+	                .then(response => {
+	                    return response.json();
+	                })
+	                .then(result => {
+	                 window.location.href = '/pedido/detalhe/'+result.id;
+	                })
+				break;
+			case 'boleto':
+				break;
+			}
+		}
 	</script>
 		</main>
 		<div th:replace="~{base::rodape}"></div>

@@ -6,28 +6,6 @@
 <th:block th:include="~{base::head}">/>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </head>
 <body>
 	<div class="container-fluid">
@@ -45,7 +23,8 @@
 						height="100px">
 					<p class="card-text"
 						th:text="'Quantidade: ' +${produtoPedido.quantidade}"></p>
-					<p class="card-text" th:text="'Preço unitário R$ ' +${produtoPedido.produto.precos[0].valor}"></p>
+					<p class="card-text"
+						th:text="'Preço unitário R$ ' +${produtoPedido.produto.precos[0].valor}"></p>
 					<p class="card-text" th:if="${pedido.parcelas} &gt; 1"
 						th:text="'Total R$( Acréscimo '+${acrescimo}+'% ) R$ ' + ${produtoPedido.total}"></p>
 					<p class="card-text" th:unless="${pedido.parcelas gt 1}"
@@ -57,52 +36,11 @@
 				<h5 th:text="'Total do pedido R$ '+${pedido.total}"></h5>
 				<h5 th:text="'Valor da parcela R$ '+${pedido.valorParcela}"></h5>
 				<h5 th:text="'Quantidade de parcelas '+${pedido.parcelas}"></h5>
+				<h5 th:text="'Método de pagamento '+${pedido.metodoPagamento}"></h5>
 			</div>
 		</main>
 		<div th:replace="~{base::rodape}"></div>
 
 	</div>
-
-	<script>
-		function retornaTaxaDeAcrescimo(quantidadeDeParcelas) {
-			switch (quantidadeDeParcelas) {
-			case 2:
-				porcentagemDeAcrescimo = 6.76;
-				break;
-			case 3:
-				porcentagemDeAcrescimo = 8.44;
-				break;
-			case 4:
-				porcentagemDeAcrescimo = 10.23;
-				break;
-			case 5:
-				porcentagemDeAcrescimo = 11.93;
-				break;
-			case 6:
-				porcentagemDeAcrescimo = 13.58;
-				break;
-			case 7:
-				porcentagemDeAcrescimo = 15.01;
-				break;
-			case 8:
-				porcentagemDeAcrescimo = 16.90;
-				break;
-			case 9:
-				porcentagemDeAcrescimo = 18.86;
-				break;
-			case 10:
-				porcentagemDeAcrescimo = 20.07;
-				break;
-			case 11:
-				porcentagemDeAcrescimo = 21.92;
-				break;
-			case 12:
-				porcentagemDeAcrescimo = 23.75;
-				break;
-			}
-			return porcentagemDeAcrescimo;
-		}
-	</script>
-
 </body>
 </html>

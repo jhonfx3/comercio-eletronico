@@ -28,6 +28,8 @@ public class Pedido {
 	private Usuario usuario;
 	@Enumerated(EnumType.STRING)
 	private StatusPedido status;
+	@Column(name = "metodo_pagamento")
+	private String metodoPagamento;
 	private Integer parcelas;
 	@Column(name = "valor_parcela")
 	private BigDecimal valorParcela;
@@ -36,6 +38,14 @@ public class Pedido {
 
 	public LocalDate getData() {
 		return data;
+	}
+
+	public String getMetodoPagamento() {
+		return metodoPagamento;
+	}
+
+	public void setMetodoPagamento(String metodoPagamento) {
+		this.metodoPagamento = metodoPagamento;
 	}
 
 	public void setData(LocalDate data) {

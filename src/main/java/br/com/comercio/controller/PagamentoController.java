@@ -28,6 +28,7 @@ import com.mercadopago.resources.datastructures.payment.Identification;
 import com.mercadopago.resources.datastructures.payment.Item;
 import com.mercadopago.resources.datastructures.payment.Payer;
 
+import br.com.comercio.dto.PixDTO;
 import br.com.comercio.enums.StatusPedido;
 import br.com.comercio.enums.TipoPreco;
 import br.com.comercio.model.CardPaymentDTO;
@@ -80,7 +81,7 @@ public class PagamentoController {
 			produtoPedido.setProduto(carrinhoItem.getProduto());
 			produtoPedido.setQuantidade(entry.getValue());
 
-			if (cardPaymentDTO.getInstallments() > 1) {
+			if (cardPaymentDTO.getInstallments() != null && cardPaymentDTO.getInstallments() > 1) {
 				produtoPedido.setTotal(new BigDecimal(calculaValorAPrazo(
 						carrinhoItem.getTotalCarrinhoItem(entry.getValue(), TipoPreco.VISTA).floatValue(),
 						cardPaymentDTO.getInstallments())));
@@ -102,16 +103,21 @@ public class PagamentoController {
 
 		Payment payment = new Payment();
 
-		if (cardPaymentDTO.getInstallments() > 1) {
+		if (cardPaymentDTO.getInstallments() != null && cardPaymentDTO.getInstallments() > 1) {
 			payment.setTransactionAmount(
 					calculaValorAPrazo(cardPaymentDTO.getTransactionAmount(), cardPaymentDTO.getInstallments()));
 		} else {
 			payment.setTransactionAmount(cardPaymentDTO.getTransactionAmount());
 		}
 
-		payment.setToken(cardPaymentDTO.getToken()).setDescription(cardPaymentDTO.getProductDescription())
-				.setInstallments(cardPaymentDTO.getInstallments())
-				.setPaymentMethodId(cardPaymentDTO.getPaymentMethodId());
+		if (cardPaymentDTO.getToken() != null) {
+			payment.setToken(cardPaymentDTO.getToken());
+		}
+		payment.setDescription(cardPaymentDTO.getProductDescription());
+		if (cardPaymentDTO.getInstallments() != null) {
+			payment.setInstallments(cardPaymentDTO.getInstallments());
+		}
+		payment.setPaymentMethodId(cardPaymentDTO.getPaymentMethodId());
 		Address endereco = new Address();
 
 		endereco.setZipCode("06233200");
@@ -123,7 +129,6 @@ public class PagamentoController {
 		Identification identification = new Identification();
 		identification.setType(cardPaymentDTO.getPayer().getIdentification().getType())
 				.setNumber(cardPaymentDTO.getPayer().getIdentification().getNumber());
-
 		Payer payer = new Payer();
 		payer.setEmail(cardPaymentDTO.getPayer().getEmail());
 		payer.setIdentification(identification);
@@ -151,7 +156,7 @@ public class PagamentoController {
 		pedido.setValorParcela(
 				new BigDecimal(pagamentoGerado.getTransactionAmount() / pagamentoGerado.getInstallments()));
 		pedido.setData(LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(pagamentoGerado.getDateCreated())));
-
+		pedido.setMetodoPagamento(pagamentoGerado.getPaymentMethodId());
 		Pedido pedidoSalvo = pedidoRepository.save(pedido);
 		for (ProdutoPedido produtoPedido : listaProdutosPedido) {
 			produtoPedido.setPedido(pedidoSalvo);
@@ -208,6 +213,35 @@ public class PagamentoController {
 		System.out.println(setScale);
 		return new BigDecimal(valorDaCompra).setScale(2, RoundingMode.HALF_UP).floatValue();
 	}
+	/*
+	 * Função de teste que usei para processar um pagamento com pix separadamente
+	 * 
+	 * @PostMapping("/gerar/pix")
+	 * 
+	 * @ResponseBody public ResponseEntity<PixDTO> processaPix(@RequestBody PixDTO
+	 * pixDTO) throws MPException { Payment pagamento = new Payment(); String name =
+	 * SecurityContextHolder.getContext().getAuthentication().getName(); Usuario
+	 * usuario = usuarioRepository.findById(name).get();
+	 * pagamento.setTransactionAmount(carrinho.getTotalCarrinho(TipoPreco.VISTA).
+	 * floatValue()) .setPaymentMethodId("pix"); Payer pagador = new
+	 * Payer().setEmail(usuario.getEmail()).setFirstName(usuario.getNome())
+	 * .setLastName(usuario.getSobrenome()); Identification identification = new
+	 * Identification(); identification.setNumber(pixDTO.getNumeroIdentificacao());
+	 * identification.setType(pixDTO.getTipoIdentificacao());
+	 * pagador.setIdentification(identification);
+	 * 
+	 * Address endereco = new Address();
+	 * 
+	 * endereco.setZipCode("06233200");
+	 * endereco.setStreetName("Av. das Nações Unidas");
+	 * endereco.setStreetNumber(3003); endereco.setNeighborhood("Bonfim");
+	 * endereco.setCity("Osasco"); endereco.setFederalUnit("SP");
+	 * 
+	 * pagador.setAddress(endereco); pagamento.setPayer(pagador); Payment
+	 * pagamentoGerado = pagamento.save();
+	 * System.out.println(pagamentoGerado.getId()); return
+	 * ResponseEntity.status(HttpStatus.CREATED).body(pixDTO); }
+	 */
 
 	/*
 	 * Cartões de teste do mercado pago:
