@@ -18,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -102,18 +101,12 @@ public class UsuarioController {
 	@PostMapping("/novo")
 	public String novo(@Validated(PersistirUsuario.class) Usuario usuario, BindingResult result,
 			RedirectAttributes attributes, String confirmarSenha) {
-		System.out.println("COnfirmar senha ->" + confirmarSenha);
 		if (!usuario.getPassword().equals("")) {
 			if (!usuario.getPassword().equals(confirmarSenha)) {
 				result.rejectValue("password", "SenhasNaobatem.usuario.senha");
 			}
 		}
 		if (result.hasErrors()) {
-			System.out.println("deu erro no usuario");
-			List<ObjectError> allErrors = result.getAllErrors();
-			for (ObjectError objectError : allErrors) {
-				System.out.println(objectError.getDefaultMessage());
-			}
 			return "usuario/formulario";
 		}
 		Authorities userAuthority = authoritiesRepository.findById("ROLE_USER").get();

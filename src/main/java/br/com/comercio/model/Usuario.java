@@ -42,10 +42,11 @@ public class Usuario implements UserDetails {
 	@UniqueUsernameEditar(groups = EditarUsuario.class)
 	@UniqueUsernamePersistir(groups = PersistirUsuario.class)
 	private String email;
-
+	@NotEmpty(message = "Nome é obrigatório")
 	private String nome;
+	@NotEmpty(message = "Sobrenome é obrigatório")
 	private String sobrenome;
-	
+
 	@NotEmpty(message = "Senha é obrigatória")
 	private String password;
 	private Boolean enabled;

@@ -3,6 +3,7 @@ package br.com.comercio.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,6 +28,7 @@ public class Produto {
 	@ListaVazia
 	private List<Preco> precos;
 	@URL(message = "Url inválida")
+	@Column(columnDefinition = "LONGTEXT")
 	private String urlImagem;
 	private String descricao;
 

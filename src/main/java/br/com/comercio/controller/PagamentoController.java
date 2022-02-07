@@ -28,13 +28,12 @@ import com.mercadopago.resources.datastructures.payment.Identification;
 import com.mercadopago.resources.datastructures.payment.Item;
 import com.mercadopago.resources.datastructures.payment.Payer;
 
-import br.com.comercio.dto.PixDTO;
+import br.com.comercio.dto.PaymentResponseDTO;
 import br.com.comercio.enums.StatusPedido;
 import br.com.comercio.enums.TipoPreco;
 import br.com.comercio.model.CardPaymentDTO;
 import br.com.comercio.model.CarrinhoDeCompras;
 import br.com.comercio.model.CarrinhoItem;
-import br.com.comercio.model.PaymentResponseDTO;
 import br.com.comercio.model.Pedido;
 import br.com.comercio.model.Produto;
 import br.com.comercio.model.ProdutoPedido;
@@ -157,12 +156,17 @@ public class PagamentoController {
 				new BigDecimal(pagamentoGerado.getTransactionAmount() / pagamentoGerado.getInstallments()));
 		pedido.setData(LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(pagamentoGerado.getDateCreated())));
 		pedido.setMetodoPagamento(pagamentoGerado.getPaymentMethodId());
+		if (pagamentoGerado.getPaymentMethodId().equals("pix")) {
+			String qrCodeBase64 = pagamentoGerado.getPointOfInteraction().getTransactionData().getQrCodeBase64();
+			pedido.setQrCodeBase64(qrCodeBase64);
+		}
 		Pedido pedidoSalvo = pedidoRepository.save(pedido);
 		for (ProdutoPedido produtoPedido : listaProdutosPedido) {
 			produtoPedido.setPedido(pedidoSalvo);
 		}
 		pedidoSalvo.setProdutos(listaProdutosPedido);
 		pedidoRepository.save(pedidoSalvo);
+
 		// System.out.println(createdPayment.getExternalReference());
 		// MPApiResponse payment_methods = MercadoPago.SDK.Get("/v1/payment_methods");
 		return ResponseEntity.status(HttpStatus.CREATED).body(pagamentoRespostaDTO);

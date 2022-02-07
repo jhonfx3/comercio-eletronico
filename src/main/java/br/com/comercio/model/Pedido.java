@@ -35,9 +35,15 @@ public class Pedido {
 	private BigDecimal valorParcela;
 	@Column(name = "data_criacao")
 	private LocalDate data;
+	@Column(columnDefinition = "LONGTEXT")
+	private String qrCodeBase64;
 
 	public LocalDate getData() {
 		return data;
+	}
+
+	public String getQrCodeBase64() {
+		return qrCodeBase64;
 	}
 
 	public String getMetodoPagamento() {
@@ -106,6 +112,11 @@ public class Pedido {
 
 	public void setProdutos(List<ProdutoPedido> produtos) {
 		this.produtos = produtos;
+	}
+
+	public void setQrCodeBase64(String qrCodeBase64) {
+		this.qrCodeBase64 = qrCodeBase64;
+		
 	}
 
 }

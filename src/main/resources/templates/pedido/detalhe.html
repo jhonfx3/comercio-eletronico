@@ -3,7 +3,21 @@
 <head>
 <meta charset="utf-8">
 <title>Detalhe do pedido</title>
+<style>
+.qr-code {
+	max-width: 200px;
+	margin: 10px;
+}
+</style>
 <th:block th:include="~{base::head}">/>
+
+
+
+
+
+
+
+
 
 
 </head>
@@ -38,8 +52,24 @@
 				<h5 th:text="'Quantidade de parcelas '+${pedido.parcelas}"></h5>
 				<h5 th:text="'Método de pagamento '+${pedido.metodoPagamento}"></h5>
 			</div>
+			<div th:if="${pedido.metodoPagamento} == 'pix'">
+				<h5 class="text-success">QR CODE</h5>
+				<img src="" id="qr-code-image" width="250px">
+
+			</div>
 		</main>
 		<div th:replace="~{base::rodape}"></div>
+
+		<script th:inline="javascript">
+			const idPedido = /*[[${pedido.id}]]*/'default';
+			const metodoPagamento = /*[[${pedido.metodoPagamento}]]*/'default';
+			console.log(metodoPagamento);
+			if (metodoPagamento == 'pix') {
+				const qrCode = /*[[${pedido.qrCodeBase64}]]*/'default';
+				document.getElementById("qr-code-image").src = `data:image/jpeg;base64,${qrCode}`;
+				console.log(qrCode);
+			}
+		</script>
 
 	</div>
 </body>

@@ -1,4 +1,4 @@
-package br.com.comercio.model;
+package br.com.comercio.dto;
 
 import javax.validation.constraints.NotNull;
 

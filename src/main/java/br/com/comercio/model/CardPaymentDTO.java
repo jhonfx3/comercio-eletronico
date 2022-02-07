@@ -2,6 +2,8 @@ package br.com.comercio.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import br.com.comercio.dto.PayerDTO;
+
 import javax.validation.constraints.NotNull;
 
 public class CardPaymentDTO {
