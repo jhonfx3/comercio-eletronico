@@ -37,6 +37,8 @@ public class Pedido {
 	private LocalDate data;
 	@Column(columnDefinition = "LONGTEXT")
 	private String qrCodeBase64;
+	@Column(columnDefinition = "LONGTEXT", name = "link_boleto")
+	private String linkBoleto;
 
 	public LocalDate getData() {
 		return data;
@@ -44,6 +46,10 @@ public class Pedido {
 
 	public String getQrCodeBase64() {
 		return qrCodeBase64;
+	}
+
+	public String getLinkBoleto() {
+		return linkBoleto;
 	}
 
 	public String getMetodoPagamento() {
@@ -116,7 +122,13 @@ public class Pedido {
 
 	public void setQrCodeBase64(String qrCodeBase64) {
 		this.qrCodeBase64 = qrCodeBase64;
-		
+
+	}
+
+	public void setLinkBoleto(String linkBoleto) {
+		this.linkBoleto = linkBoleto;
+		// TODO Auto-generated method stub
+
 	}
 
 }

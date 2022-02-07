@@ -19,6 +19,11 @@
 
 
 
+
+
+
+
+
 </head>
 <body>
 
@@ -85,6 +90,9 @@
 
 			<div th:replace="~{fragments/pedido::formulario-pix}"></div>
 
+			<button class="btn btn-primary"
+				onclick="realizaPagamento('bolbradesco')"
+				id="button-checkout-boleto">Pagar com boleto</button>
 
 			<input type="hidden" id="mercadopagoPublicKey"
 				th:value="${mercadopagoPublicKey}" />
@@ -209,21 +217,24 @@ const cardForm = mp.cardForm({
 			case 'cartao':
 				document.getElementById('form-checkout').style.display = "block";
 				document.getElementById('form-checkout-pix').style.display = "none";
+				document.getElementById('button-checkout-boleto').style.display = "none";
 				break;
 			case 'pix':
 				document.getElementById('form-checkout-pix').style.display = "block";
 				document.getElementById('form-checkout').style.display = "none";
+				document.getElementById('button-checkout-boleto').style.display = "none";
 				console.log()	
 			break;
+			case 'boleto':
+				document.getElementById('button-checkout-boleto').style.display = "block";
+				document.getElementById('form-checkout').style.display = "none";
+				document.getElementById('form-checkout-pix').style.display = "none";
+				break;
 			
 		}
 		}
 		
 		function realizaPagamento(tipo){
-			switch(tipo){
-			case 'cartao': 
-				break;
-			case 'pix': 
 			    const nome = document.getElementById("form-checkout-pix_nome").value;
 			    const sobrenome = document.getElementById("form-checkout-pix_sobrenome").value;
 			    const email = document.getElementById("form-checkout-pix_email").value;
@@ -235,7 +246,7 @@ const cardForm = mp.cardForm({
 	                    "Content-Type": "application/json",
 	                },
 	                body: JSON.stringify({
-	                    paymentMethodId: "pix",
+	                    paymentMethodId: tipo,
 	                    description: "produto muito bom",
 	                    transactionAmount: Number(totalDaCompra),
 	                    payer: {
@@ -253,10 +264,6 @@ const cardForm = mp.cardForm({
 	                .then(result => {
 	                 window.location.href = '/pedido/detalhe/'+result.id;
 	                })
-				break;
-			case 'boleto':
-				break;
-			}
 		}
 	</script>
 		</main>

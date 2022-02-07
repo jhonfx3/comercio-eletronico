@@ -57,14 +57,6 @@ public class PagamentoController {
 	@ResponseBody
 	public ResponseEntity<PaymentResponseDTO> formularioPagamento(@RequestBody CardPaymentDTO cardPaymentDTO,
 			HttpServletRequest request) throws MPException {
-		/*
-		 * System.out.println("chamando...");
-		 * System.out.println(cardPaymentDTO.getToken());
-		 * System.out.println(cardPaymentDTO.getPaymentMethodId());
-		 * System.out.println(cardPaymentDTO.getTransactionAmount());
-		 * System.out.println(cardPaymentDTO.getPayer().getEmail());
-		 * System.out.println(cardPaymentDTO.getInstallments());
-		 */
 		ArrayList<Item> itens = new ArrayList<Item>();
 		List<Produto> produtos = new ArrayList<>();
 		Map<CarrinhoItem, Integer> itensMap = carrinho.getItensMap();
@@ -126,14 +118,14 @@ public class PagamentoController {
 		endereco.setCity("Osasco");
 		endereco.setFederalUnit("SP");
 		Identification identification = new Identification();
-		identification.setType(cardPaymentDTO.getPayer().getIdentification().getType())
-				.setNumber(cardPaymentDTO.getPayer().getIdentification().getNumber());
+		String cpfLimpo = usuario.getCpf().replace(".", "").replace("-", "");
+		identification.setType("CPF").setNumber(cpfLimpo);
 		Payer payer = new Payer();
-		payer.setEmail(cardPaymentDTO.getPayer().getEmail());
+		payer.setEmail(usuario.getEmail());
 		payer.setIdentification(identification);
 		payer.setAddress(endereco);
-		payer.setFirstName("joaquim");
-		payer.setLastName("silva");
+		payer.setFirstName(usuario.getNome());
+		payer.setLastName(usuario.getSobrenome());
 		payment.setPayer(payer);
 
 		AdditionalInfo infoAdicionais = new AdditionalInfo();
@@ -156,9 +148,16 @@ public class PagamentoController {
 				new BigDecimal(pagamentoGerado.getTransactionAmount() / pagamentoGerado.getInstallments()));
 		pedido.setData(LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(pagamentoGerado.getDateCreated())));
 		pedido.setMetodoPagamento(pagamentoGerado.getPaymentMethodId());
+		// Se o pagamento gerado foi com pix
 		if (pagamentoGerado.getPaymentMethodId().equals("pix")) {
 			String qrCodeBase64 = pagamentoGerado.getPointOfInteraction().getTransactionData().getQrCodeBase64();
+			// Seto o link do QR code no atributo
 			pedido.setQrCodeBase64(qrCodeBase64);
+		}
+		// Se o pagamento gerado foi com boleto
+		if (pagamentoGerado.getPaymentMethodId().equals("bolbradesco")) {
+			// Seto o link do boleto no atributo
+			pedido.setLinkBoleto(pagamentoGerado.getTransactionDetails().getExternalResourceUrl());
 		}
 		Pedido pedidoSalvo = pedidoRepository.save(pedido);
 		for (ProdutoPedido produtoPedido : listaProdutosPedido) {

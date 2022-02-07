@@ -20,6 +20,7 @@
 
 
 
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -55,7 +56,9 @@
 			<div th:if="${pedido.metodoPagamento} == 'pix'">
 				<h5 class="text-success">QR CODE</h5>
 				<img src="" id="qr-code-image" width="250px">
-
+			</div>
+			<div th:if="${pedido.metodoPagamento} == 'bolbradesco'">
+				<a target="_blank" th:href="${pedido.linkBoleto}">Ver boleto</a>
 			</div>
 		</main>
 		<div th:replace="~{base::rodape}"></div>
