@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -22,4 +25,16 @@ public class DataConfigurationPostgres {
 		config.setJdbcUrl(dbUrl);
 		return new HikariDataSource(config);
 	}
+	
+	@Bean
+	public JpaVendorAdapter jpaVendorAdapter() {
+		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+		adapter.setDatabase(Database.POSTGRESQL);
+		adapter.setShowSql(false);
+		adapter.setGenerateDdl(true);
+		adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL95Dialect");
+		adapter.setPrepareConnection(true);
+		return adapter;
+	}
+	
 }
