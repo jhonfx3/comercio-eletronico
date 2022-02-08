@@ -1,4 +1,4 @@
-package br.com.comercio.controller;
+package br.com.comercio.controller.rest;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

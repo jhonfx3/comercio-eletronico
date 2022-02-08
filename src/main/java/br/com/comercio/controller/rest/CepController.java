@@ -1,4 +1,4 @@
-package br.com.comercio.controller;
+package br.com.comercio.controller.rest;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

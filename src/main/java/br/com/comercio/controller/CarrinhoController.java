@@ -74,12 +74,15 @@ public class CarrinhoController {
 		model.addAttribute("tipos", TipoPreco.values());
 		model.addAttribute("profileAtivo", profileAtivo);
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		Usuario usuarioLogado = usuarioRepository.findById(username).get();
-		List<Authorities> roles = usuarioLogado.getRoles();
-		for (Authorities authorities : roles) {
-			if (authorities.getAuthority().equals("ROLE_ADM")) {
-				model.addAttribute("permissaoComprar", true);
+		try {
+			Usuario usuarioLogado = usuarioRepository.findById(username).get();
+			List<Authorities> roles = usuarioLogado.getRoles();
+			for (Authorities authorities : roles) {
+				if (authorities.getAuthority().equals("ROLE_ADM")) {
+					model.addAttribute("permissaoComprar", true);
+				}
 			}
+		} catch (Exception e) {
 		}
 		return "carrinho/itens";
 	}

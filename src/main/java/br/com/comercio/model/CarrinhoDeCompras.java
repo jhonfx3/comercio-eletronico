@@ -23,6 +23,10 @@ public class CarrinhoDeCompras implements Serializable {
 		itens.put(item, getQuantidade(item) + 1);
 	}
 
+	public void adiciona(CarrinhoItem item, Integer quantidade) {
+		itens.put(item, quantidade);
+	}
+
 	public void remove(Produto produto) {
 		itens.remove(new CarrinhoItem(produto));
 	}

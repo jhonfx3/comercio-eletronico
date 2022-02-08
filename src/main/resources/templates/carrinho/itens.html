@@ -37,6 +37,32 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </head>
 
 <body>
@@ -67,7 +93,9 @@
 									</a></td>
 									<td th:text="${item.key.produto.precos[0].valor}"></td>
 									<td th:text="${item.key.produto.precos[1].valor}"></td>
-									<td th:text="${item.value}"></td>
+									<td><input th:id="${item.key.produto.id}" type="number"
+										min="1" oninput="aumentaQuantidadeNoCarrinho(this);"
+										th:value="${item.value}"></td>
 									<td><div>
 											<a th:href="@{'/carrinho/remover/' + ${item.key.produto.id}}"><i
 												class="bi bi-trash"></i>Remover</a>
@@ -81,8 +109,9 @@
 			<div class="col-6">
 				<div class="card">
 					<div class="card-body">
-						Total VISTA R$: <label class="text-green" th:text="${totalVista}"></label>
-						Total PRAZO R$: <label th:text="${totalPrazo}"></label>
+						Total VISTA R$: <label class="text-green" id="totalVista"
+							th:text="${totalVista}"></label> Total PRAZO R$: <label
+							id="totalPrazo" th:text="${totalPrazo}"></label>
 						<div>
 							<form th:action="@{/carrinho/formulario}" method="post">
 								<div th:each="tipo: ${tipos}"
@@ -119,6 +148,28 @@
 		<script>
 			function informarSobreACompra() {
 				alert('Integrado com Mercado Pago, mas por razões legais e de testes não será dado continuidade a compra')
+			}
+			function aumentaQuantidadeNoCarrinho(e) {
+				var json = {"produtoId":e.id,"quantidade":e.value}
+				fetch("/atualiza/carrinho", {
+	                method: "POST",
+	                headers: {
+	                    "Content-Type": "application/json",
+	                },
+	                body: JSON.stringify(json),
+	            })
+	                .then(response => {
+	                    return response.json();
+	                })
+	                .then(resposta => {
+						console.log(resposta);
+						var json = JSON.parse(resposta);
+						console.log(json.totalPrazo);
+						document.getElementById("totalVista").textContent = json.totalVista;
+						document.getElementById("totalPrazo").textContent = json.totalPrazo;
+	                })
+				
+				
 			}
 		</script>
 	</main>
