@@ -25,16 +25,13 @@ public class DataConfigurationPostgres {
 		config.setJdbcUrl(dbUrl);
 		return new HikariDataSource(config);
 	}
-	
-	@Bean
-	public JpaVendorAdapter jpaVendorAdapter() {
-		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-		adapter.setDatabase(Database.POSTGRESQL);
-		adapter.setShowSql(false);
-		adapter.setGenerateDdl(true);
-		adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL95Dialect");
-		adapter.setPrepareConnection(true);
-		return adapter;
-	}
-	
+	/*
+	 * @Bean public JpaVendorAdapter jpaVendorAdapter() { HibernateJpaVendorAdapter
+	 * adapter = new HibernateJpaVendorAdapter();
+	 * adapter.setDatabase(Database.POSTGRESQL); adapter.setShowSql(false);
+	 * adapter.setGenerateDdl(true);
+	 * adapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL95Dialect");
+	 * adapter.setPrepareConnection(true); return adapter; }
+	 */
+
 }
