@@ -1,8 +1,11 @@
 package br.com.comercio.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.WebApplicationContext;
 
 import br.com.comercio.enums.TipoPreco;
+import br.com.comercio.model.Authorities;
 import br.com.comercio.model.CarrinhoDeCompras;
 import br.com.comercio.model.CarrinhoItem;
 import br.com.comercio.model.Produto;
+import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.ProdutoRepository;
+import br.com.comercio.repository.UsuarioRepository;
 
 @Controller
 @RequestMapping(value = "carrinho")
@@ -24,6 +30,8 @@ public class CarrinhoController {
 
 	@Autowired
 	private ProdutoRepository ProdutoRepository;
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
 	@Value("${spring.profiles.active}")
 	private String profileAtivo;
@@ -65,6 +73,14 @@ public class CarrinhoController {
 		model.addAttribute("totalPrazo", carrinho.getTotalCarrinho(TipoPreco.PRAZO));
 		model.addAttribute("tipos", TipoPreco.values());
 		model.addAttribute("profileAtivo", profileAtivo);
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		Usuario usuarioLogado = usuarioRepository.findById(username).get();
+		List<Authorities> roles = usuarioLogado.getRoles();
+		for (Authorities authorities : roles) {
+			if (authorities.getAuthority().equals("ROLE_ADM")) {
+				model.addAttribute("permissaoComprar", true);
+			}
+		}
 		return "carrinho/itens";
 	}
 

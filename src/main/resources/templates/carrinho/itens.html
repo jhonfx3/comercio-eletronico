@@ -23,6 +23,20 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </head>
 
 <body>
@@ -69,7 +83,7 @@
 					<div class="card-body">
 						Total VISTA R$: <label class="text-green" th:text="${totalVista}"></label>
 						Total PRAZO R$: <label th:text="${totalPrazo}"></label>
-						<div th:if="${profileAtivo} == 'dev' ">
+						<div>
 							<form th:action="@{/carrinho/formulario}" method="post">
 								<div th:each="tipo: ${tipos}"
 									class="form-check form-check-inline">
@@ -78,23 +92,17 @@
 										for="formaPagamento" class="form-check-label"
 										th:text="${tipo}"></label>
 								</div>
-								<button id="btnCadastrar" class="btn btn-primary" type="submit">Finalizar
-									compra</button>
-								<a class="btn btn-primary" th:href="@{/carrinho/limpar}"
+
+
+								<button th:if="${permissaoComprar} == true" id="btnCadastrar"
+									class="btn btn-primary" type="submit">Finalizar compra</button>
+
+								<a class="btn btn-primary"
+									th:unless="${permissaoComprar} == true"
+									onclick="informarSobreACompra()" id="btnCadastrar" href="#">Finalizar
+									compra</a> <a class="btn btn-primary" th:href="@{/carrinho/limpar}"
 									type="submit">Limpar carrinho</a>
 							</form>
-						</div>
-						<div th:unless="${profileAtivo} == 'dev' ">
-							<div th:each="tipo: ${tipos}"
-								class="form-check form-check-inline">
-								<input class="form-check-input" type="radio"
-									th:name="formaPagamento" th:value="${tipo}" checked> <label
-									for="formaPagamento" class="form-check-label" th:text="${tipo}"></label>
-							</div>
-							<a href="#"><button onclick="informarSobreACompra()"
-									id="btnCadastrar" class="btn btn-primary" type="submit">Finalizar
-									compra</button></a> <a class="btn btn-primary" th:href="@{/carrinho/limpar}"
-								type="submit">Limpar carrinho</a>
 						</div>
 					</div>
 				</div>
