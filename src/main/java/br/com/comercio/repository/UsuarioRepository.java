@@ -15,6 +15,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 
 	Usuario findByEmail(String email);
 
+	@Query("SELECT u from Usuario u WHERE u.email = :email AND u.password = :password")
+	Usuario findByEmailESenha(String email, String password);
+
 	@Modifying
 	@Query("UPDATE Usuario u set u.email = :emailNovo WHERE u.email = :emailAtual")
 	void atualizaEmail(String emailNovo, String emailAtual);
