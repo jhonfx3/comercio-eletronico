@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -157,6 +159,33 @@ public class UsuarioController {
 		return "redirect:/usuario/formulario/editar";
 	}
 
+	@GetMapping("/mudar-senha")
+	public String formularioMudarSenha(Usuario usuario, String novaSenha) {
+		System.out.println(usuario.getPassword());
+		return "usuario/formularioMudarSenha";
+	}
+	@PostMapping("/nova-senha")
+	public String novaSenha(@Valid Usuario usuario, BindingResult result, Model model, String novaSenha) {
+		System.out.println(usuario.getPassword()+" nova senha"+novaSenha);
+		boolean matches = new BCryptPasswordEncoder().matches(usuario.getPassword(), getUsuarioLogado().getPassword());
+		if(novaSenha.isEmpty()) {
+			result.rejectValue("password", "NovaSenhaVazia.usuario.senha");
+		}
+		if(result.hasFieldErrors("password")) {
+			model.addAttribute("usuario", usuario);
+			return "usuario/formularioMudarSenha";
+		}
+		if(!matches) {
+			result.rejectValue("password", "SenhasNaobatemBanco.usuario.senha");
+			model.addAttribute("usuario", usuario);
+			return "usuario/formularioMudarSenha";
+		}
+		usuarioRepository.atualizaSenha(getUsuarioLogado().getEmail(), new BCryptPasswordEncoder().encode(novaSenha));
+		Usuario usuario2 = usuarioRepository.findById(getUsuarioLogado().getEmail()).get();
+		atualizaUsuarioLogado(usuario2);
+		return "redirect:/usuario/formulario/editar";
+	}
+	
 	@GetMapping("/formulario")
 	public String formulario(Usuario usuario) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

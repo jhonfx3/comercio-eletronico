@@ -23,6 +23,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 	void atualizaEmail(String emailNovo, String emailAtual);
 
 	@Modifying
+	@Query("UPDATE Usuario u set u.password = :password WHERE u.email = :email")
+	void atualizaSenha(String email, String password);
+
+	@Modifying
 	@Query("DELETE from Usuario u WHERE u.email = :email")
 	void deletaUsuario(String email);
 }
