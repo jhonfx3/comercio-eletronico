@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<th:block th:include="~{base::head}">/>
+
+
+</head>
+
+
+<body>
+	<div class="container-fluid">
+		<header>
+			<div th:replace="~{base::cabecalho}"></div>
+		</header>
+		<main>
+			<div class="alert alert-success" role="alert">
+				<h1 class="alert-heading" th:text="${mensagem}"></h1>
+			</div>
+			<a th:href="@{/}" class="btn btn-primary btn-lg"><i
+				class="bi bi-house"></i>Home</a> <a class="btn btn-primary btn-lg"
+				th:href="@{/login}"><i class="bi bi-person-circle"></i> Login</a>
+
+		</main>
+		<div th:replace="~{base::rodape}"></div>
+	</div>
+</body>
+</html>

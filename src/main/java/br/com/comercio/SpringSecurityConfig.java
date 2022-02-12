@@ -26,16 +26,18 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/usuario/urlmagica").permitAll().antMatchers("/usuario/formulario")
-				.permitAll().antMatchers("/usuario/novo").permitAll().antMatchers("/notificacao/**").permitAll()
-				.antMatchers("/").permitAll().antMatchers("/produto/detalhe/**").permitAll().antMatchers("/js/**")
-				.permitAll().antMatchers("/carrinho").permitAll().antMatchers("/desenvolvedor").permitAll().antMatchers("/login?invalidsession=true").permitAll() .anyRequest()
-				.authenticated().and()
+		http.sessionManagement(session -> session.invalidSessionUrl("/sessaotimeout?mensagem=expirado")
+				.maximumSessions(1).expiredUrl("/sessaotimeout?mensagem=maximoSessoes")).authorizeRequests()
+				.antMatchers("/usuario/urlmagica").permitAll().antMatchers("/usuario/formulario").permitAll()
+				.antMatchers("/usuario/novo").permitAll().antMatchers("/notificacao/**").permitAll().antMatchers("/")
+				.permitAll().antMatchers("/produto/detalhe/**").permitAll().antMatchers("/js/**").permitAll()
+				.antMatchers("/carrinho").permitAll().antMatchers("/desenvolvedor").permitAll()
+				.antMatchers("/sessaotimeout").permitAll().anyRequest().authenticated().and()
 				.formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/", true).permitAll()
 						.failureUrl("/login?erro=true"))
-				.logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/")).csrf().disable();
-		http.sessionManagement().maximumSessions(1).expiredUrl("/login?invalidsession=true");
-		http.sessionManagement().invalidSessionUrl("/login?invalid-session=true");
+				.logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("JSESSIONID")).csrf()
+				.disable();
+		// http.sessionManagement().maximumSessions(1).expiredUrl("/login?invalidsession=true");
 
 	}
 
