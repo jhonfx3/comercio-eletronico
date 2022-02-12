@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <title>Formulário de usuário</title>
 <script type="text/javascript" th:src="@{/js/mascaras.js}"></script>
+<style>
+.error {
+	color: #dc3545;
+	font-size: 80%;
+}
+</style>
 <th:block th:include="~{base::head}">/>
-
-
-
-
-
-
 
 
 </head>
@@ -33,6 +33,9 @@
 						<div class="form-group">
 							<label for="username">Nova senha</label> <input type="password"
 								class="form-control" placeholder="Nova senha" name="novaSenha">
+							<div
+								th:if="${#fields.hasErrors('password')} AND ${usuario.password} != ''"
+								th:errorclass="error" th:errors="*{password}"></div>
 						</div>
 						<button type="submit" class="btn btn-primary">Editar</button>
 					</form>

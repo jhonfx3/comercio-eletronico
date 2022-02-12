@@ -3,6 +3,7 @@ package br.com.comercio.model;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ import javax.validation.constraints.Past;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
@@ -48,6 +50,7 @@ public class Usuario implements UserDetails {
 	private String sobrenome;
 
 	@NotEmpty(message = "Senha é obrigatória")
+	@Length(min = 4, max = 10)
 	private String password;
 	private Boolean enabled;
 
@@ -99,6 +102,23 @@ public class Usuario implements UserDetails {
 
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(email);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		return Objects.equals(email, other.email);
 	}
 
 	public String getRg() {
