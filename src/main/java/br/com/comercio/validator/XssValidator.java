@@ -13,6 +13,8 @@ public class XssValidator implements ConstraintValidator<AntiXss, Object> {
 
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
+		if (value == null)
+			return true;
 		String valor = (String) value;
 		if (valor.isEmpty())
 			return true;
