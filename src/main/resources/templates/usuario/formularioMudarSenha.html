@@ -36,6 +36,9 @@
 							<div
 								th:if="${#fields.hasErrors('password')} AND ${usuario.password} != ''"
 								th:errorclass="error" th:errors="*{password}"></div>
+								<div th:each="erro: ${errors}">
+									<span class="error" th:text="${erro.getDefaultMessage()}"></span>
+								</div>
 						</div>
 						<button type="submit" class="btn btn-primary">Editar</button>
 					</form>

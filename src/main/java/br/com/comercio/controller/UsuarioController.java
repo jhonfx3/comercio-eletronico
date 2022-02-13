@@ -19,9 +19,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -164,20 +166,33 @@ public class UsuarioController {
 		System.out.println(usuario.getPassword());
 		return "usuario/formularioMudarSenha";
 	}
+
 	@PostMapping("/nova-senha")
 	public String novaSenha(@Valid Usuario usuario, BindingResult result, Model model, String novaSenha) {
-		System.out.println(usuario.getPassword()+" nova senha"+novaSenha);
+	//	System.out.println(usuario.getPassword() + " nova senha" + novaSenha);
+		
 		boolean matches = new BCryptPasswordEncoder().matches(usuario.getPassword(), getUsuarioLogado().getPassword());
-		if(novaSenha.isEmpty()) {
+		
+		if (novaSenha.isEmpty()) {
 			result.rejectValue("password", "NovaSenhaVazia.usuario.senha");
 		}
-		if(result.hasFieldErrors("password")) {
+		if (!matches) {
+			result.rejectValue("password", "SenhasNaobatemBanco.usuario.senha");
 			model.addAttribute("usuario", usuario);
 			return "usuario/formularioMudarSenha";
 		}
-		if(!matches) {
-			result.rejectValue("password", "SenhasNaobatemBanco.usuario.senha");
+		if (result.hasFieldErrors("password")) {
 			model.addAttribute("usuario", usuario);
+			return "usuario/formularioMudarSenha";
+		}
+		usuario.setPassword(novaSenha);
+		LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+		validator.afterPropertiesSet();
+		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(usuario, "Usuario");
+		validator.validate(usuario, bindingResult);
+		result = bindingResult;
+		if (bindingResult.hasFieldErrors("password")) {
+			model.addAttribute("errors", result.getFieldErrors("password")); 
 			return "usuario/formularioMudarSenha";
 		}
 		usuarioRepository.atualizaSenha(getUsuarioLogado().getEmail(), new BCryptPasswordEncoder().encode(novaSenha));
@@ -185,7 +200,7 @@ public class UsuarioController {
 		atualizaUsuarioLogado(usuario2);
 		return "redirect:/usuario/formulario/editar";
 	}
-	
+
 	@GetMapping("/formulario")
 	public String formulario(Usuario usuario) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
