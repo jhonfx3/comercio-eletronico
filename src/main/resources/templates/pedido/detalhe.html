@@ -21,6 +21,7 @@
 
 
 
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -53,11 +54,13 @@
 				<h5 th:text="'Quantidade de parcelas '+${pedido.parcelas}"></h5>
 				<h5 th:text="'Método de pagamento '+${pedido.metodoPagamento}"></h5>
 			</div>
-			<div th:if="${pedido.metodoPagamento} == 'pix'">
+			<div sec:authorize="hasRole('ROLE_ADM')"
+				th:if="${pedido.metodoPagamento} == 'pix'">
 				<h5 class="text-success">QR CODE</h5>
 				<img src="" id="qr-code-image" width="250px">
 			</div>
-			<div th:if="${pedido.metodoPagamento} == 'bolbradesco'">
+			<div sec:authorize="hasRole('ROLE_ADM')"
+				th:if="${pedido.metodoPagamento} == 'bolbradesco'">
 				<a target="_blank" th:href="${pedido.linkBoleto}">Ver boleto</a>
 			</div>
 		</main>

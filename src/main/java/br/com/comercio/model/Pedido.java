@@ -37,7 +37,7 @@ public class Pedido {
 	private LocalDate data;
 	@Column(columnDefinition = "LONGTEXT")
 	private String qrCodeBase64;
-	@Column(columnDefinition = "LONGTEXT", name = "link_boleto")
+	@Column(columnDefinition = "VARCHAR(2048)", name = "link_boleto")
 	private String linkBoleto;
 
 	public LocalDate getData() {

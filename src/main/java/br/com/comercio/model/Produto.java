@@ -28,7 +28,7 @@ public class Produto {
 	@ListaVazia
 	private List<Preco> precos;
 	@URL(message = "Url inválida")
-	@Column(columnDefinition = "LONGTEXT")
+	@Column(columnDefinition = "VARCHAR(2048)")
 	private String urlImagem;
 	private String descricao;
 
