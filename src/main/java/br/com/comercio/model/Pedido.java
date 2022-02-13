@@ -35,7 +35,7 @@ public class Pedido {
 	private BigDecimal valorParcela;
 	@Column(name = "data_criacao")
 	private LocalDate data;
-	@Column(columnDefinition = "LONGTEXT")
+	@Column(columnDefinition = "VARCHAR(8000)")
 	private String qrCodeBase64;
 	@Column(columnDefinition = "VARCHAR(2048)", name = "link_boleto")
 	private String linkBoleto;

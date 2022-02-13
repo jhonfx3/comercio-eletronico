@@ -8,14 +8,14 @@
 	</div>
 	<div class="form-group">
 		<label for="urlImagem">Url da imagem</label> <input type="text"
-			th:errorClass="is-invalid" th:field="*{urlImagem}"
+			maxlength="2048" th:errorClass="is-invalid" th:field="*{urlImagem}"
 			placeholder="Url da imagem" class="form-control">
 		<div class="invalid-feedback" th:errors="*{urlImagem}"></div>
 
 	</div>
 	<div class="form-group">
 		<label for="descricao">Descrição</label>
-		<textarea rows="" cols="" th:field="*{descricao}" class="form-control"
+		<textarea rows="" cols="" maxlength="255" th:field="*{descricao}" class="form-control"
 			placeholder="Descrição do produto"></textarea>
 	</div>
 	<div th:each="tipo,status: ${tipos}" class="form-group">
