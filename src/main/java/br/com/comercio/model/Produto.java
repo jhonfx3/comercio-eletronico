@@ -15,6 +15,7 @@ import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.URL;
 
 import br.com.comercio.enums.TipoPreco;
+import br.com.comercio.interfaces.AntiXss;
 import br.com.comercio.interfaces.ListaVazia;
 
 @Entity
@@ -23,6 +24,7 @@ public class Produto {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@NotEmpty(message = "Nome não pode ser vazio")
+	@AntiXss
 	private String nome;
 	@ElementCollection
 	@ListaVazia
@@ -30,6 +32,7 @@ public class Produto {
 	@URL(message = "Url inválida")
 	@Column(columnDefinition = "VARCHAR(2048)")
 	private String urlImagem;
+	@AntiXss
 	private String descricao;
 
 	@OneToMany(mappedBy = "produto")
