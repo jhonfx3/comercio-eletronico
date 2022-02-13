@@ -28,6 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import br.com.comercio.hibernategroups.EditarUsuario;
 import br.com.comercio.hibernategroups.PersistirUsuario;
 import br.com.comercio.impl.UsuarioRepositoryImpl;
+import br.com.comercio.interfaces.AntiXss;
 import br.com.comercio.interfaces.DataFormatValidacao;
 import br.com.comercio.interfaces.UniqueColumn;
 import br.com.comercio.interfaces.UniqueColumnEditar;
@@ -45,8 +46,10 @@ public class Usuario implements UserDetails {
 	@UniqueUsernamePersistir(groups = PersistirUsuario.class)
 	private String email;
 	@NotEmpty(message = "Nome é obrigatório")
+	@AntiXss
 	private String nome;
 	@NotEmpty(message = "Sobrenome é obrigatório")
+	@AntiXss
 	private String sobrenome;
 
 	@NotEmpty(message = "Senha é obrigatória")
