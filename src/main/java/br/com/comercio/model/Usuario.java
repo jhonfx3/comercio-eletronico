@@ -30,6 +30,7 @@ import br.com.comercio.hibernategroups.PersistirUsuario;
 import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.interfaces.AntiXss;
 import br.com.comercio.interfaces.DataFormatValidacao;
+import br.com.comercio.interfaces.SenhaFraca;
 import br.com.comercio.interfaces.UniqueColumn;
 import br.com.comercio.interfaces.UniqueColumnEditar;
 import br.com.comercio.interfaces.UniqueUsernameEditar;
@@ -54,6 +55,7 @@ public class Usuario implements UserDetails {
 
 	@NotEmpty(message = "Senha é obrigatória")
 	@Length(min = 4, max = 10)
+	@SenhaFraca
 	private String password;
 	private Boolean enabled;
 

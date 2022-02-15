@@ -23,7 +23,6 @@ public class DataFormatValidator implements ConstraintValidator<DataFormatValida
 				// Deixo o NotNull encarregado de mostrar a mensagem de erro
 			}
 			LocalDate dataa = (LocalDate) value;
-			System.out.println(dataa.toString());
 		} catch (Exception e) {
 			return false;
 		}
@@ -37,7 +36,7 @@ public class DataFormatValidator implements ConstraintValidator<DataFormatValida
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 			data = data.replaceAll("-", "/");
-			//System.out.println("data->" + data);
+			// System.out.println("data->" + data);
 
 			try {
 				// O localDate já verifica o dia e mes
@@ -46,7 +45,7 @@ public class DataFormatValidator implements ConstraintValidator<DataFormatValida
 				return false;
 			}
 
-			//System.out.println("data->" + data);
+			// System.out.println("data->" + data);
 
 			// Se nÃ£o tiver quantidade de caracteres suficientes
 			// EntÃ£o Ã© data invÃ¡lida
@@ -56,16 +55,16 @@ public class DataFormatValidator implements ConstraintValidator<DataFormatValida
 			String dia, mes;
 			dia = data.substring(0, data.indexOf("/"));
 			mes = data.substring(data.indexOf("/") + 1, data.indexOf("/") + 3);
-			//System.out.println("Dia: " + dia + " MÃªs: " + mes);
+			// System.out.println("Dia: " + dia + " MÃªs: " + mes);
 			boolean invalido = true;
 			// Vou comecar a verificar os dias
 			if (dia.equals("00") || mes.equals("00")) {
-				//System.out.println("00 ou 00 por isso recebeu true");
+				// System.out.println("00 ou 00 por isso recebeu true");
 				invalido = false;
 			}
 
 			if (Integer.valueOf(dia) > 31 || Integer.valueOf(mes) > 12) {
-				//System.out.println("> 31 ou > 12 por isso recebeu true");
+				// System.out.println("> 31 ou > 12 por isso recebeu true");
 				invalido = false;
 			}
 			return invalido;

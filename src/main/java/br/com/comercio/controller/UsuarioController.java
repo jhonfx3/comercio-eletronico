@@ -169,10 +169,10 @@ public class UsuarioController {
 
 	@PostMapping("/nova-senha")
 	public String novaSenha(@Valid Usuario usuario, BindingResult result, Model model, String novaSenha) {
-	//	System.out.println(usuario.getPassword() + " nova senha" + novaSenha);
-		
+		// System.out.println(usuario.getPassword() + " nova senha" + novaSenha);
+
 		boolean matches = new BCryptPasswordEncoder().matches(usuario.getPassword(), getUsuarioLogado().getPassword());
-		
+
 		if (novaSenha.isEmpty()) {
 			result.rejectValue("password", "NovaSenhaVazia.usuario.senha");
 		}
@@ -192,7 +192,7 @@ public class UsuarioController {
 		validator.validate(usuario, bindingResult);
 		result = bindingResult;
 		if (bindingResult.hasFieldErrors("password")) {
-			model.addAttribute("errors", result.getFieldErrors("password")); 
+			model.addAttribute("errors", result.getFieldErrors("password"));
 			return "usuario/formularioMudarSenha";
 		}
 		usuarioRepository.atualizaSenha(getUsuarioLogado().getEmail(), new BCryptPasswordEncoder().encode(novaSenha));
@@ -216,8 +216,6 @@ public class UsuarioController {
 
 	@GetMapping("/formulario/editar")
 	public String formularioEditar(Usuario usuario, Model model, Endereco endereco) {
-		Usuario usuarioLogado = getUsuarioLogado();
-		System.out.println("id  " + usuarioLogado.getUsername());
 		model.addAttribute("usuario", getUsuarioLogado());
 		return "usuario/formularioEditar";
 	}
