@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
 import br.com.comercio.enums.TipoPreco;
@@ -31,6 +32,7 @@ public class Produto {
 	private List<Preco> precos;
 	@URL(message = "Url inválida")
 	@Column(columnDefinition = "VARCHAR(2048)")
+	@Length(max = 2048)
 	private String urlImagem;
 	@AntiXss
 	private String descricao;
