@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import br.com.comercio.conf.LoginSuccessHandler;
 import br.com.comercio.conf.UserDetailsServiceImplements;
 
 @Configuration
@@ -24,16 +25,20 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsServiceImplements userDetailsService;
 
+	@Autowired
+	private LoginSuccessHandler loginSuccessHandler;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.sessionManagement(session -> session.invalidSessionUrl("/sessaotimeout?mensagem=expirado")
 				.maximumSessions(1).expiredUrl("/sessaotimeout?mensagem=maximoSessoes")).authorizeRequests()
 				.antMatchers("/usuario/urlmagica").permitAll().antMatchers("/usuario/formulario").permitAll()
 				.antMatchers("/usuario/novo").permitAll().antMatchers("/notificacao/**").permitAll().antMatchers("/")
-				.permitAll().antMatchers("/produto/detalhe/**").permitAll().antMatchers("/js/**").permitAll()
-				.antMatchers("/carrinho").permitAll().antMatchers("/desenvolvedor").permitAll()
-				.antMatchers("/sessaotimeout").permitAll().anyRequest().authenticated().and()
-				.formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/", true).permitAll()
+				.permitAll().antMatchers("/produto/detalhe/**").permitAll().antMatchers("/produto/formulario/**")
+				.hasRole("ADM").antMatchers("/js/**").permitAll().antMatchers("/carrinho").permitAll()
+				.antMatchers("/desenvolvedor").permitAll().antMatchers("/sessaotimeout").permitAll().anyRequest()
+				.authenticated().and()
+				.formLogin(form -> form.loginPage("/login").successHandler(loginSuccessHandler).permitAll()
 						.failureUrl("/login?erro=true"))
 				.logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("JSESSIONID")).csrf()
 				.disable();
