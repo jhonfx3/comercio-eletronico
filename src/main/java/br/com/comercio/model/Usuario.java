@@ -42,7 +42,7 @@ import br.com.comercio.interfaces.UniqueUsernamePersistir;
 public class Usuario implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	@Id
-	@NotEmpty(message = "Usuário é obrigatório")
+	@NotEmpty(message = "E-mail é obrigatório")
 	@UniqueUsernameEditar(groups = EditarUsuario.class)
 	@UniqueUsernamePersistir(groups = PersistirUsuario.class)
 	private String email;
