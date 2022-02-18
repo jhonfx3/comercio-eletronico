@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.comercio.interfaces.UniqueColumn;
 import br.com.comercio.repository.UsuarioRepository;
+import br.com.comercio.service.CriptografiaService;
 
 public class UniqueValidator implements ConstraintValidator<UniqueColumn, Object> {
 	private String campo;
@@ -70,7 +71,7 @@ public class UniqueValidator implements ConstraintValidator<UniqueColumn, Object
 			 */
 			Object obj = construtor.newInstance(new Object[] { classeASerValidada, manager, repository });
 			Method metodo = cls.getDeclaredMethod("findBy" + campo, paramString);
-			Object invoke = metodo.invoke(obj, new String(cpf));
+			Object invoke = metodo.invoke(obj, new String(new CriptografiaService().encriptar(cpf)));
 			if (invoke == null) {
 				// não encontrei ninguém com esse campo, então posso permitir
 				return true;
@@ -78,8 +79,7 @@ public class UniqueValidator implements ConstraintValidator<UniqueColumn, Object
 				// já existe alguém com esse valor, então tenho que recusar
 				return false;
 			}
-		} catch (SecurityException | IllegalArgumentException | NoSuchMethodException | InstantiationException
-				| IllegalAccessException | InvocationTargetException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return false;

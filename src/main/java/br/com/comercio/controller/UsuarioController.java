@@ -41,6 +41,7 @@ import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.AuthoritiesRepository;
 import br.com.comercio.repository.PedidoRepository;
 import br.com.comercio.repository.UsuarioRepository;
+import br.com.comercio.service.CriptografiaService;
 
 @Controller
 @RequestMapping("usuario")
@@ -55,6 +56,9 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioRepositoryImpl usuarioImpl;
+
+	@Autowired
+	private CriptografiaService criptografia;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -105,7 +109,7 @@ public class UsuarioController {
 
 	@PostMapping("/novo")
 	public String novo(@Validated(PersistirUsuario.class) Usuario usuario, BindingResult result,
-			RedirectAttributes attributes, String confirmarSenha) {
+			RedirectAttributes attributes, String confirmarSenha) throws Exception {
 		if (!usuario.getPassword().equals("")) {
 			if (!usuario.getPassword().equals(confirmarSenha)) {
 				result.rejectValue("password", "SenhasNaobatem.usuario.senha");
@@ -114,6 +118,7 @@ public class UsuarioController {
 		if (result.hasErrors()) {
 			return "usuario/formulario";
 		}
+		usuario.setCpf(new CriptografiaService().encriptar(usuario.getCpf()));
 		Authorities userAuthority = authoritiesRepository.findById("ROLE_USER").get();
 		criarUsuario(usuario, Arrays.asList(userAuthority));
 		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " cadastrado com sucesso");
@@ -122,14 +127,12 @@ public class UsuarioController {
 
 	@PostMapping("/editar")
 	public String editarUsuario(@Validated(EditarUsuario.class) Usuario usuario, BindingResult result,
-			RedirectAttributes attributes, Endereco endereco, Model model) {
+			RedirectAttributes attributes, Endereco endereco, Model model) throws Exception {
+		if (!result.hasFieldErrors("password")) {
+			System.out.println("OAOAOAOAOOA");
+		}
 		if (result.hasErrors()) {
 			model.addAttribute("endereco", endereco);
-			System.out.println("deu erro");
-			List<ObjectError> allErrors = result.getAllErrors();
-			for (ObjectError objectError : allErrors) {
-				System.out.println(objectError.getDefaultMessage());
-			}
 			return "usuario/formularioEditar";
 		}
 		Usuario usuarioLogado = getUsuarioLogado();
@@ -151,6 +154,7 @@ public class UsuarioController {
 			 */
 			usuarioRepository.deletaUsuario(usuarioLogado.getEmail());
 		}
+		usuario.setCpf(new CriptografiaService().encriptar(usuario.getCpf()));
 		usuarioImpl.updateUser(usuario);
 		// Caso eu perceba que o usuário trocou de e-mail
 		// Necessito atualizar o usuário logado
@@ -215,8 +219,11 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/formulario/editar")
-	public String formularioEditar(Usuario usuario, Model model, Endereco endereco) {
-		model.addAttribute("usuario", getUsuarioLogado());
+	public String formularioEditar(Usuario usuario, Model model, Endereco endereco) throws Exception {
+		Usuario usuarioLogado = getUsuarioLogado();
+		// String cpfDecriptado = criptografia.decriptar(usuarioLogado.getCpf());
+		// usuarioLogado.setCpf(cpfDecriptado);
+		model.addAttribute("usuario", usuarioLogado);
 		return "usuario/formularioEditar";
 	}
 

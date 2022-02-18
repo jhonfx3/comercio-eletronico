@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import br.com.comercio.interfaces.UniqueColumnEditar;
 import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.UsuarioRepository;
+import br.com.comercio.service.CriptografiaService;
 
 public class UniqueValidatorEditar implements ConstraintValidator<UniqueColumnEditar, Object> {
 	private String campo;
@@ -77,31 +78,32 @@ public class UniqueValidatorEditar implements ConstraintValidator<UniqueColumnEd
 			 */
 			Object obj = construtor.newInstance(new Object[] { classeASerValidada, manager, repository });
 			Method metodo = cls.getDeclaredMethod("findBy" + campo, paramString);
-			Object entidade = metodo.invoke(obj, new String(cpf));
+			Object entidadeNoBanco = metodo.invoke(obj, new String(new CriptografiaService().encriptar(cpf)));
 
 			String name = SecurityContextHolder.getContext().getAuthentication().getName();
 			Usuario usuario = repository.findById(name).get();
 			Method declaredMethod = usuario.getClass().getDeclaredMethod("get" + campo);
 			Object invoke = declaredMethod.invoke(usuario);
 			System.out.println("infok.." + invoke);
-
+			System.out.println("cpf informado: " + cpf);
 			if (cpf.equals(invoke)) {
 				/*
 				 * Encontrei alguém com esse valor Porém quem eu encontrei é ele mesmo então ele
 				 * tem permissão de ter esse valor então a validação é permitida
 				 */
 				return true;
-			} else if (entidade != null) {
+			} else if (entidadeNoBanco != null) {
 				// Encontrei alguém no banco com esse valor, então não pode validar
+				System.out.println("estou retornando false...");
 				return false;
 			} else {
 				// Entidade é null, como não encontrei ninguém no banco
 				// com esse valor então pode validar
+				System.out.println("estou retornando true...");
 				return true;
 			}
 
-		} catch (SecurityException | IllegalArgumentException | NoSuchMethodException | InstantiationException
-				| IllegalAccessException | InvocationTargetException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return false;

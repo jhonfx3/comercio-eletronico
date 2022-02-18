@@ -19,7 +19,6 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler i
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		HttpSession session = request.getSession();
-		System.out.println(session.getAttribute("urlAnterior"));
 		String urlAnterior = (String) session.getAttribute("urlAnterior");
 		// Removo da sessão esse atributo
 		session.removeAttribute("urlAnterior");

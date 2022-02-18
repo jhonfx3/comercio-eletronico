@@ -35,6 +35,7 @@ import br.com.comercio.interfaces.UniqueColumn;
 import br.com.comercio.interfaces.UniqueColumnEditar;
 import br.com.comercio.interfaces.UniqueUsernameEditar;
 import br.com.comercio.interfaces.UniqueUsernamePersistir;
+import br.com.comercio.service.CriptografiaService;
 
 @Entity
 @DynamicUpdate
@@ -54,7 +55,7 @@ public class Usuario implements UserDetails {
 	private String sobrenome;
 
 	@NotEmpty(message = "Senha é obrigatória")
-	@Length(min = 4, max = 10)
+	@Length(min = 4, max = 10, groups = PersistirUsuario.class)
 	@SenhaFraca
 	private String password;
 	private Boolean enabled;
@@ -102,7 +103,11 @@ public class Usuario implements UserDetails {
 	private List<Endereco> endereco;
 
 	public String getCpf() {
-		return cpf;
+		try {
+			return new CriptografiaService().decriptar(cpf);
+		} catch (Exception e) {
+			return cpf;
+		}
 	}
 
 	public void setCpf(String cpf) {
