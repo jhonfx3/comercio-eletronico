@@ -21,7 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.WebDataBinder;
@@ -73,6 +73,7 @@ public class UsuarioController {
 				}
 			}
 		});
+		binder.setAllowedFields("email", "nome", "sobrenome", "password", "cpf", "rg", "telefone", "nascimento");
 
 	}
 
@@ -133,6 +134,10 @@ public class UsuarioController {
 		}
 		if (result.hasErrors()) {
 			model.addAttribute("endereco", endereco);
+			List<FieldError> fieldErrors = result.getFieldErrors();
+			for (FieldError fieldError : fieldErrors) {
+				System.out.println(fieldError.getDefaultMessage());
+			}
 			return "usuario/formularioEditar";
 		}
 		Usuario usuarioLogado = getUsuarioLogado();
