@@ -68,6 +68,16 @@ public class Usuario implements UserDetails {
 
 	private String rg;
 	private String telefone;
+	@Column(name = "codigo_verificacao")
+	private String codigoVerificacao;
+
+	public String getCodigoVerificacao() {
+		return codigoVerificacao;
+	}
+
+	public void setCodigoVerificacao(String codigoVerificacao) {
+		this.codigoVerificacao = codigoVerificacao;
+	}
 
 	@javax.validation.constraints.NotNull(message = "A data de aniversário é obrigatória")
 	@Past(message = "Data de nascimento deve estar no passado")
@@ -193,7 +203,7 @@ public class Usuario implements UserDetails {
 	}
 
 	public Usuario() {
-		setEnabled(true);
+		setEnabled(false);
 	}
 
 	@Override

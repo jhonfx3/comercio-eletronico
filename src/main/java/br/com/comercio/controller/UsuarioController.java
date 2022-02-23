@@ -27,6 +27,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -42,6 +43,8 @@ import br.com.comercio.repository.AuthoritiesRepository;
 import br.com.comercio.repository.PedidoRepository;
 import br.com.comercio.repository.UsuarioRepository;
 import br.com.comercio.service.CriptografiaService;
+import br.com.comercio.service.EmailService;
+import net.bytebuddy.utility.RandomString;
 
 @Controller
 @RequestMapping("usuario")
@@ -59,6 +62,9 @@ public class UsuarioController {
 
 	@Autowired
 	private CriptografiaService criptografia;
+
+	@Autowired
+	private EmailService emailService;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -121,9 +127,26 @@ public class UsuarioController {
 		}
 		usuario.setCpf(new CriptografiaService().encriptar(usuario.getCpf()));
 		Authorities userAuthority = authoritiesRepository.findById("ROLE_USER").get();
+		String codigo = RandomString.make(20);
+		usuario.setCodigoVerificacao(codigo);
 		criarUsuario(usuario, Arrays.asList(userAuthority));
 		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " cadastrado com sucesso");
+		emailService.enviarEmail(usuario, codigo);
 		return "redirect:/usuario/formulario";
+	}
+
+	@GetMapping("/confirmar/{codigo}")
+	public String confirmarCadastro(@PathVariable("codigo") String codigo) {
+		try {
+			Usuario usuarioCadastrado = usuarioRepository.findByCodigoVerificacao(codigo);
+			usuarioCadastrado.setCodigoVerificacao(null);
+			usuarioCadastrado.setEnabled(true);
+			usuarioRepository.save(usuarioCadastrado);
+		} catch (Exception e) {
+			return "redirect:/";
+		}
+
+		return "usuario/confirmacaoDeCadastro";
 	}
 
 	@PostMapping("/editar")

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Confirmação de cadastro</title>
+<th:block th:include="~{base::head}">/>
+
+
+
+
+
+
+
+</head>
+<body>
+	<div class="container-fluid">
+		<header>
+			<div th:replace="~{base::cabecalho}"></div>
+		</header>
+		<main>
+			<div>
+				<h1 class="alert-success">Parabéns, você confirmou o registro
+					de sua conta</h1>
+			</div>
+			<a class="btn btn-primary btn-lg" th:href="@{/login}"><i
+				class="bi bi-person-circle"></i> Login</a>
+		</main>
+		<div th:replace="~{base::rodape}"></div>
+	</div>
+</body>
+</html>
