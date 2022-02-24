@@ -2,14 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
-<title>Confirmação de cadastro</title>
+<title>Informação sobre conta</title>
 <th:block th:include="~{base::head}">/>
-
-
-
-
-
-
 
 </head>
 <body>
@@ -19,8 +13,7 @@
 		</header>
 		<main>
 			<div>
-				<h1 class="alert-success">Parabéns, você confirmou o registro
-					de sua conta</h1>
+				<h1 class="alert-success" th:text="${mensagem}"></h1>
 			</div>
 			<a class="btn btn-primary btn-lg" th:href="@{/login}"><i
 				class="bi bi-person-circle"></i> Login</a>

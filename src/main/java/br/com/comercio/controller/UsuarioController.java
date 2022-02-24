@@ -133,11 +133,19 @@ public class UsuarioController {
 		criarUsuario(usuario, Arrays.asList(userAuthority));
 		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " cadastrado com sucesso");
 		emailService.enviarEmail(usuario, codigo, request);
-		return "redirect:/usuario/formulario";
+		return "redirect:/usuario/sucessoContaCriada";
+	}
+
+	@GetMapping("/sucessoContaCriada")
+	public String sucessoContaCriada(Model model) {
+		System.out.println("chamando...");
+		model.addAttribute("mensagem",
+				"Parabéns, você criou sua conta com sucesso, verifique seu e-mail para confirmar seu cadastro e ter acesso ao nosso comércio");
+		return "usuario/infoSobreConta";
 	}
 
 	@GetMapping("/confirmar/{codigo}")
-	public String confirmarCadastro(@PathVariable("codigo") String codigo) {
+	public String confirmarCadastro(@PathVariable("codigo") String codigo, Model model) {
 		try {
 			Usuario usuarioCadastrado = usuarioRepository.findByCodigoVerificacao(codigo);
 			usuarioCadastrado.setCodigoVerificacao(null);
@@ -146,8 +154,8 @@ public class UsuarioController {
 		} catch (Exception e) {
 			return "redirect:/";
 		}
-
-		return "usuario/confirmacaoDeCadastro";
+		model.addAttribute("mensagem", "Parabéns, você confirmou o cadastro de sua conta com sucesso");
+		return "usuario/infoSobreConta";
 	}
 
 	@PostMapping("/editar")

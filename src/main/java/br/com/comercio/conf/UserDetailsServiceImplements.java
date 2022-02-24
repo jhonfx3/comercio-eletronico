@@ -22,6 +22,9 @@ public class UserDetailsServiceImplements implements UserDetailsService {
 		if (user == null) {
 			throw new UsernameNotFoundException("usuario nao encontrado");
 		}
+		if(!user.isEnabled()) {
+			throw new UsernameNotFoundException("usuario nao encontrado");
+		}
 		return new User(user.getUsername(), user.getPassword(), true, true, true, true, user.getAuthorities());
 	}
 
