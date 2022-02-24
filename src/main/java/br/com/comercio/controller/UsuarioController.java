@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,7 +117,7 @@ public class UsuarioController {
 
 	@PostMapping("/novo")
 	public String novo(@Validated(PersistirUsuario.class) Usuario usuario, BindingResult result,
-			RedirectAttributes attributes, String confirmarSenha) throws Exception {
+			HttpServletRequest request, RedirectAttributes attributes, String confirmarSenha) throws Exception {
 		if (!usuario.getPassword().equals("")) {
 			if (!usuario.getPassword().equals(confirmarSenha)) {
 				result.rejectValue("password", "SenhasNaobatem.usuario.senha");
@@ -131,7 +132,7 @@ public class UsuarioController {
 		usuario.setCodigoVerificacao(codigo);
 		criarUsuario(usuario, Arrays.asList(userAuthority));
 		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " cadastrado com sucesso");
-		emailService.enviarEmail(usuario, codigo);
+		emailService.enviarEmail(usuario, codigo, request);
 		return "redirect:/usuario/formulario";
 	}
 
