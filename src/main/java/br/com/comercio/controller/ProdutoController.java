@@ -81,7 +81,6 @@ public class ProdutoController {
 	public String novo(@Valid Produto produto, BindingResult result, Model model, RedirectAttributes attributes) {
 		model.addAttribute("tipos", TipoPreco.values());
 		if (result.hasErrors()) {
-			System.out.println("Deu erro!");
 			return "produto/formulario";
 		}
 		produtoRepository.save(produto);

@@ -61,8 +61,6 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioRepositoryImpl usuarioImpl;
 
-	@Autowired
-	private CriptografiaService criptografia;
 
 	@Autowired
 	private EmailService emailService;
@@ -161,21 +159,12 @@ public class UsuarioController {
 	@PostMapping("/editar")
 	public String editarUsuario(@Validated(EditarUsuario.class) Usuario usuario, BindingResult result,
 			RedirectAttributes attributes, Endereco endereco, Model model) throws Exception {
-		if (!result.hasFieldErrors("password")) {
-			System.out.println("OAOAOAOAOOA");
-		}
 		if (result.hasErrors()) {
 			model.addAttribute("endereco", endereco);
-			List<FieldError> fieldErrors = result.getFieldErrors();
-			for (FieldError fieldError : fieldErrors) {
-				System.out.println(fieldError.getDefaultMessage());
-			}
 			return "usuario/formularioEditar";
 		}
 		Usuario usuarioLogado = getUsuarioLogado();
 		usuario.setRoles(usuarioLogado.getRoles());
-		System.out.println("usuario email: " + usuario.getEmail());
-		System.out.println("usuario logado email: " + usuarioLogado.getEmail());
 
 		/*
 		 * Se eu identifico que o usuário trocou de e-mail significa que o Spring
@@ -184,7 +173,6 @@ public class UsuarioController {
 		 * obviamente ainda não existe
 		 */
 		if (!usuario.getEmail().equals(usuarioLogado.getEmail())) {
-			System.out.println("entrei nesse if");
 			/*
 			 * Então eu preciso deletar o usuário do antigo e-mail do contrário será mantido
 			 * no banco de dados impedindo que novos usuários o usem
@@ -192,6 +180,7 @@ public class UsuarioController {
 			usuarioRepository.deletaUsuario(usuarioLogado.getEmail());
 		}
 		usuario.setCpf(new CriptografiaService().encriptar(usuario.getCpf()));
+		usuario.setEnabled(true);
 		usuarioImpl.updateUser(usuario);
 		// Caso eu perceba que o usuário trocou de e-mail
 		// Necessito atualizar o usuário logado

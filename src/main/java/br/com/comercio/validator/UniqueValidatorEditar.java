@@ -41,7 +41,6 @@ public class UniqueValidatorEditar implements ConstraintValidator<UniqueColumnEd
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
 		String cpf = (String) value;
 		if (value == null) {
-			System.out.println("E NULL CARALHO");
 			// Deixo a responsabilidade para outro validador
 			return true;
 		}
@@ -84,8 +83,6 @@ public class UniqueValidatorEditar implements ConstraintValidator<UniqueColumnEd
 			Usuario usuario = repository.findById(name).get();
 			Method declaredMethod = usuario.getClass().getDeclaredMethod("get" + campo);
 			Object invoke = declaredMethod.invoke(usuario);
-			System.out.println("infok.." + invoke);
-			System.out.println("cpf informado: " + cpf);
 			if (cpf.equals(invoke)) {
 				/*
 				 * Encontrei alguém com esse valor Porém quem eu encontrei é ele mesmo então ele
@@ -94,12 +91,10 @@ public class UniqueValidatorEditar implements ConstraintValidator<UniqueColumnEd
 				return true;
 			} else if (entidadeNoBanco != null) {
 				// Encontrei alguém no banco com esse valor, então não pode validar
-				System.out.println("estou retornando false...");
 				return false;
 			} else {
 				// Entidade é null, como não encontrei ninguém no banco
 				// com esse valor então pode validar
-				System.out.println("estou retornando true...");
 				return true;
 			}
 

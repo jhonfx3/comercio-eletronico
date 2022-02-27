@@ -27,9 +27,7 @@ public class UsuarioRepositoryImpl extends SimpleJpaRepository<Usuario, String> 
 	}
 
 	public void updateUser(Usuario usuario) {
-		System.out.println(usuario.getCpf());
 		em.merge(usuario);
-		System.out.println("atualizei o usuario...");
 	}
 
 	public void teste(String emailAtualizar, String role) {

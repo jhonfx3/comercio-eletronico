@@ -1,8 +1,5 @@
 package br.com.comercio.controller;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -20,11 +17,6 @@ public class LoginController {
 			model.addAttribute("erro", "E-mail ou senha incorretos. Revise-os!");
 		} else {
 			model.addAttribute("erro", null);
-		}
-		Map<String, String[]> parameterMap = request.getParameterMap();
-		for (Entry<String, String[]> entry : parameterMap.entrySet()) {
-			System.out.println(entry.getKey());
-			System.out.println(entry.getValue());
 		}
 		HttpSession session = request.getSession();
 		session.setAttribute("urlAnterior", request.getHeader("Referer"));
