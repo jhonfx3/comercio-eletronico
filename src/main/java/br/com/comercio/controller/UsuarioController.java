@@ -61,7 +61,6 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioRepositoryImpl usuarioImpl;
 
-
 	@Autowired
 	private EmailService emailService;
 
@@ -172,6 +171,12 @@ public class UsuarioController {
 		 * registro, ele não interpreta como um registro existente no bd, porque
 		 * obviamente ainda não existe
 		 */
+
+		/*
+		 * Uma maneira de não precisar disso é simplesmente eu adicionar um ID
+		 * incremental que nunca muda, assim ele sempre considera como o mesmo registro
+		 */
+
 		if (!usuario.getEmail().equals(usuarioLogado.getEmail())) {
 			/*
 			 * Então eu preciso deletar o usuário do antigo e-mail do contrário será mantido

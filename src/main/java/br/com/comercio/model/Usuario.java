@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 
@@ -46,6 +47,7 @@ public class Usuario implements UserDetails {
 	@NotEmpty(message = "E-mail é obrigatório")
 	@UniqueUsernameEditar(groups = EditarUsuario.class)
 	@UniqueUsernamePersistir(groups = PersistirUsuario.class)
+	@Email(message = "E-mail inválido")
 	private String email;
 	@NotEmpty(message = "Nome é obrigatório")
 	@AntiXss

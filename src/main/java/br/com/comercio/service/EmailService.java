@@ -16,11 +16,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.com.comercio.enums.StatusEmail;
 import br.com.comercio.model.Email;
 import br.com.comercio.model.Usuario;
+import br.com.comercio.repository.EmailRepository;
 
 @Service
 public class EmailService {
 	@Autowired
 	private JavaMailSender emailSender;
+
+	@Autowired
+	private EmailRepository emailRepository;
 
 	public void enviarEmail(Usuario usuario, String codigo, HttpServletRequest request)
 			throws MessagingException, UnsupportedEncodingException {
@@ -32,7 +36,7 @@ public class EmailService {
 			email.setDestinatario(usuario.getEmail());
 			String content = "Bem-vindo " + usuario.getNome() + ",<br>"
 					+ "Clique no link abaixo para confirmar seu cadastro no nosso e-commerce<br>"
-					+ "<h3><a href=\"[[URL]]\" target=\"_self\">Confirme seu cadastro</a></h3>";
+					+ "<h3><a href=\"[[URL]]\">Confirme seu cadastro</a></h3>";
 
 			MimeMessage message = emailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -49,9 +53,12 @@ public class EmailService {
 			helper.setText(content, true);
 			emailSender.send(message);
 			email.setStatus(StatusEmail.ENVIADO);
+			email.setMensagem(content);
+			emailRepository.save(email);
 		} catch (MailException e) {
 			e.printStackTrace();
 			email.setStatus(StatusEmail.FALHA);
+			emailRepository.save(email);
 		}
 		System.out.println("Status email:" + email.getStatus());
 	}
