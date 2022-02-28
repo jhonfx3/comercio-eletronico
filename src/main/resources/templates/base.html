@@ -37,9 +37,9 @@
 			</nav>
 		</div>
 		<div class="col-4 col-sm-4">
-			<form class="form d-flex flex-row" action="#">
+			<form class="form d-flex flex-row" method="get" th:action="@{/busca}">
 				<input class="form-control input-lg" type="search"
-					placeholder="Pesquise seu produto" aria-label="Search">
+					name="pesquisar" placeholder="Pesquise seu produto" aria-label="Search" maxlength="100" >
 				<button class="btn btn-outline-light my-2 my-sm-0 ml-1"
 					type="submit">Procurar</button>
 			</form>
