@@ -20,7 +20,9 @@ public class CarrinhoDeCompras implements Serializable {
 	private Map<CarrinhoItem, Integer> itens = new LinkedHashMap<>();
 
 	public void adiciona(CarrinhoItem item) {
-		itens.put(item, getQuantidade(item) + 1);
+		if(!itens.containsKey(item)) {
+			itens.put(item, 1);
+		}
 	}
 
 	public void adiciona(CarrinhoItem item, Integer quantidade) {

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.comercio.enums.TipoPreco;
+import br.com.comercio.model.CarrinhoDeCompras;
+import br.com.comercio.model.CarrinhoItem;
 import br.com.comercio.model.Preco;
 import br.com.comercio.model.Produto;
 import br.com.comercio.repository.ProdutoRepository;
@@ -26,6 +28,9 @@ import br.com.comercio.repository.ProdutoRepository;
 public class ProdutoController {
 	@Autowired
 	private ProdutoRepository produtoRepository;
+
+	@Autowired
+	private CarrinhoDeCompras carrinho;
 
 	@GetMapping("formulario/{acao}")
 	public String formulario(@PathVariable("acao") String acao, Produto produto, Model model,
@@ -60,6 +65,22 @@ public class ProdutoController {
 		model.addAttribute("tipos", TipoPreco.values());
 		model.addAttribute("idProdutoEditar", id);
 		attr.addAttribute("idProdutoEditar", id);
+		CarrinhoItem item = new CarrinhoItem(produto);
+		if (carrinho.getItensMap().containsKey(item)) {
+			System.out.println("o produto a ser editado esta no carrinho");
+			/*
+			 * Aqui eu posso criar uma lógica para impedir que um produto que está no
+			 * carrinho seja editado porém se eu faço isso ou não depende da regra de
+			 * negócio do sistema. Depende de como o cliente irá querer o software. Porque
+			 * do jeito que está se eu editar um produto que está no carrinho o preço do
+			 * produto no carrinho não será atualizado e isso causará divergências Se eu
+			 * impeço o produto de ser editado o admin não consegue edita-lo até que ele
+			 * seja liberado. Isso pode ser ruim pois por exemplo vai que o preço do produto
+			 * está errado. Mas caso eu permita essa edição eu tenho que atualizar o carrinho
+			 * e isso pode ser fustrante para o usuário, já que ele colocou com um preço e
+			 * do nada esse preço muda
+			 */
+		}
 		return "produto/formularioEditar";
 	}
 
