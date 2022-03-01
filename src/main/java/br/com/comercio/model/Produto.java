@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 
@@ -39,6 +40,17 @@ public class Produto {
 
 	@OneToMany(mappedBy = "produto")
 	private List<ProdutoPedido> pedidos;
+
+	@ManyToOne
+	private Categoria categoria;
+	
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
 
 	public String getNome() {
 		return nome;

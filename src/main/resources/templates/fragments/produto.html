@@ -29,6 +29,10 @@
 	</div>
 	<input type="hidden" th:if="${idProdutoEditar} != 'null'"
 		name="idProdutoEditar" th:value="${idProdutoEditar}">
+	<select th:field="*{categoria}">
+		<option th:each="categoria: ${categorias}"
+			th:value="${categoria.id}" th:text="${categoria.nome}"></option>
+	</select>
 	<button type="submit" class="btn btn-primary" th:text="${acao}"></button>
 
 </th:block>

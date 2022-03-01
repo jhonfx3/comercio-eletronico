@@ -21,6 +21,7 @@ import br.com.comercio.model.CarrinhoDeCompras;
 import br.com.comercio.model.CarrinhoItem;
 import br.com.comercio.model.Preco;
 import br.com.comercio.model.Produto;
+import br.com.comercio.repository.CategoriaRepository;
 import br.com.comercio.repository.ProdutoRepository;
 
 @Controller
@@ -30,12 +31,16 @@ public class ProdutoController {
 	private ProdutoRepository produtoRepository;
 
 	@Autowired
+	private CategoriaRepository categoriaRepository;
+
+	@Autowired
 	private CarrinhoDeCompras carrinho;
 
 	@GetMapping("formulario/{acao}")
 	public String formulario(@PathVariable("acao") String acao, Produto produto, Model model,
 			HttpServletRequest request) {
 		model.addAttribute("tipos", TipoPreco.values());
+		model.addAttribute("categorias", categoriaRepository.findAll());
 		if (acao.equals("cadastrar")) {
 			return "produto/formulario";
 		} else {
@@ -64,6 +69,7 @@ public class ProdutoController {
 		model.addAttribute("produto", produto);
 		model.addAttribute("tipos", TipoPreco.values());
 		model.addAttribute("idProdutoEditar", id);
+		model.addAttribute("categorias", categoriaRepository.findAll());
 		attr.addAttribute("idProdutoEditar", id);
 		CarrinhoItem item = new CarrinhoItem(produto);
 		if (carrinho.getItensMap().containsKey(item)) {
@@ -76,9 +82,9 @@ public class ProdutoController {
 			 * produto no carrinho não será atualizado e isso causará divergências Se eu
 			 * impeço o produto de ser editado o admin não consegue edita-lo até que ele
 			 * seja liberado. Isso pode ser ruim pois por exemplo vai que o preço do produto
-			 * está errado. Mas caso eu permita essa edição eu tenho que atualizar o carrinho
-			 * e isso pode ser fustrante para o usuário, já que ele colocou com um preço e
-			 * do nada esse preço muda
+			 * está errado. Mas caso eu permita essa edição eu tenho que atualizar o
+			 * carrinho e isso pode ser fustrante para o usuário, já que ele colocou com um
+			 * preço e do nada esse preço muda
 			 */
 		}
 		return "produto/formularioEditar";

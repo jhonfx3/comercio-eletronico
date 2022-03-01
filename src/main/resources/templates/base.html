@@ -38,8 +38,9 @@
 		</div>
 		<div class="col-4 col-sm-4">
 			<form class="form d-flex flex-row" method="get" th:action="@{/busca}">
-				<input class="form-control input-lg" type="search"
-					name="pesquisar" placeholder="Pesquise seu produto" aria-label="Search" maxlength="100" >
+				<input class="form-control input-lg" type="search" name="pesquisar"
+					placeholder="Pesquise seu produto" aria-label="Search"
+					maxlength="100">
 				<button class="btn btn-outline-light my-2 my-sm-0 ml-1"
 					type="submit">Procurar</button>
 			</form>
@@ -62,11 +63,21 @@
 					class="bi-cart-fill me-1"></i>Carrinho</span></a>
 		</div>
 	</div>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="collapse navbar-collapse" id="navbarNav"
+			th:each="categoria: ${categorias}">
+			<ul class="navbar-nav">
+				<li class="nav-item"><a class="nav-link"
+					th:href="@{'/categoria/' + ${categoria.nome}}"
+					th:text="${categoria.nome}"></a></li>
+			</ul>
+		</div>
+	</nav>
 </div>
 
 <footer th:fragment="rodape">
-	<span class="logo">Projeto do portifólio de software do desenvolvedor. Não
-		existe comércio em funcionamento</span>
+	<span class="logo">Projeto do portifólio de software do
+		desenvolvedor. Não existe comércio em funcionamento</span>
 	<div>
 		<a th:href="@{/desenvolvedor}">Sobre o desenvolvedor do projeto</a>
 	</div>

@@ -31,6 +31,9 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler i
 		if (urlAnterior == null || (urlAnterior != null && urlAnterior.isEmpty())) {
 			urlAnterior = "/";
 		}
+		if (urlAnterior.contains("/login")) {
+			urlAnterior = "/";
+		}
 		response.sendRedirect(urlAnterior);
 	}
 

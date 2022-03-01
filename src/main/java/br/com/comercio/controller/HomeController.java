@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.mercadopago.exceptions.MPException;
 
+import br.com.comercio.model.Categoria;
 import br.com.comercio.model.Produto;
+import br.com.comercio.repository.CategoriaRepository;
 import br.com.comercio.repository.ProdutoRepository;
 
 @Controller
@@ -18,11 +20,15 @@ public class HomeController {
 
 	@Autowired
 	private ProdutoRepository produtoRepository;
-
+	@Autowired
+	private CategoriaRepository categoriaRepository;
+	
 	@GetMapping("/")
 	public String home(Model model) throws MPException {
 		List<Produto> produtos = produtoRepository.findAll();
 		model.addAttribute("produtos", produtos);
+		List<Categoria> categorias = categoriaRepository.findAll();
+		model.addAttribute("categorias", categorias);
 		return "home";
 	}
 

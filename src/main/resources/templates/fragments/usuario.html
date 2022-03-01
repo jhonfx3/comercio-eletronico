@@ -2,10 +2,10 @@
 <form th:fragment="formulario" th:object="${usuario}"
 	th:action="@{/usuario/editar}" method="post">
 	<div class="form-group">
-		<label for="username">Login</label> <input th:errorClass="is-invalid"
-			type="text" class="form-control" placeholder="Login"
-			th:field="*{username}">
-		<div class="invalid-feedback" th:errors="*{username}"></div>
+		<label for="username">E-mail</label> <input th:errorClass="is-invalid"
+			type="text" class="form-control" placeholder="E-mail"
+			th:field="*{email}">
+		<div class="invalid-feedback" th:errors="*{email}"></div>
 	</div>
 	<div class="form-group">
 		<label for="cpf">CPF</label><input type="text" maxlength="14" id="cpf"
