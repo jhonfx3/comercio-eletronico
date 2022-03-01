@@ -48,7 +48,7 @@ public class HomeController {
 		}
 		if (produtos == null || produtos.isEmpty()) {
 			model.addAttribute("erroPesquisa",
-					"Desculpe, não foi encontrado nenhum resultado para sua pesquisa: '" + pesquisar + "'");
+					"Desculpe, não foram encontrados resultados para sua pesquisa: '" + pesquisar + "'");
 		}
 		return "home";
 	}
