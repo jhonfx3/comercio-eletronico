@@ -1,4 +1,4 @@
-package br.com.comercio;
+package br.com.comercio.conf;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -7,9 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import br.com.comercio.conf.LoginSuccessHandler;
-import br.com.comercio.conf.UserDetailsServiceImplements;
 
 @Configuration
 @EnableWebSecurity
@@ -34,11 +31,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.maximumSessions(1).expiredUrl("/sessaotimeout?mensagem=maximoSessoes")).authorizeRequests()
 				.antMatchers("/usuario/urlmagica").permitAll().antMatchers("/usuario/formulario").permitAll()
 				.antMatchers("/usuario/novo").permitAll().antMatchers("/usuario/confirmar/**").permitAll()
-				.antMatchers("/notificacao/**").permitAll().antMatchers("/busca/**").permitAll()
-				.antMatchers("/usuario/sucessoContaCriada").permitAll().antMatchers("/").permitAll()
-				.antMatchers("/produto/detalhe/**").permitAll().antMatchers("/produto/formulario/**").hasRole("ADM")
-				.antMatchers("/js/**").permitAll().antMatchers("/carrinho").permitAll().antMatchers("/desenvolvedor")
-				.permitAll().antMatchers("/sessaotimeout").permitAll().anyRequest().authenticated().and()
+				.antMatchers("/notificacao/**").permitAll().antMatchers("/categoria/**").permitAll()
+				.antMatchers("/busca/**").permitAll().antMatchers("/usuario/sucessoContaCriada").permitAll()
+				.antMatchers("/").permitAll().antMatchers("/produto/detalhe/**").permitAll()
+				.antMatchers("/produto/formulario/**").hasRole("ADM").antMatchers("/js/**").permitAll()
+				.antMatchers("/carrinho").permitAll().antMatchers("/desenvolvedor").permitAll()
+				.antMatchers("/sessaotimeout").permitAll().anyRequest().authenticated().and()
 				.formLogin(form -> form.loginPage("/login").successHandler(loginSuccessHandler).permitAll()
 						.failureUrl("/login?erro=true"))
 				.logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/").deleteCookies("JSESSIONID")).csrf()
