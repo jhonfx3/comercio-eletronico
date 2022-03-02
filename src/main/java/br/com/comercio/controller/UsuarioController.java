@@ -22,7 +22,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.WebDataBinder;
@@ -129,7 +128,10 @@ public class UsuarioController {
 		usuario.setCodigoVerificacao(codigo);
 		criarUsuario(usuario, Arrays.asList(userAuthority));
 		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " cadastrado com sucesso");
-		emailService.enviarEmail(usuario, codigo, request);
+		String content = "Bem-vindo " + usuario.getNome() + ",<br>"
+				+ "Clique no link abaixo para confirmar seu cadastro no nosso e-commerce<br>"
+				+ "<h3><a href=\"[[URL]]\">Confirme seu cadastro</a></h3>";
+		emailService.enviarEmail(usuario, codigo, request, content);
 		return "redirect:/usuario/sucessoContaCriada";
 	}
 

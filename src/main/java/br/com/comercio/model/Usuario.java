@@ -70,7 +70,7 @@ public class Usuario implements UserDetails {
 
 	private String rg;
 	private String telefone;
-	@Column(name = "codigo_verificacao")
+	@Column(name = "codigo_verificacao",unique = true)
 	private String codigoVerificacao;
 
 	public String getCodigoVerificacao() {

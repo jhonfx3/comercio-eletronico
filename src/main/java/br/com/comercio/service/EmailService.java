@@ -26,7 +26,7 @@ public class EmailService {
 	@Autowired
 	private EmailRepository emailRepository;
 
-	public void enviarEmail(Usuario usuario, String codigo, HttpServletRequest request)
+	public void enviarEmail(Usuario usuario, String codigo, HttpServletRequest request, String content)
 			throws MessagingException, UnsupportedEncodingException {
 		Email email = new Email();
 		try {
@@ -34,9 +34,6 @@ public class EmailService {
 			email.setAssunto("Confirme seu cadastro");
 			email.setOrigem("jcaferreira9@gmail.com");
 			email.setDestinatario(usuario.getEmail());
-			String content = "Bem-vindo " + usuario.getNome() + ",<br>"
-					+ "Clique no link abaixo para confirmar seu cadastro no nosso e-commerce<br>"
-					+ "<h3><a href=\"[[URL]]\">Confirme seu cadastro</a></h3>";
 
 			MimeMessage message = emailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message);

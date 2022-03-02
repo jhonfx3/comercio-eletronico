@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
@@ -28,7 +29,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.sessionManagement(session -> session.invalidSessionUrl("/sessaotimeout?mensagem=expirado")
-				.maximumSessions(1).expiredUrl("/sessaotimeout?mensagem=maximoSessoes")).authorizeRequests()
+				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1)
+				.expiredUrl("/sessaotimeout?mensagem=maximoSessoes")).authorizeRequests()
 				.antMatchers("/usuario/urlmagica").permitAll().antMatchers("/usuario/formulario").permitAll()
 				.antMatchers("/usuario/novo").permitAll().antMatchers("/usuario/confirmar/**").permitAll()
 				.antMatchers("/notificacao/**").permitAll().antMatchers("/categoria/**").permitAll()
