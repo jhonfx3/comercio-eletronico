@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<th:block th:include="~{base::head}">/>
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+	<div class="container-fluid col-sm-12">
+		<header class="row">
+			<div class="col-12 mr-3">
+				<div th:replace="~{base::cabecalho}"></div>
+			</div>
+		</header>
+		<main>
+			<form th:action="@{/usuario/recuperar-senha/enviarEmailRecuperacao}"
+				method="post">
+				<div class="form-group">
+					<input type="password" class="form-control"
+						placeholder="Nova senha">
+				</div>
+				<div class="form-group col-sm-10">
+					<button class="btn btn-primary" type="submit">Enviar</button>
+				</div>
+			</form>
+		</main>
+		<div th:replace="~{base::rodape}"></div>
+	</div>
+</body>
+</html>

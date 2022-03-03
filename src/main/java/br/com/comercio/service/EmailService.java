@@ -26,7 +26,7 @@ public class EmailService {
 	@Autowired
 	private EmailRepository emailRepository;
 
-	public void enviarEmail(Usuario usuario, String codigo, HttpServletRequest request, String content)
+	public void enviarEmail(Usuario usuario, String codigo, HttpServletRequest request, String content, String link)
 			throws MessagingException, UnsupportedEncodingException {
 		Email email = new Email();
 		try {
@@ -45,7 +45,7 @@ public class EmailService {
 					.toUriString();
 
 			content = content.replace("[[nome]]", "Novo usuário");
-			String urlDeConfirmacao = urlBase + "/usuario/confirmar/" + codigo;
+			String urlDeConfirmacao = urlBase + link + codigo;
 			content = content.replace("[[URL]]", urlDeConfirmacao);
 			helper.setText(content, true);
 			emailSender.send(message);

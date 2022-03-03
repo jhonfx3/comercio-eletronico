@@ -1,12 +1,14 @@
 package br.com.comercio.controller;
 
 import java.beans.PropertyEditorSupport;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -111,6 +113,36 @@ public class UsuarioController {
 		return "home";
 	}
 
+	@PostMapping("/recuperar-senha")
+	public String recuperarSenha() {
+		return "usuario/formRecuperarSenha";
+	}
+
+	@PostMapping("/recuperar-senha/enviarEmailRecuperacao")
+	public String mandarEmailRecuperacao(String email, HttpServletRequest request)
+			throws UnsupportedEncodingException, MessagingException {
+		email = "jcaferreira9x@hotmail.com";
+		Usuario usuario = usuarioRepository.findById(email).get();
+		String codigo = RandomString.make(20);
+		usuario.setCodigoVerificacao(codigo);
+		usuarioRepository.save(usuario);
+		String content = "Você solicitou a recuperacao de senha,<br>" + "Clique no link abaixo para redefini-la<br>"
+				+ "<h3><a href=\"[[URL]]\">Redefinicao de senha</a></h3>";
+		String link = "/usuario/trocar-senha-esquecida/";
+		emailService.enviarEmail(usuario, codigo, request, content, link);
+		return "redirect:/";
+	}
+
+	@GetMapping("/trocar-senha-esquecida/{codigo}")
+	public String formularioEsqueciSenha(@PathVariable("codigo") String codigo, Usuario usuario) {
+		try {
+			Usuario usuarioCodigo = usuarioRepository.findByCodigoVerificacao(codigo);
+		} catch (Exception e) {
+			return "redirect:/";
+		}
+		return "usuario/formularioMudarSenha";
+	}
+
 	@PostMapping("/novo")
 	public String novo(@Validated(PersistirUsuario.class) Usuario usuario, BindingResult result,
 			HttpServletRequest request, RedirectAttributes attributes, String confirmarSenha) throws Exception {
@@ -131,7 +163,8 @@ public class UsuarioController {
 		String content = "Bem-vindo " + usuario.getNome() + ",<br>"
 				+ "Clique no link abaixo para confirmar seu cadastro no nosso e-commerce<br>"
 				+ "<h3><a href=\"[[URL]]\">Confirme seu cadastro</a></h3>";
-		emailService.enviarEmail(usuario, codigo, request, content);
+		String link = "/usuario/confirmar/";
+		emailService.enviarEmail(usuario, codigo, request, content, link);
 		return "redirect:/usuario/sucessoContaCriada";
 	}
 

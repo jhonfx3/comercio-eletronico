@@ -5,6 +5,12 @@
 <title>Login</title>
 <th:block th:include="~{base::head}">/>
 
+
+
+
+
+
+
 </head>
 <body>
 
@@ -49,7 +55,10 @@
 						</div>
 
 					</form>
-
+					<form id="form-senha" method="post"
+						th:action="@{/usuario/recuperar-senha}">
+						<button type="submit" class="btn btn-secondary">Esqueci minha senha</button>
+					</form>
 				</div>
 			</div>
 		</main>
