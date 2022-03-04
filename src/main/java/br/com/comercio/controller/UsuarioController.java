@@ -113,11 +113,14 @@ public class UsuarioController {
 		return "home";
 	}
 
+	// URL que chama o formulário para inserir o e-mail que se deseja recuperar a
+	// senha
 	@PostMapping("/recuperar-senha")
 	public String recuperarSenha() {
 		return "usuario/formRecuperarSenha";
 	}
 
+	// URL que manda um email de recuperação de senha
 	@PostMapping("/recuperar-senha/enviarEmailRecuperacao")
 	public String mandarEmailRecuperacao(String email, HttpServletRequest request)
 			throws UnsupportedEncodingException, MessagingException {
@@ -133,14 +136,42 @@ public class UsuarioController {
 		return "redirect:/";
 	}
 
+	// URL que chama o formulário para inserir uma nova senha em caso de
+	// esquecimento
 	@GetMapping("/trocar-senha-esquecida/{codigo}")
-	public String formularioEsqueciSenha(@PathVariable("codigo") String codigo, Usuario usuario) {
+	public String formularioEsqueciSenha(@PathVariable("codigo") String codigo, Usuario usuario, Model model) {
 		try {
 			Usuario usuarioCodigo = usuarioRepository.findByCodigoVerificacao(codigo);
+			model.addAttribute("codigo", usuarioCodigo.getCodigoVerificacao());
 		} catch (Exception e) {
-			return "redirect:/";
+			throw new RuntimeException("deu erro com o codigo");
 		}
-		return "usuario/formularioMudarSenha";
+		return "usuario/formTrocarSenhaEsquecida";
+	}
+
+	@PostMapping("/novaSenha")
+	public String novaSenha(@Valid Usuario usuario, BindingResult result, String confirmarSenha, Model model,
+			String codigo, RedirectAttributes attributes) {
+		if (!usuario.getPassword().equals("")) {
+			if (!usuario.getPassword().equals(confirmarSenha)) {
+				result.rejectValue("password", "SenhasNaobatem.usuario.senha");
+			}
+		}
+		if (result.hasFieldErrors("password")) {
+			model.addAttribute("codigo", codigo);
+			return "usuario/formTrocarSenhaEsquecida";
+		}
+		try {
+			Usuario usuarioCodigo = usuarioRepository.findByCodigoVerificacao(codigo);
+			usuarioCodigo.setCodigoVerificacao(null);
+			usuarioCodigo.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
+			usuarioRepository.save(usuarioCodigo);
+			attributes.addFlashAttribute("sucessoAlteracaoSenha",
+					"Sua senha foi recuperada com sucesso, faça login com sua nova senha");
+		} catch (Exception e) {
+			throw new RuntimeException("deu erro com o codigo");
+		}
+		return "redirect:/login";
 	}
 
 	@PostMapping("/novo")

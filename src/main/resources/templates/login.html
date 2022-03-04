@@ -11,6 +11,7 @@
 
 
 
+
 </head>
 <body>
 
@@ -45,8 +46,8 @@
 								<div th:if="${erro} != null">
 									<span class="text-danger" th:text="${erro}"></span>
 								</div>
-								<div th:if="${expirado} != null">
-									<span class="text-danger" th:text="${expirado}"></span>
+								<div th:if="${sucessoAlteracaoSenha} != null">
+									<span class="text-success" th:text="${sucessoAlteracaoSenha}"></span>
 								</div>
 							</div>
 							<div class="form-group col-sm-10">
@@ -57,7 +58,8 @@
 					</form>
 					<form id="form-senha" method="post"
 						th:action="@{/usuario/recuperar-senha}">
-						<button type="submit" class="btn btn-secondary">Esqueci minha senha</button>
+						<button type="submit" class="btn btn-secondary">Esqueci
+							minha senha</button>
 					</form>
 				</div>
 			</div>
