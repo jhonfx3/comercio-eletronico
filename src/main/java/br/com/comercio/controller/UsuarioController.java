@@ -117,7 +117,7 @@ public class UsuarioController {
 	// senha
 	@PostMapping("/recuperar-senha")
 	public String recuperarSenha() {
-		return "usuario/formRecuperarSenha";
+		return "usuario/formEnviarEmailRecuperacao";
 	}
 
 	// URL que manda um email de recuperação de senha
