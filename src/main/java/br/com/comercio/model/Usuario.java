@@ -31,6 +31,7 @@ import br.com.comercio.hibernategroups.PersistirUsuario;
 import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.interfaces.AntiXss;
 import br.com.comercio.interfaces.DataFormatValidacao;
+import br.com.comercio.interfaces.Maioridade;
 import br.com.comercio.interfaces.SenhaFraca;
 import br.com.comercio.interfaces.UniqueColumn;
 import br.com.comercio.interfaces.UniqueColumnEditar;
@@ -85,6 +86,7 @@ public class Usuario implements UserDetails {
 	@Past(message = "Data de nascimento deve estar no passado")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@DataFormatValidacao(message = "A data informada é inválida")
+	@Maioridade
 	private LocalDate nascimento;
 
 	public String getNome() {
