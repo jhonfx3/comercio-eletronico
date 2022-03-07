@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Categoria {
@@ -15,28 +16,34 @@ public class Categoria {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(unique = true)
+	@NotEmpty(message = "Nome da categoria não pode ser vazio")
 	private String nome;
-	
+
 	@OneToMany(mappedBy = "categoria")
 	private List<Produto> produtos;
-	
+
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public String getNome() {
 		return nome;
 	}
+
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+
 	public List<Produto> getProdutos() {
 		return produtos;
 	}
+
 	public void setProdutos(List<Produto> produtos) {
 		this.produtos = produtos;
 	}
-	
+
 }

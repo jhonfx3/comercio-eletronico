@@ -124,7 +124,7 @@ public class UsuarioController {
 	@PostMapping("/recuperar-senha/enviarEmailRecuperacao")
 	public String mandarEmailRecuperacao(String email, HttpServletRequest request)
 			throws UnsupportedEncodingException, MessagingException {
-		//email = "jcaferreira9x@hotmail.com";
+		// email = "jcaferreira9x@hotmail.com";
 		Usuario usuario = usuarioRepository.findById(email).get();
 		String codigo = RandomString.make(20);
 		usuario.setCodigoVerificacao(codigo);

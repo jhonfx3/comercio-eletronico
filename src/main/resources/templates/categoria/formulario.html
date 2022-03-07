@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Cadastro de categoria</title>
+<th:block th:include="~{base::head}">/>
+
+
+
+
+</head>
+<body>
+	<div class="container-fluid">
+		<header>
+			<div th:replace="~{base::cabecalho}"></div>
+		</header>
+		<main>
+			<div>
+				<h3 th:text="${sucesso}" class="text-success"></h3>
+			</div>
+			<form th:object="${categoria}" th:action="@{/categoria/novo}"
+				method="post">
+				<div class="form-group">
+					<label for="nome">Nome da categoria</label> <input
+						th:errorClass="is-invalid" th:field="*{nome}" id="nome" class="form-control"
+						placeholder="Nome da categoria">
+					<div class="invalid-feedback" th:errors="*{nome}"></div>
+				</div>
+				<button class="btn btn-primary" type="submit">Cadastrar</button>
+			</form>
+		</main>
+		<div th:replace="~{base::rodape}"></div>
+	</div>
+</body>
+</html>
