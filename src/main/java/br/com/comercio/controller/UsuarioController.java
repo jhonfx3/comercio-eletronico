@@ -38,6 +38,7 @@ import br.com.comercio.hibernategroups.EditarUsuario;
 import br.com.comercio.hibernategroups.PersistirUsuario;
 import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.model.Authorities;
+import br.com.comercio.model.Email;
 import br.com.comercio.model.Endereco;
 import br.com.comercio.model.Pedido;
 import br.com.comercio.model.Usuario;
@@ -122,12 +123,29 @@ public class UsuarioController {
 
 	// URL que manda um email de recuperação de senha
 	@PostMapping("/recuperar-senha/enviarEmailRecuperacao")
-	public String mandarEmailRecuperacao(String email, HttpServletRequest request)
+	public String mandarEmailRecuperacao(String email, HttpServletRequest request, Model model)
 			throws UnsupportedEncodingException, MessagingException {
-		// email = "jcaferreira9x@hotmail.com";
-		Usuario usuario = usuarioRepository.findById(email).get();
+		Usuario usuario = new Usuario();
+		try {
+			usuario = usuarioRepository.findById(email).get();
+		} catch (Exception e) {
+			model.addAttribute("erro", "Ocorreu um erro interno, não é possivel mandar o e-mail");
+			return "usuario/formEnviarEmailRecuperacao";
+		}
 		String codigo = RandomString.make(20);
-		usuario.setCodigoVerificacao(codigo);
+		/*
+		 * Se eu já possuo um código de verificação então eu pego o mantenho, não seto
+		 * um novo senão isso pode fazer com que caso outros emails já tenham sido
+		 * enviados antes, eles não serão mais válidos se bem que isso pode até ser
+		 * benéfico pois um código deveria ter um prazo para mudar de senha se expirou,
+		 * não vale mais esse código preciso pensar melhor a respeito, depende da regra
+		 * de negócio na verdade, segurança
+		 */
+		if (usuario.getCodigoVerificacao() != null) {
+			codigo = usuario.getCodigoVerificacao();
+		} else {
+			usuario.setCodigoVerificacao(codigo);
+		}
 		usuarioRepository.save(usuario);
 		String content = "Você solicitou a recuperacao de senha,<br>" + "Clique no link abaixo para redefini-la<br>"
 				+ "<h3><a href=\"[[URL]]\">Redefinicao de senha</a></h3>";
@@ -149,7 +167,7 @@ public class UsuarioController {
 		return "usuario/formTrocarSenhaEsquecida";
 	}
 
-	@PostMapping("/novaSenha")
+	@PostMapping("/trocarSenhaEsquecida")
 	public String novaSenha(@Valid Usuario usuario, BindingResult result, String confirmarSenha, Model model,
 			String codigo, RedirectAttributes attributes) {
 		if (!usuario.getPassword().equals("")) {
@@ -168,6 +186,7 @@ public class UsuarioController {
 			usuarioRepository.save(usuarioCodigo);
 			attributes.addFlashAttribute("sucessoAlteracaoSenha",
 					"Sua senha foi recuperada com sucesso, faça login com sua nova senha");
+			enviaNotificacaoDeTrocaDeSenha(usuarioCodigo.getEmail());
 		} catch (Exception e) {
 			throw new RuntimeException("deu erro com o codigo");
 		}
@@ -288,7 +307,7 @@ public class UsuarioController {
 		}
 		usuario.setPassword(novaSenha);
 		LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
-		validator.afterPropertiesSet();
+		// validator.afterPropertiesSet();
 		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(usuario, "Usuario");
 		validator.validate(usuario, bindingResult);
 		result = bindingResult;
@@ -299,6 +318,7 @@ public class UsuarioController {
 		usuarioRepository.atualizaSenha(getUsuarioLogado().getEmail(), new BCryptPasswordEncoder().encode(novaSenha));
 		Usuario usuario2 = usuarioRepository.findById(getUsuarioLogado().getEmail()).get();
 		atualizaUsuarioLogado(usuario2);
+		enviaNotificacaoDeTrocaDeSenha(usuario2.getEmail());
 		return "redirect:/usuario/formulario/editar";
 	}
 
@@ -349,4 +369,14 @@ public class UsuarioController {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 	}
+
+	private void enviaNotificacaoDeTrocaDeSenha(String destinatario) {
+		Email email = new Email();
+		email.setOrigem("jcaferreira9@gmail.com");
+		email.setAssunto("Troca de senha");
+		email.setMensagem("Você efeutou a troca de senha com sucesso");
+		email.setDestinatario(destinatario);
+		emailService.enviarEmail(email);
+	}
+
 }

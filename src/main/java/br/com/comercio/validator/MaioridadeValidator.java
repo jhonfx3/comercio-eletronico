@@ -19,6 +19,12 @@ public class MaioridadeValidator implements ConstraintValidator<Maioridade, Obje
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
 		LocalDate nascimento = (LocalDate) value;
 		Calendar nascimentoCalendar = Calendar.getInstance();
+		/*
+		 * Deixo o validator passar pois não é resoonsabilidade dessa classe validar se
+		 * é nulo ou não
+		 */
+		if (nascimento == null)
+			return true;
 		nascimentoCalendar.setTime(Date.valueOf(nascimento));
 		int anoNascimento = nascimentoCalendar.get(Calendar.YEAR);
 		int anoAtual = Calendar.getInstance().get(Calendar.YEAR);

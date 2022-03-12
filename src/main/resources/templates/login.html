@@ -12,6 +12,10 @@
 
 
 
+
+
+
+
 </head>
 <body>
 
@@ -42,7 +46,10 @@
 						<div class="row">
 							<div class="form-group col-sm-10">
 								<label for="password">Senha</label><input type="password"
-									class="form-control" placeholder="senha" name="password">
+									id="password" class="form-control" placeholder="senha"
+									name="password">
+								<button onclick="mostrarOuEsconderSenha(this);">Mostrar/esconder
+									senha</button>
 								<div th:if="${erro} != null">
 									<span class="text-danger" th:text="${erro}"></span>
 								</div>
@@ -65,7 +72,19 @@
 			</div>
 		</main>
 		<div th:replace="~{base::rodape}"></div>
-
+		<script>
+			function mostrarOuEsconderSenha(e) {
+				event.preventDefault();
+				buttonPasswd = document.getElementById("password");
+				if (buttonPasswd.type == "password") {
+					console.log("é do tipo password");
+					buttonPasswd.type = "text";
+				} else {
+					console.log("nao é do tipo password");
+					buttonPasswd.type = "password";
+				}
+			}
+		</script>
 	</div>
 
 </body>

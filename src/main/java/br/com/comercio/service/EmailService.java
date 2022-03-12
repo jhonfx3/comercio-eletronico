@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -58,5 +59,23 @@ public class EmailService {
 			emailRepository.save(email);
 		}
 		System.out.println("Status email:" + email.getStatus());
+	}
+
+	public void enviarEmail(Email email) {
+		System.out.println("Tentando enviar email...");
+		try {
+			SimpleMailMessage message = new SimpleMailMessage();
+			message.setFrom(email.getOrigem());
+			message.setTo(email.getDestinatario());
+			message.setSubject(email.getAssunto());
+			message.setText(email.getMensagem());
+			emailSender.send(message);
+			email.setStatus(StatusEmail.ENVIADO);
+			emailRepository.save(email);
+		} catch (MailException e) {
+			email.setStatus(StatusEmail.FALHA);
+			emailRepository.save(email);
+		}
+
 	}
 }

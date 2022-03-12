@@ -2,18 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Login</title>
+<title>Recuperar senha</title>
+<link rel="stylesheet" th:href="@{/css/estilos.css}" />
 <th:block th:include="~{base::head}">/>
-
-
-
-
-
-
-
-
-
-
 </head>
 <body>
 
@@ -30,6 +21,7 @@
 					<input type="text" name="email" class="form-control"
 						placeholder="e-mail">
 				</div>
+				<div th:text="${erro}" class="error"></div>
 				<div class="form-group col-sm-10">
 					<button class="btn btn-primary" type="submit">Enviar</button>
 				</div>
