@@ -2,6 +2,8 @@ package br.com.comercio.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -22,13 +24,14 @@ public class HomeController {
 	private ProdutoRepository produtoRepository;
 	@Autowired
 	private CategoriaRepository categoriaRepository;
-	
+
 	@GetMapping("/")
-	public String home(Model model) throws MPException {
+	public String home(Model model, HttpServletRequest request) throws MPException {
 		List<Produto> produtos = produtoRepository.findAll();
 		model.addAttribute("produtos", produtos);
 		List<Categoria> categorias = categoriaRepository.findAll();
 		model.addAttribute("categorias", categorias);
+		System.out.println(request.getRemoteAddr());
 		return "home";
 	}
 
