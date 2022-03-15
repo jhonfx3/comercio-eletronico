@@ -3,18 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Login</title>
-<th:block th:include="~{base::head}">/>
-
-
-
-
-
-
-
-
-
-
-
+<script type="text/javascript" th:src="@{/js/util.js}"></script>
 
 </head>
 <body>
@@ -72,19 +61,6 @@
 			</div>
 		</main>
 		<div th:replace="~{base::rodape}"></div>
-		<script>
-			function mostrarOuEsconderSenha(e) {
-				event.preventDefault();
-				buttonPasswd = document.getElementById("password");
-				if (buttonPasswd.type == "password") {
-					console.log("é do tipo password");
-					buttonPasswd.type = "text";
-				} else {
-					console.log("nao é do tipo password");
-					buttonPasswd.type = "password";
-				}
-			}
-		</script>
 	</div>
 
 </body>

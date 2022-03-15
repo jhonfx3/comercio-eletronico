@@ -18,20 +18,26 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler i
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		HttpSession session = request.getSession();
-		String urlAnterior = (String) session.getAttribute("urlAnterior");
-		// Removo da sessão esse atributo
-		session.removeAttribute("urlAnterior");
-		/*
-		 * Se eu não tenho uma url anterior, então eu seto a url anterio como a página
-		 * principal Isso acontece quando o usuário acessa uma url diretamente e não
-		 * consegue logo não existe nenhuma url anterior por ex:
-		 * produto/formulario/cadastrar
-		 */
-		if (urlAnterior == null || (urlAnterior != null && urlAnterior.isEmpty())) {
-			urlAnterior = "/";
-		}
-		if (urlAnterior.contains("/login")) {
+		String urlAnterior;
+		try {
+			HttpSession session = request.getSession();
+			urlAnterior = (String) session.getAttribute("urlAnterior");
+			// Removo da sessão esse atributo
+			session.removeAttribute("urlAnterior");
+			/*
+			 * Se eu não tenho uma url anterior, então eu seto a url anterio como a página
+			 * principal Isso acontece quando o usuário acessa uma url diretamente e não
+			 * consegue logo não existe nenhuma url anterior por ex:
+			 * produto/formulario/cadastrar
+			 */
+			if (urlAnterior == null || (urlAnterior != null && urlAnterior.isEmpty())) {
+				urlAnterior = "/";
+			}
+			if (urlAnterior.contains("/login")) {
+				urlAnterior = "/";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 			urlAnterior = "/";
 		}
 		response.sendRedirect(urlAnterior);

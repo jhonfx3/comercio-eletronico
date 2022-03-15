@@ -29,3 +29,11 @@
 	<button type="submit" class="btn btn-primary">Editar</button>
 	<input type="hidden" name="password" th:value="*{password}">
 </form>
+
+<div th:fragment="botao-mostra-password">
+	<input type="password" id="password" class="form-control"
+		placeholder="senha" name="password">
+	<button onclick="mostrarOuEsconderSenha(this);">Mostrar/esconder
+		senha</button>
+</div>
+
