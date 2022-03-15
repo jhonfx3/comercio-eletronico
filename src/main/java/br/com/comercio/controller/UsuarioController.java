@@ -134,19 +134,7 @@ public class UsuarioController {
 			return "usuario/formEnviarEmailRecuperacao";
 		}
 		String codigo = RandomString.make(20);
-		/*
-		 * Se eu já possuo um código de verificação então eu pego o mantenho, não seto
-		 * um novo senão isso pode fazer com que caso outros emails já tenham sido
-		 * enviados antes, eles não serão mais válidos se bem que isso pode até ser
-		 * benéfico pois um código deveria ter um prazo para mudar de senha se expirou,
-		 * não vale mais esse código preciso pensar melhor a respeito, depende da regra
-		 * de negócio na verdade, segurança
-		 */
-		if (usuario.getCodigoVerificacao() != null) {
-			codigo = usuario.getCodigoVerificacao();
-		} else {
-			usuario.setCodigoVerificacao(codigo);
-		}
+		usuario.setCodigoVerificacao(codigo);
 		usuarioRepository.save(usuario);
 		Email emailEnviar = new Email();
 		emailEnviar.setAssunto("Código de mudança de senha");

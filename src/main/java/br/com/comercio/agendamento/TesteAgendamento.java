@@ -1,24 +1,38 @@
 package br.com.comercio.agendamento;
 
-//@Component
-//@EnableScheduling
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import br.com.comercio.model.Usuario;
+import br.com.comercio.repository.UsuarioRepository;
+
+@Component
+@EnableScheduling
 public class TesteAgendamento {
 
-	//@Autowired
-	//private UsuarioRepository usuarioRepository;
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
-	//@Scheduled(initialDelay = 10000, fixedDelay = 60000)
+	// Começa com 10 segundos e a cada 10 minutos repete
+	@Scheduled(initialDelay = 10000, fixedDelay = 600000)
 	public void testeAgendamento() {
-		/*
-		 * Esse código funciona porém não deve ser o mais adequado de invalidar o código
-		 * de verificação
-		 * 
-		 * System.out.println("zerando códigos de verificação..."); List<Usuario>
-		 * usuarios = usuarioRepository.findAll(); for (Usuario usuario : usuarios) { if
-		 * (usuario.isEnabled()) { if (usuario.getCodigoVerificacao() != null) {
-		 * usuario.setCodigoVerificacao(null); usuarioRepository.save(usuario); } } }
-		 * 
-		 */
+		// Devem existir melhores formas de fazer essa rotina
+		// Preciso aprimorar...
+		System.out.println("zerando códigos de verificação...");
+		List<Usuario> usuarios = usuarioRepository.findAll();
+		for (Usuario usuario : usuarios) {
+			if (usuario.isEnabled()) {
+				if (usuario.getCodigoVerificacao() != null) {
+					usuario.setCodigoVerificacao(null);
+					usuarioRepository.save(usuario);
+				}
+			}
+		}
+
 	}
 
 }
