@@ -129,7 +129,8 @@ public class UsuarioController {
 		try {
 			usuario = usuarioRepository.findById(email).get();
 		} catch (Exception e) {
-			model.addAttribute("erro", "Ocorreu um erro interno, não é possivel mandar o e-mail");
+			model.addAttribute("erro",
+					"Caso este e-mail corresponda a uma conta do nosso sistema, enviaremos um e-mail com o processo de recuperação");
 			return "usuario/formEnviarEmailRecuperacao";
 		}
 		String codigo = RandomString.make(20);
@@ -147,17 +148,26 @@ public class UsuarioController {
 			usuario.setCodigoVerificacao(codigo);
 		}
 		usuarioRepository.save(usuario);
-		String content = "Você solicitou a recuperacao de senha,<br>" + "Clique no link abaixo para redefini-la<br>"
-				+ "<h3><a href=\"[[URL]]\">Redefinicao de senha</a></h3>";
-		String link = "/usuario/trocar-senha-esquecida/";
-		emailService.enviarEmail(usuario, codigo, request, content, link);
-		return "redirect:/";
+		Email emailEnviar = new Email();
+		emailEnviar.setAssunto("Código de mudança de senha");
+		emailEnviar.setOrigem("jcaferreira9@gmail.com");
+		emailEnviar.setDestinatario(usuario.getEmail());
+		emailEnviar.setMensagem("Insira esse código no formulário de recuperação de senha: " + codigo);
+		emailService.enviarEmail(emailEnviar);
+		/*
+		 * String content = "Você solicitou a recuperacao de senha,<br>" +
+		 * "Clique no link abaixo para redefini-la<br>" +
+		 * "<h3><a href=\"[[URL]]\">Redefinicao de senha</a></h3>"; String link =
+		 * "/usuario/trocar-senha-esquecida/";
+		 */
+		// emailService.enviarEmail(usuario, codigo, request, content, link);
+		return "usuario/formConfirmarCodigoRecuperacao";
 	}
 
 	// URL que chama o formulário para inserir uma nova senha em caso de
 	// esquecimento
-	@GetMapping("/trocar-senha-esquecida/{codigo}")
-	public String formularioEsqueciSenha(@PathVariable("codigo") String codigo, Usuario usuario, Model model) {
+	@PostMapping("/trocar-senha-esquecida")
+	public String formularioEsqueciSenha(String codigo, Usuario usuario, Model model) {
 		try {
 			Usuario usuarioCodigo = usuarioRepository.findByCodigoVerificacao(codigo);
 			model.addAttribute("codigo", usuarioCodigo.getCodigoVerificacao());
