@@ -1,8 +1,5 @@
 package br.com.comercio.controller;
 
-import java.util.Comparator;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -16,10 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.com.comercio.enums.TipoPreco;
 import br.com.comercio.model.CarrinhoDeCompras;
 import br.com.comercio.model.CarrinhoItem;
-import br.com.comercio.model.Preco;
 import br.com.comercio.model.Produto;
 import br.com.comercio.repository.CategoriaRepository;
 import br.com.comercio.repository.ProdutoRepository;
@@ -39,24 +34,14 @@ public class ProdutoController {
 	@GetMapping("formulario/{acao}")
 	public String formulario(@PathVariable("acao") String acao, Produto produto, Model model,
 			HttpServletRequest request) {
-		model.addAttribute("tipos", TipoPreco.values());
+		System.out.println("chamando formulario...");
 		model.addAttribute("categorias", categoriaRepository.findAll());
 		if (acao.equals("cadastrar")) {
+			System.out.println("...");
 			return "produto/formulario";
 		} else {
 			if (request.getParameter("produto") != null) {
 				model.addAttribute("idProdutoEditar", request.getParameter("produto"));
-				List<Preco> precos = produto.getPrecos();
-				/*
-				 * Preciso ordenar em ordem alfabética senão ocorre inversão de valores na hora
-				 * de renderizar na página de edição.
-				 */
-				precos.sort(new Comparator<Preco>() {
-					@Override
-					public int compare(Preco p1, Preco p2) {
-						return p1.getTipo().compareTo(p2.getTipo());
-					}
-				});
 			}
 			return "produto/formularioEditar";
 		}
@@ -67,7 +52,6 @@ public class ProdutoController {
 	public String editar(@PathVariable("id") Long id, Model model, RedirectAttributes attr) {
 		Produto produto = produtoRepository.findById(id).get();
 		model.addAttribute("produto", produto);
-		model.addAttribute("tipos", TipoPreco.values());
 		model.addAttribute("idProdutoEditar", id);
 		model.addAttribute("categorias", categoriaRepository.findAll());
 		attr.addAttribute("idProdutoEditar", id);
@@ -106,9 +90,15 @@ public class ProdutoController {
 
 	@PostMapping("novo")
 	public String novo(@Valid Produto produto, BindingResult result, Model model, RedirectAttributes attributes) {
-		model.addAttribute("tipos", TipoPreco.values());
+		model.addAttribute("categorias", categoriaRepository.findAll());
 		if (result.hasErrors()) {
+			System.out.println("erro!!!");
 			return "produto/formulario";
+		}
+		if (produto.getPreco() == null) {
+			System.out.println("preco null");
+		} else {
+			System.out.println("preco nao null");
 		}
 		produtoRepository.save(produto);
 		attributes.addFlashAttribute("sucesso", "Produto cadastrado com sucesso");
@@ -118,7 +108,6 @@ public class ProdutoController {
 	@PostMapping("editarProduto")
 	public String editarProduto(@Valid Produto produto, BindingResult result, Model model,
 			RedirectAttributes attributes, String idProdutoEditar) {
-		model.addAttribute("tipos", TipoPreco.values());
 		if (result.hasErrors()) {
 			System.out.println("Deu erro!");
 			model.addAttribute("produto", produto);

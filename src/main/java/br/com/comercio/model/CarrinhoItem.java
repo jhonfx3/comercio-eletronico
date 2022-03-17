@@ -3,8 +3,6 @@ package br.com.comercio.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import br.com.comercio.enums.TipoPreco;
-
 public class CarrinhoItem implements Serializable {
 	/**
 	 * 
@@ -24,8 +22,10 @@ public class CarrinhoItem implements Serializable {
 		this.produto = produto;
 	}
 
-	public BigDecimal getTotalCarrinhoItem(int quantidade, TipoPreco tipo) {
-		return this.getProduto().precoPara(tipo).multiply(new BigDecimal(quantidade));
+	public BigDecimal getTotalCarrinhoItem(int quantidade) {
+		// return this.getProduto().precoPara(tipo).multiply(new
+		// BigDecimal(quantidade));
+		return this.getProduto().getPreco().multiply(new BigDecimal(quantidade));
 	}
 
 	@Override

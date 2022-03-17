@@ -13,7 +13,6 @@ import org.springframework.web.context.WebApplicationContext;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import br.com.comercio.enums.TipoPreco;
 import br.com.comercio.model.CarrinhoDeCompras;
 import br.com.comercio.model.CarrinhoItem;
 import br.com.comercio.model.Produto;
@@ -38,11 +37,9 @@ public class AtualizaRecursosController {
 		System.out.println("produtoId: " + produtoId + " Quantidade: " + quantidade);
 		Produto produto = produtoRepository.findById(Long.valueOf(produtoId)).get();
 		carrinho.adiciona(new CarrinhoItem(produto), Integer.valueOf(quantidade));
-		String totalVista = String.valueOf(carrinho.getTotalCarrinho(TipoPreco.VISTA));
-		String totalPrazo = String.valueOf(carrinho.getTotalCarrinho(TipoPreco.PRAZO));
+		String total = String.valueOf(carrinho.getTotalCarrinho());
 		JsonObject resposta = new JsonObject();
-		resposta.addProperty("totalVista", totalVista);
-		resposta.addProperty("totalPrazo", totalPrazo);
+		resposta.addProperty("total", total);
 		System.out.println(resposta.toString());
 		return ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(resposta.toString()));
 	}

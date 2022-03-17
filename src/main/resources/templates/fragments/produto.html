@@ -21,17 +21,18 @@
 		<div class="invalid-feedback" th:errors="*{descricao}"></div>
 
 	</div>
-	<div th:each="tipo,status: ${tipos}" class="form-group">
-		Preço a <label th:text="${tipo}"></label> <input type="text"
-			class="form-control" th:field="*{precos[__${status.index}__].valor}" />
-		<input type="hidden" class="form-control"
-			th:name="|precos[${status.index}].tipo|" th:value="${tipo}" />
+	<div class="form-group">
+		<label for="preco">Preço</label> <input type="text"
+			th:errorClass="is-invalid" th:field="*{preco}"
+			placeholder="Preço do produto" class="form-control">
+		<div class="invalid-feedback" th:errors="*{preco}"></div>
+
 	</div>
 	<input type="hidden" th:if="${idProdutoEditar} != 'null'"
 		name="idProdutoEditar" th:value="${idProdutoEditar}">
 	<select th:field="*{categoria}">
-		<option th:each="categoria: ${categorias}"
-			th:value="${categoria.id}" th:text="${categoria.nome}"></option>
+		<option th:each="categoria: ${categorias}" th:value="${categoria.id}"
+			th:text="${categoria.nome}"></option>
 	</select>
 	<button type="submit" class="btn btn-primary" th:text="${acao}"></button>
 

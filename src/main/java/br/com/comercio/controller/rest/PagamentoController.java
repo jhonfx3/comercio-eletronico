@@ -30,7 +30,6 @@ import com.mercadopago.resources.datastructures.payment.Payer;
 
 import br.com.comercio.dto.PaymentResponseDTO;
 import br.com.comercio.enums.StatusPedido;
-import br.com.comercio.enums.TipoPreco;
 import br.com.comercio.model.CardPaymentDTO;
 import br.com.comercio.model.CarrinhoDeCompras;
 import br.com.comercio.model.CarrinhoItem;
@@ -73,11 +72,11 @@ public class PagamentoController {
 			produtoPedido.setQuantidade(entry.getValue());
 
 			if (cardPaymentDTO.getInstallments() != null && cardPaymentDTO.getInstallments() > 1) {
-				produtoPedido.setTotal(new BigDecimal(calculaValorAPrazo(
-						carrinhoItem.getTotalCarrinhoItem(entry.getValue(), TipoPreco.VISTA).floatValue(),
-						cardPaymentDTO.getInstallments())));
+				produtoPedido.setTotal(new BigDecimal(
+						carrinho.calculaValorAPrazo(carrinhoItem.getTotalCarrinhoItem(entry.getValue()).floatValue(),
+								cardPaymentDTO.getInstallments())));
 			} else {
-				produtoPedido.setTotal(carrinhoItem.getTotalCarrinhoItem(entry.getValue(), TipoPreco.VISTA));
+				produtoPedido.setTotal(carrinhoItem.getTotalCarrinhoItem(entry.getValue()));
 			}
 
 			listaProdutosPedido.add(produtoPedido);
@@ -85,7 +84,7 @@ public class PagamentoController {
 			item.setId(String.valueOf(carrinhoItem.getProduto().getId()));
 			item.setPictureUrl(carrinhoItem.getProduto().getUrlImagem());
 			item.setTitle(carrinhoItem.getProduto().getNome());
-			item.setUnitPrice(carrinhoItem.getProduto().getPrecos().get(0).getValor().floatValue());
+			item.setUnitPrice(carrinhoItem.getProduto().getPreco().floatValue());
 			item.setQuantity(entry.getValue());
 			itens.add(item);
 		}
@@ -95,8 +94,8 @@ public class PagamentoController {
 		Payment payment = new Payment();
 
 		if (cardPaymentDTO.getInstallments() != null && cardPaymentDTO.getInstallments() > 1) {
-			payment.setTransactionAmount(
-					calculaValorAPrazo(cardPaymentDTO.getTransactionAmount(), cardPaymentDTO.getInstallments()));
+			payment.setTransactionAmount(carrinho.calculaValorAPrazo(cardPaymentDTO.getTransactionAmount(),
+					cardPaymentDTO.getInstallments()));
 		} else {
 			payment.setTransactionAmount(cardPaymentDTO.getTransactionAmount());
 		}

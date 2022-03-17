@@ -63,6 +63,10 @@
 
 
 
+
+
+
+
 </head>
 
 <body>
@@ -77,8 +81,7 @@
 								<tr>
 									<th scope="col">Produto</th>
 									<th scope="col"></th>
-									<th scope="col">Preco a VISTA</th>
-									<th scope="col">Preco a PRAZO</th>
+									<th scope="col">Preço</th>
 									<th scope="col">Quantidade</th>
 									<th scope="col"></th>
 								</tr>
@@ -91,8 +94,7 @@
 											<img th:height="150px" th:width="150px"
 											th:src="${item.key.produto.urlImagem}">
 									</a></td>
-									<td th:text="${item.key.produto.precos[0].valor}"></td>
-									<td th:text="${item.key.produto.precos[1].valor}"></td>
+									<td th:text="${item.key.produto.preco}"></td>
 									<td><input th:id="${item.key.produto.id}" type="number"
 										min="1" oninput="aumentaQuantidadeNoCarrinho(this);"
 										th:value="${item.value}"></td>
@@ -109,20 +111,10 @@
 			<div class="col-6">
 				<div class="card">
 					<div class="card-body">
-						Total VISTA R$: <label class="text-green" id="totalVista"
-							th:text="${totalVista}"></label> Total PRAZO R$: <label
-							id="totalPrazo" th:text="${totalPrazo}"></label>
+						Total R$: <label class="text-green" id="total" th:text="${total}">
+						</label><label> Ou até em 12 x de x</label>
 						<div>
 							<form th:action="@{/carrinho/formulario}" method="post">
-								<div th:each="tipo: ${tipos}"
-									class="form-check form-check-inline">
-									<input class="form-check-input" type="radio"
-										th:name="formaPagamento" th:value="${tipo}" checked> <label
-										for="formaPagamento" class="form-check-label"
-										th:text="${tipo}"></label>
-								</div>
-
-
 								<button th:if="${permissaoComprar} == true" id="btnCadastrar"
 									class="btn btn-primary" type="submit">Finalizar compra</button>
 
@@ -164,9 +156,7 @@
 	                .then(resposta => {
 						console.log(resposta);
 						var json = JSON.parse(resposta);
-						console.log(json.totalPrazo);
-						document.getElementById("totalVista").textContent = json.totalVista;
-						document.getElementById("totalPrazo").textContent = json.totalPrazo;
+						document.getElementById("total").textContent = json.total;
 	                })
 				
 				

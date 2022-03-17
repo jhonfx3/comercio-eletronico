@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.WebApplicationContext;
 
-import br.com.comercio.enums.TipoPreco;
 import br.com.comercio.model.Authorities;
 import br.com.comercio.model.CarrinhoDeCompras;
 import br.com.comercio.model.CarrinhoItem;
@@ -59,9 +58,7 @@ public class CarrinhoController {
 		Produto produto = ProdutoRepository.findByIdProduto(produtoId);
 		carrinho.adiciona(new CarrinhoItem(produto));
 		model.addAttribute("itens", carrinho.getItensMap());
-		model.addAttribute("totalVista", carrinho.getTotalCarrinho(TipoPreco.VISTA));
-		model.addAttribute("totalPrazo", carrinho.getTotalCarrinho(TipoPreco.PRAZO));
-		model.addAttribute("tipos", TipoPreco.values());
+		model.addAttribute("total", carrinho.getTotalCarrinho());
 		model.addAttribute("profileAtivo", profileAtivo);
 		return "redirect:/carrinho";
 	}
@@ -69,9 +66,7 @@ public class CarrinhoController {
 	@GetMapping
 	public String carrinho(Model model, Long produtoId) {
 		model.addAttribute("itens", carrinho.getItensMap());
-		model.addAttribute("totalVista", carrinho.getTotalCarrinho(TipoPreco.VISTA));
-		model.addAttribute("totalPrazo", carrinho.getTotalCarrinho(TipoPreco.PRAZO));
-		model.addAttribute("tipos", TipoPreco.values());
+		model.addAttribute("total", carrinho.getTotalCarrinho());
 		model.addAttribute("profileAtivo", profileAtivo);
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		try {
@@ -98,7 +93,7 @@ public class CarrinhoController {
 			System.out.println(mercadopagoPublicKey);
 			model.addAttribute("mercadopagoPublicKey", mercadopagoPublicKey);
 		}
-		model.addAttribute("totalDaCompra", String.valueOf(carrinho.getTotalCarrinho(TipoPreco.VISTA)));
+		model.addAttribute("totalDaCompra", String.valueOf(carrinho.getTotalCarrinho()));
 		return "pagamento/formulario";
 	}
 }

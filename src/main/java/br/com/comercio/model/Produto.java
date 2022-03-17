@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,9 +15,9 @@ import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
-import br.com.comercio.enums.TipoPreco;
+import com.mercadopago.core.annotations.validation.NotNull;
+
 import br.com.comercio.interfaces.AntiXss;
-import br.com.comercio.interfaces.ListaVazia;
 
 @Entity
 public class Produto {
@@ -28,9 +27,8 @@ public class Produto {
 	@NotEmpty(message = "Nome não pode ser vazio")
 	@AntiXss
 	private String nome;
-	@ElementCollection
-	@ListaVazia
-	private List<Preco> precos;
+	@javax.validation.constraints.NotNull(message = "Preco é obrigatório")
+	private BigDecimal preco;
 	@URL(message = "Url inválida")
 	@Column(columnDefinition = "VARCHAR(2048)")
 	@Length(max = 2048)
@@ -43,7 +41,7 @@ public class Produto {
 
 	@ManyToOne
 	private Categoria categoria;
-	
+
 	public Categoria getCategoria() {
 		return categoria;
 	}
@@ -84,12 +82,12 @@ public class Produto {
 		this.urlImagem = urlImagem;
 	}
 
-	public List<Preco> getPrecos() {
-		return precos;
+	public BigDecimal getPreco() {
+		return preco;
 	}
 
-	public void setPrecos(List<Preco> precos) {
-		this.precos = precos;
+	public void setPreco(BigDecimal preco) {
+		this.preco = preco;
 	}
 
 	@Override
@@ -99,16 +97,12 @@ public class Produto {
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
-
-	public BigDecimal precoPara(TipoPreco tipo) {
-		if (tipo.equals(TipoPreco.VISTA)) {
-			return this.getPrecos().get(0).getValor();
-		}
-		if (tipo.equals(TipoPreco.PRAZO)) {
-			return this.getPrecos().get(1).getValor();
-		}
-		return null;
-	}
+	/*
+	 * public BigDecimal precoPara(TipoPreco tipo) { if
+	 * (tipo.equals(TipoPreco.VISTA)) { return this.getPrecos().get(0).getValor(); }
+	 * if (tipo.equals(TipoPreco.PRAZO)) { return
+	 * this.getPrecos().get(1).getValor(); } return null; }
+	 */
 
 	@Override
 	public boolean equals(Object obj) {
