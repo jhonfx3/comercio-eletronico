@@ -9,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotEmpty;
+
+import br.com.comercio.interfaces.AntiXss;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -16,6 +19,8 @@ public abstract class Cliente {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@NotEmpty(message = "Nome é obrigatório")
+	@AntiXss
 	private String nome;
 	private String telefone;
 	@OneToMany(mappedBy = "cliente")
@@ -36,6 +41,5 @@ public abstract class Cliente {
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
-
 
 }

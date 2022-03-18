@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Formulário de cadastro</title>
+<script type="text/javascript" th:src="@{/js/mascaras.js}"></script>
+<style>
+.error {
+	color: #dc3545;
+	font-size: 80%;
+}
+</style>
+<th:block th:include="~{base::head}">/>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+	<div class="container-fluid">
+		<header>
+			<div th:replace="~{base::cabecalho}"></div>
+		</header>
+		<main>
+			<div class="jumbotron">
+				<h1 class="display-4">Cadastro de cliente</h1>
+			</div>
+			<div>
+				<h3 th:text="${sucesso}" class="text-success"></h3>
+			</div>
+			<form th:object="${clienteFisico}" th:action="@{/cliente/novo}"
+				method="post">
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="username">E-mail</label> <input type="email"
+							class="form-control" placeholder="E-mail" name="email">
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="username">Nome</label> <input
+							th:errorClass="is-invalid" type="text" class="form-control"
+							placeholder="Seu nome" th:field="*{nome}">
+						<div class="invalid-feedback" th:errors="*{nome}"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="username">Sobrenome</label> <input
+							th:errorClass="is-invalid" type="text" class="form-control"
+							placeholder="Seu sobrenome" th:field="*{sobrenome}">
+						<div class="invalid-feedback" th:errors="*{sobrenome}"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="password">Senha</label><input type="password"
+							maxlength="10" class="form-control"
+							placeholder="Digite sua senha" name="password">
+					</div>
+					<div class="form-group col-sm-10">
+						<label for="password">Confirme sua senha</label><input
+							type="password" class="form-control"
+							placeholder="Confirme sua senha" name="confirmarSenha">
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="cpf">CPF</label><input type="text" maxlength="14"
+							id="cpf" onkeyup="aplicaMascaraCpf(this);"
+							th:errorClass="is-invalid" class="form-control"
+							placeholder="Seu CPF" th:field=*{cpf}>
+						<div class="invalid-feedback" th:errors="*{cpf}"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="aniversario">Data de nascimento</label><input
+							th:errorClass="is-invalid" type="date" max="31-01-4000"
+							class="form-control" placeholder="Data de nascimento"
+							th:field="*{nascimento}" required>
+						<div class="invalid-feedback" th:errors="*{nascimento}"></div>
+
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="telefone">Telefone</label><input type="text"
+							maxlength="15" id="telefone"
+							onkeyup="aplicaMascaraTelefone(this);" class="form-control"
+							placeholder="Telefone para contato" name="telefone">
+					</div>
+				</div>
+				<button type="submit" class="btn btn-primary">Cadastrar</button>
+			</form>
+
+		</main>
+		<div th:replace="~{base::rodape}"></div>
+	</div>
+</body>
+</html>
