@@ -26,6 +26,16 @@ public class Endereco {
 
 	@ManyToOne
 	private Usuario usuario;
+	@ManyToOne
+	private Cliente cliente;
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
 
 	public Usuario getUsuario() {
 		return usuario;
