@@ -4,23 +4,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.model.Usuario;
+import br.com.comercio.repository.UsuarioRepository;
 
+@Component
 public class UsuarioGroupProvider implements DefaultGroupSequenceProvider<Usuario> {
+	private UsuarioRepository usuarioRepository;
+
+	@Autowired
+	private UsuarioRepositoryImpl impl;
 
 	@Override
 	public List<Class<?>> getValidationGroups(Usuario usuario) {
 		List<Class<?>> groups = new ArrayList<>();
 
 		groups.add(Usuario.class);
-
-		if (usuario.getUsername() != null) {
-			groups.add(EditarUsuario.class);
-			System.out.println("adicionando o editar usuario");
-		} else {
-			groups.add(PersistirUsuario.class);
-			System.out.println("adicionando o persistir usuario");
+		if (usuarioRepository == null) {
+			System.out.println("repository null");
+		}
+		if(impl==null) {
+			System.out.println("null");
+		}
+		if (usuario != null) {
+			System.out.println("usuario diferente de null..");
+			if (usuario.getUsername() != null) {
+				System.out.println(usuario.getUsername());
+				Usuario usuario2 = usuarioRepository.findById(usuario.getUsername()).get();
+				if (usuario2 != null) {
+					groups.add(EditarUsuario.class);
+				} else {
+					System.out.println("adicionando o editar usuario");
+					groups.add(PersistirUsuario.class);
+				}
+			}
 		}
 
 		return groups;

@@ -16,25 +16,18 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Past;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.br.CPF;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.hibernate.validator.group.GroupSequenceProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.comercio.hibernategroups.EditarUsuario;
 import br.com.comercio.hibernategroups.PersistirUsuario;
-import br.com.comercio.impl.UsuarioRepositoryImpl;
-import br.com.comercio.interfaces.AntiXss;
-import br.com.comercio.interfaces.DataFormatValidacao;
-import br.com.comercio.interfaces.Maioridade;
+import br.com.comercio.hibernategroups.UsuarioGroupProvider;
 import br.com.comercio.interfaces.SenhaFraca;
-import br.com.comercio.interfaces.UniqueColumn;
-import br.com.comercio.interfaces.UniqueColumnEditar;
 import br.com.comercio.interfaces.UniqueUsernameEditar;
 import br.com.comercio.interfaces.UniqueUsernamePersistir;
 import br.com.comercio.service.CriptografiaService;
@@ -42,6 +35,7 @@ import br.com.comercio.service.CriptografiaService;
 @Entity
 @DynamicUpdate
 @DynamicInsert
+//@GroupSequenceProvider(value = UsuarioGroupProvider.class)
 public class Usuario implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -49,12 +43,14 @@ public class Usuario implements UserDetails {
 	@UniqueUsernameEditar(groups = EditarUsuario.class)
 	@UniqueUsernamePersistir(groups = PersistirUsuario.class)
 	@Email(message = "E-mail inválido")
+
 	private String email;
-	@NotEmpty(message = "Nome é obrigatório")
-	@AntiXss
+	// @NotEmpty(message = "Nome é obrigatório")
+	// @AntiXss
+
 	private String nome;
-	@NotEmpty(message = "Sobrenome é obrigatório")
-	@AntiXss
+	// @NotEmpty(message = "Sobrenome é obrigatório")
+	// @AntiXss
 	private String sobrenome;
 
 	@NotEmpty(message = "Senha é obrigatória")
@@ -63,15 +59,15 @@ public class Usuario implements UserDetails {
 	private String password;
 	private Boolean enabled;
 
-	@CPF(message = "CPF informado é inválido")
-	@Column(unique = true)
-	@UniqueColumnEditar(groups = EditarUsuario.class, campo = "Cpf", tipoParametro = String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository = UsuarioRepositoryImpl.class, message = "CPF já existente")
-	@UniqueColumn(groups = PersistirUsuario.class, campo = "Cpf", tipoParametro = String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository = UsuarioRepositoryImpl.class, message = "CPF já existente")
+//	@CPF(message = "CPF informado é inválido")
+//	@Column(unique = true)
+//	@UniqueColumnEditar(groups = EditarUsuario.class, campo = "Cpf", tipoParametro = String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository = UsuarioRepositoryImpl.class, message = "CPF já existente")
+//	@UniqueColumn(groups = PersistirUsuario.class, campo = "Cpf", tipoParametro = String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository = UsuarioRepositoryImpl.class, message = "CPF já existente")
 	private String cpf;
 
 	private String rg;
 	private String telefone;
-	@Column(name = "codigo_verificacao",unique = true)
+	@Column(name = "codigo_verificacao", unique = true)
 	private String codigoVerificacao;
 
 	public String getCodigoVerificacao() {
@@ -82,11 +78,12 @@ public class Usuario implements UserDetails {
 		this.codigoVerificacao = codigoVerificacao;
 	}
 
-	@javax.validation.constraints.NotNull(message = "A data de aniversário é obrigatória")
-	@Past(message = "Data de nascimento deve estar no passado")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@DataFormatValidacao(message = "A data informada é inválida")
-	@Maioridade
+	// @javax.validation.constraints.NotNull(message = "A data de aniversário é
+	// obrigatória")
+	// @Past(message = "Data de nascimento deve estar no passado")
+//	@DateTimeFormat(pattern = "yyyy-MM-dd")
+//	@DataFormatValidacao(message = "A data informada é inválida")
+//	@Maioridade
 	private LocalDate nascimento;
 
 	public String getNome() {
