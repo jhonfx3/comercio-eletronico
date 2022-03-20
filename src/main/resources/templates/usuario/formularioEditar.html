@@ -4,7 +4,11 @@
 <meta charset="utf-8">
 <title>Formulário de usuário</title>
 <script type="text/javascript" th:src="@{/js/mascaras.js}"></script>
+<link th:href="@{/css/estilos.css}" rel="stylesheet">
 <th:block th:include="~{base::head}">/>
+
+
+
 
 
 
@@ -22,13 +26,15 @@
 			<div class="row">
 				<div class="col-6">
 					<h1 class="text-success" th:text="${sucesso}"></h1>
-					<form th:object="${usuario}" th:action="@{/usuario/editar}"
+					<form th:object="${clienteFisico}" th:action="@{/usuario/editar}"
 						method="post">
 						<div class="form-group">
 							<label for="username">E-mail</label> <input
 								th:errorClass="is-invalid" type="text" class="form-control"
-								placeholder="E-mail" th:field="*{email}">
-							<div class="invalid-feedback" th:errors="*{email}"></div>
+								placeholder="E-mail" th:field="*{usuario.email}">
+							<div class="error" th:text="${erroEmail}"></div>
+							<div class="invalid-feedback" th:errors="*{usuario.email}"></div>
+
 						</div>
 						<div class="form-group">
 							<label for="username">Nome</label> <input
@@ -63,7 +69,6 @@
 								th:field="*{telefone}">
 						</div>
 						<button type="submit" class="btn btn-primary">Editar</button>
-						<input type="hidden" name="password" th:value="*{password}">
 					</form>
 				</div>
 				<div class="col-6">

@@ -1,6 +1,5 @@
 package br.com.comercio.model;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -13,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
@@ -26,16 +25,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.comercio.hibernategroups.EditarUsuario;
 import br.com.comercio.hibernategroups.PersistirUsuario;
-import br.com.comercio.hibernategroups.UsuarioGroupProvider;
 import br.com.comercio.interfaces.SenhaFraca;
 import br.com.comercio.interfaces.UniqueUsernameEditar;
 import br.com.comercio.interfaces.UniqueUsernamePersistir;
-import br.com.comercio.service.CriptografiaService;
 
 @Entity
 @DynamicUpdate
 @DynamicInsert
-//@GroupSequenceProvider(value = UsuarioGroupProvider.class)
 public class Usuario implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -45,13 +41,6 @@ public class Usuario implements UserDetails {
 	@Email(message = "E-mail inválido")
 
 	private String email;
-	// @NotEmpty(message = "Nome é obrigatório")
-	// @AntiXss
-
-	private String nome;
-	// @NotEmpty(message = "Sobrenome é obrigatório")
-	// @AntiXss
-	private String sobrenome;
 
 	@NotEmpty(message = "Senha é obrigatória")
 	@Length(min = 4, max = 10, groups = PersistirUsuario.class)
@@ -59,16 +48,11 @@ public class Usuario implements UserDetails {
 	private String password;
 	private Boolean enabled;
 
-//	@CPF(message = "CPF informado é inválido")
-//	@Column(unique = true)
-//	@UniqueColumnEditar(groups = EditarUsuario.class, campo = "Cpf", tipoParametro = String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository = UsuarioRepositoryImpl.class, message = "CPF já existente")
-//	@UniqueColumn(groups = PersistirUsuario.class, campo = "Cpf", tipoParametro = String.class, classeASerValidada = Usuario.class, nomeClasseImplRepository = UsuarioRepositoryImpl.class, message = "CPF já existente")
-	private String cpf;
-
-	private String rg;
-	private String telefone;
 	@Column(name = "codigo_verificacao", unique = true)
 	private String codigoVerificacao;
+
+	@OneToOne(mappedBy = "usuario")
+	private Cliente cliente;
 
 	public String getCodigoVerificacao() {
 		return codigoVerificacao;
@@ -76,53 +60,6 @@ public class Usuario implements UserDetails {
 
 	public void setCodigoVerificacao(String codigoVerificacao) {
 		this.codigoVerificacao = codigoVerificacao;
-	}
-
-	// @javax.validation.constraints.NotNull(message = "A data de aniversário é
-	// obrigatória")
-	// @Past(message = "Data de nascimento deve estar no passado")
-//	@DateTimeFormat(pattern = "yyyy-MM-dd")
-//	@DataFormatValidacao(message = "A data informada é inválida")
-//	@Maioridade
-	private LocalDate nascimento;
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getSobrenome() {
-		return sobrenome;
-	}
-
-	public void setSobrenome(String sobrenome) {
-		this.sobrenome = sobrenome;
-	}
-
-	public LocalDate getNascimento() {
-		return nascimento;
-	}
-
-	public void setNascimento(LocalDate nascimento) {
-		this.nascimento = nascimento;
-	}
-
-	@OneToMany(mappedBy = "usuario")
-	private List<Endereco> endereco;
-
-	public String getCpf() {
-		try {
-			return new CriptografiaService().decriptar(cpf);
-		} catch (Exception e) {
-			return cpf;
-		}
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
 	}
 
 	@Override
@@ -140,38 +77,6 @@ public class Usuario implements UserDetails {
 			return false;
 		Usuario other = (Usuario) obj;
 		return Objects.equals(email, other.email);
-	}
-
-	public String getRg() {
-		return rg;
-	}
-
-	public void setRg(String rg) {
-		this.rg = rg;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public LocalDate getAniversario() {
-		return nascimento;
-	}
-
-	public void setAniversario(LocalDate aniversario) {
-		this.nascimento = aniversario;
-	}
-
-	public List<Endereco> getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(List<Endereco> endereco) {
-		this.endereco = endereco;
 	}
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -262,4 +167,14 @@ public class Usuario implements UserDetails {
 		return this.enabled;
 	}
 
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	
+	
 }

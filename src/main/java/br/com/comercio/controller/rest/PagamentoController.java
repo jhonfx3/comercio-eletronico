@@ -33,10 +33,12 @@ import br.com.comercio.enums.StatusPedido;
 import br.com.comercio.model.CardPaymentDTO;
 import br.com.comercio.model.CarrinhoDeCompras;
 import br.com.comercio.model.CarrinhoItem;
+import br.com.comercio.model.ClienteFisico;
 import br.com.comercio.model.Pedido;
 import br.com.comercio.model.Produto;
 import br.com.comercio.model.ProdutoPedido;
 import br.com.comercio.model.Usuario;
+import br.com.comercio.repository.ClienteFisicoRepository;
 import br.com.comercio.repository.PedidoRepository;
 import br.com.comercio.repository.UsuarioRepository;
 
@@ -48,6 +50,9 @@ public class PagamentoController {
 	private PedidoRepository pedidoRepository;
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+
+	@Autowired
+	private ClienteFisicoRepository clienteFisicoRepository;
 
 	@Autowired
 	private CarrinhoDeCompras carrinho;
@@ -63,6 +68,17 @@ public class PagamentoController {
 
 		String name = SecurityContextHolder.getContext().getAuthentication().getName();
 		Usuario usuario = usuarioRepository.findById(name).get();
+
+		ClienteFisico clienteFisico = clienteFisicoRepository.findById(usuario.getCliente().getId()).get();
+		System.out.println("->" + usuario.getCliente().getId());
+		if (clienteFisico != null) {
+			System.out.println(clienteFisico.getNome());
+			System.out.println(clienteFisico.getSobrenome());
+			System.out.println(clienteFisico.getCpf());
+		} else {
+			System.out.println("cliente fisico e null");
+		}
+
 		for (Map.Entry<CarrinhoItem, Integer> entry : itensMap.entrySet()) {
 			System.out.println(entry.getKey().getProduto().getNome());
 			CarrinhoItem carrinhoItem = entry.getKey();
@@ -117,14 +133,14 @@ public class PagamentoController {
 		endereco.setCity("Osasco");
 		endereco.setFederalUnit("SP");
 		Identification identification = new Identification();
-		String cpfLimpo = usuario.getCpf().replace(".", "").replace("-", "");
+		String cpfLimpo = clienteFisico.getCpf().replace(".", "").replace("-", "");
 		identification.setType("CPF").setNumber(cpfLimpo);
 		Payer payer = new Payer();
 		payer.setEmail(usuario.getEmail());
 		payer.setIdentification(identification);
 		payer.setAddress(endereco);
-		payer.setFirstName(usuario.getNome());
-		payer.setLastName(usuario.getSobrenome());
+		payer.setFirstName(clienteFisico.getNome());
+		payer.setLastName(clienteFisico.getSobrenome());
 		payment.setPayer(payer);
 
 		AdditionalInfo infoAdicionais = new AdditionalInfo();

@@ -11,7 +11,6 @@ import br.com.comercio.model.Usuario;
 @Repository
 @Transactional
 public interface UsuarioRepository extends JpaRepository<Usuario, String> {
-	Usuario findByCpf(String cpf);
 
 	Usuario findByEmail(String email);
 

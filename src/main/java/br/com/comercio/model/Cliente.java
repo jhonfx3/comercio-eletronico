@@ -11,8 +11,15 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.groups.ConvertGroup;
 
+import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
+
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+
+import br.com.comercio.hibernategroups.EditarUsuario;
 import br.com.comercio.interfaces.AntiXss;
 
 @Entity
@@ -28,7 +35,9 @@ public abstract class Cliente {
 	@OneToMany(mappedBy = "cliente")
 	private List<Endereco> endereco;
 
-	@OneToOne(cascade = CascadeType.PERSIST)
+	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@Valid
+	//@ConvertGroup(from = Default.class, to = EditarUsuario.class)
 	private Usuario usuario;
 
 	public String getNome() {

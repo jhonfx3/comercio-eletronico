@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.WebDataBinder;
@@ -35,17 +36,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.comercio.hibernategroups.EditarUsuario;
-import br.com.comercio.hibernategroups.PersistirUsuario;
 import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.model.Authorities;
+import br.com.comercio.model.ClienteFisico;
 import br.com.comercio.model.Email;
 import br.com.comercio.model.Endereco;
 import br.com.comercio.model.Pedido;
 import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.AuthoritiesRepository;
+import br.com.comercio.repository.ClienteFisicoRepository;
 import br.com.comercio.repository.PedidoRepository;
 import br.com.comercio.repository.UsuarioRepository;
-import br.com.comercio.service.CriptografiaService;
 import br.com.comercio.service.EmailService;
 import net.bytebuddy.utility.RandomString;
 
@@ -59,6 +60,9 @@ public class UsuarioController {
 	private UsuarioRepository usuarioRepository;
 	@Autowired
 	private PedidoRepository pedidoRepository;
+
+	@Autowired
+	private ClienteFisicoRepository clienteFisicoRepository;
 
 	@Autowired
 	private UsuarioRepositoryImpl usuarioImpl;
@@ -79,7 +83,8 @@ public class UsuarioController {
 				}
 			}
 		});
-		binder.setAllowedFields("email", "nome", "sobrenome", "password", "cpf", "rg", "telefone", "nascimento");
+		binder.setAllowedFields("usuario.email", "nome", "sobrenome", "password", "cpf", "rg", "telefone",
+				"nascimento");
 
 	}
 
@@ -191,31 +196,6 @@ public class UsuarioController {
 		return "redirect:/login";
 	}
 
-	@PostMapping("/novo")
-	public String novo(@Validated(PersistirUsuario.class) Usuario usuario, BindingResult result,
-			HttpServletRequest request, RedirectAttributes attributes, String confirmarSenha) throws Exception {
-		if (!usuario.getPassword().equals("")) {
-			if (!usuario.getPassword().equals(confirmarSenha)) {
-				result.rejectValue("password", "SenhasNaobatem.usuario.senha");
-			}
-		}
-		if (result.hasErrors()) {
-			return "usuario/formulario";
-		}
-		usuario.setCpf(new CriptografiaService().encriptar(usuario.getCpf()));
-		Authorities userAuthority = authoritiesRepository.findById("ROLE_USER").get();
-		String codigo = RandomString.make(20);
-		usuario.setCodigoVerificacao(codigo);
-		criarUsuario(usuario, Arrays.asList(userAuthority));
-		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " cadastrado com sucesso");
-		String content = "Bem-vindo " + usuario.getNome() + ",<br>"
-				+ "Clique no link abaixo para confirmar seu cadastro no nosso e-commerce<br>"
-				+ "<h3><a href=\"[[URL]]\">Confirme seu cadastro</a></h3>";
-		String link = "/usuario/confirmar/";
-		emailService.enviarEmail(usuario, codigo, request, content, link);
-		return "redirect:/usuario/sucessoContaCriada";
-	}
-
 	@GetMapping("/sucessoContaCriada")
 	public String sucessoContaCriada(Model model) {
 		System.out.println("chamando...");
@@ -236,47 +216,6 @@ public class UsuarioController {
 		}
 		model.addAttribute("mensagem", "Parabéns, você confirmou o cadastro de sua conta com sucesso");
 		return "usuario/infoSobreConta";
-	}
-
-	@PostMapping("/editar")
-	public String editarUsuario(@Validated(EditarUsuario.class) Usuario usuario, BindingResult result,
-			RedirectAttributes attributes, Endereco endereco, Model model) throws Exception {
-		if (result.hasErrors()) {
-			model.addAttribute("endereco", endereco);
-			return "usuario/formularioEditar";
-		}
-		Usuario usuarioLogado = getUsuarioLogado();
-		usuario.setRoles(usuarioLogado.getRoles());
-
-		/*
-		 * Se eu identifico que o usuário trocou de e-mail significa que o Spring
-		 * JPA(Hibernate) vai identificar uma nova chave. Então ele irá criar um novo
-		 * registro, ele não interpreta como um registro existente no bd, porque
-		 * obviamente ainda não existe
-		 */
-
-		/*
-		 * Uma maneira de não precisar disso é simplesmente eu adicionar um ID
-		 * incremental que nunca muda, assim ele sempre considera como o mesmo registro
-		 */
-
-		if (!usuario.getEmail().equals(usuarioLogado.getEmail())) {
-			/*
-			 * Então eu preciso deletar o usuário do antigo e-mail do contrário será mantido
-			 * no banco de dados impedindo que novos usuários o usem
-			 */
-			usuarioRepository.deletaUsuario(usuarioLogado.getEmail());
-		}
-		usuario.setCpf(new CriptografiaService().encriptar(usuario.getCpf()));
-		usuario.setEnabled(true);
-		usuarioImpl.updateUser(usuario);
-		// Caso eu perceba que o usuário trocou de e-mail
-		// Necessito atualizar o usuário logado
-		if (!usuario.getEmail().equals(usuarioLogado.getEmail())) {
-			atualizaUsuarioLogado(usuario);
-		}
-		attributes.addFlashAttribute("sucesso", "Usuário " + usuario.getUsername() + " alterado com sucesso");
-		return "redirect:/usuario/formulario/editar";
 	}
 
 	@GetMapping("/mudar-senha")
@@ -336,10 +275,41 @@ public class UsuarioController {
 	@GetMapping("/formulario/editar")
 	public String formularioEditar(Usuario usuario, Model model, Endereco endereco) throws Exception {
 		Usuario usuarioLogado = getUsuarioLogado();
-		// String cpfDecriptado = criptografia.decriptar(usuarioLogado.getCpf());
-		// usuarioLogado.setCpf(cpfDecriptado);
-		model.addAttribute("usuario", usuarioLogado);
+		ClienteFisico clienteFisico = clienteFisicoRepository.findById(usuarioLogado.getCliente().getId()).get();
+		model.addAttribute("clienteFisico", clienteFisico);
 		return "usuario/formularioEditar";
+	}
+
+	@PostMapping("/editar")
+	public String editarUsuario(@Validated(EditarUsuario.class) ClienteFisico cliente, BindingResult result,
+			RedirectAttributes attributes, Endereco endereco, Model model, String email) throws Exception {
+		model.addAttribute("endereco", endereco);
+		Usuario usuario = cliente.getUsuario();
+		// a senha não é alterada nessa view logo eu posso setar o password
+		usuario.setPassword(getUsuarioLogado().getPassword());
+		usuario.setRoles(getUsuarioLogado().getRoles());
+
+		/*
+		 * 1 erro sempre vai dar por causa do password por causa disso o ErrorCount > 1
+		 * significa que deu erros o bindingresult ja esta com todos os erros carregados
+		 * portanto mesmo setando o password, eu teria que atualizar o bindingresult
+		 */
+		if (result.hasErrors() && result.getErrorCount() > 1) {
+			List<ObjectError> allErrors = result.getAllErrors();
+			for (ObjectError objectError : allErrors) {
+				System.out.println(objectError.getDefaultMessage());
+			}
+			return "usuario/formularioEditar";
+		}
+		Long idCliente = clienteFisicoRepository.findById(getUsuarioLogado().getCliente().getId()).get().getId();
+		cliente.setId(idCliente);
+		clienteFisicoRepository.save(cliente);
+		attributes.addFlashAttribute("sucesso", "Usuário alterado com sucesso");
+		if (!usuario.getEmail().equals(getUsuarioLogado().getEmail())) {
+			usuarioRepository.deletaUsuario(getUsuarioLogado().getEmail());
+			atualizaUsuarioLogado(usuario);
+		}
+		return "redirect:/usuario/formulario/editar";
 	}
 
 	private Usuario getUsuarioLogado() {

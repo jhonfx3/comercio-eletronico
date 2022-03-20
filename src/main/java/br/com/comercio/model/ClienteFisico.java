@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,8 @@ import br.com.comercio.interfaces.Maioridade;
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
 public class ClienteFisico extends Cliente {
+
+	
 	@NotEmpty(message = "cpf obrigatório")
 	@CPF(message = "CPF informado é inválido")
 	@Column(unique = true)
@@ -56,6 +59,7 @@ public class ClienteFisico extends Cliente {
 		return nascimento;
 	}
 
+
 	public void setNascimento(LocalDate nascimento) {
 		this.nascimento = nascimento;
 	}
@@ -67,5 +71,6 @@ public class ClienteFisico extends Cliente {
 	public void setSobrenome(String sobrenome) {
 		this.sobrenome = sobrenome;
 	}
+	
 
 }

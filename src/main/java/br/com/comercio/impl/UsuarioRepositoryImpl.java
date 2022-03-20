@@ -22,9 +22,6 @@ public class UsuarioRepositoryImpl extends SimpleJpaRepository<Usuario, String> 
 		this.repository = repository;
 	}
 
-	public Usuario findByCpf(String cpf) {
-		return (Usuario) repository.findByCpf(cpf);
-	}
 
 	public void updateUser(Usuario usuario) {
 		em.merge(usuario);
