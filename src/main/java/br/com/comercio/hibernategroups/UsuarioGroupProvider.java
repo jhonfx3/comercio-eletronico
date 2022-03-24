@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.UsuarioRepository;
 
@@ -15,8 +13,6 @@ import br.com.comercio.repository.UsuarioRepository;
 public class UsuarioGroupProvider implements DefaultGroupSequenceProvider<Usuario> {
 	private UsuarioRepository usuarioRepository;
 
-	@Autowired
-	private UsuarioRepositoryImpl impl;
 
 	@Override
 	public List<Class<?>> getValidationGroups(Usuario usuario) {
@@ -25,9 +21,6 @@ public class UsuarioGroupProvider implements DefaultGroupSequenceProvider<Usuari
 		groups.add(Usuario.class);
 		if (usuarioRepository == null) {
 			System.out.println("repository null");
-		}
-		if(impl==null) {
-			System.out.println("null");
 		}
 		if (usuario != null) {
 			System.out.println("usuario diferente de null..");

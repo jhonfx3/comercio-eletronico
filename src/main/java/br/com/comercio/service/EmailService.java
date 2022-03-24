@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.comercio.enums.StatusEmail;
+import br.com.comercio.model.Cliente;
 import br.com.comercio.model.Email;
-import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.EmailRepository;
 
 @Service
@@ -27,14 +27,14 @@ public class EmailService {
 	@Autowired
 	private EmailRepository emailRepository;
 
-	public void enviarEmail(Usuario usuario, String codigo, HttpServletRequest request, String content, String link)
+	public void enviarEmail(Cliente cliente, String codigo, HttpServletRequest request, String content, String link)
 			throws MessagingException, UnsupportedEncodingException {
 		Email email = new Email();
 		try {
 			System.out.println("Tentando enviar email...");
 			email.setAssunto("Confirme seu cadastro");
 			email.setOrigem("jcaferreira9@gmail.com");
-			email.setDestinatario(usuario.getEmail());
+			email.setDestinatario(cliente.getUsuario().getEmail());
 
 			MimeMessage message = emailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message);

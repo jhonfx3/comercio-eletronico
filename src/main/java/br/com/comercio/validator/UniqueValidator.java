@@ -1,7 +1,6 @@
 package br.com.comercio.validator;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
@@ -13,14 +12,14 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.comercio.interfaces.UniqueColumn;
-import br.com.comercio.repository.UsuarioRepository;
+import br.com.comercio.repository.ClienteFisicoRepository;
 import br.com.comercio.service.CriptografiaService;
 
 public class UniqueValidator implements ConstraintValidator<UniqueColumn, Object> {
 	private String campo;
 	private Class<?> nomeClasseImplRepository;
 	@Autowired
-	private UsuarioRepository repository;
+	private ClienteFisicoRepository repository;
 
 	@PersistenceContext
 	private EntityManager manager;
@@ -33,6 +32,9 @@ public class UniqueValidator implements ConstraintValidator<UniqueColumn, Object
 		nomeClasseImplRepository = unique.nomeClasseImplRepository();
 		classeASerValidada = unique.classeASerValidada();
 		tipoParametro = unique.tipoParametro();
+		System.out.println("Campo: " + campo + " nome classe impl:" + nomeClasseImplRepository.getName()
+				+ "Classe a ser validada: " + classeASerValidada.getName() + " tipo parametro: "
+				+ tipoParametro.getName());
 	}
 
 	@Override
@@ -70,8 +72,11 @@ public class UniqueValidator implements ConstraintValidator<UniqueColumn, Object
 			 * não funcionará para outras entidades
 			 */
 			Object obj = construtor.newInstance(new Object[] { classeASerValidada, manager, repository });
+			System.out.println(cls.getClass().getName());
 			Method metodo = cls.getDeclaredMethod("findBy" + campo, paramString);
+			System.out.println("cpf ->" + cpf);
 			Object invoke = metodo.invoke(obj, new String(new CriptografiaService().encriptar(cpf)));
+			System.out.println("invoke -> " + invoke);
 			if (invoke == null) {
 				// não encontrei ninguém com esse campo, então posso permitir
 				return true;

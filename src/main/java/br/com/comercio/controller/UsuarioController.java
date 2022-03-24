@@ -64,8 +64,8 @@ public class UsuarioController {
 	@Autowired
 	private ClienteFisicoRepository clienteFisicoRepository;
 
-	@Autowired
-	private UsuarioRepositoryImpl usuarioImpl;
+	//@Autowired
+	//private UsuarioRepositoryImpl usuarioImpl;
 
 	@Autowired
 	private EmailService emailService;

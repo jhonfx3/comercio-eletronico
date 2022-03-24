@@ -7,19 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import br.com.comercio.impl.UsuarioRepositoryImpl;
-import br.com.comercio.model.Usuario;
-import br.com.comercio.repository.UsuarioRepository;
+import br.com.comercio.impl.ClienteRepositoryImpl;
+import br.com.comercio.model.ClienteFisico;
+import br.com.comercio.repository.ClienteFisicoRepository;
 
 @Configuration
-public class UsuarioRepositoryImplConfig {
+public class ClienteRepositoryImplConfig {
 	@PersistenceContext
 	private EntityManager em;
 	@Autowired
-	private UsuarioRepository repository;
+	private ClienteFisicoRepository repository;
 
 	@Bean
-	public UsuarioRepositoryImpl retorna() {
-		return new UsuarioRepositoryImpl(Usuario.class, em, repository);
+	public ClienteRepositoryImpl retorna() {
+		return new ClienteRepositoryImpl(ClienteFisico.class, em, repository);
 	}
 }

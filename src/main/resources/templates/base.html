@@ -49,7 +49,7 @@
 		<div class="col-4 ml-9 col-sm-4">
 			<a sec:authorize="!isAuthenticated()" th:href="@{/login}"><span
 				class="logo text-white"><i class="bi bi-person-circle"></i>
-					Login</span></a> <a class="logo text-white" th:href="@{/usuario/formulario}"
+					Login</span></a> <a class="logo text-white" th:href="@{/cliente/formulario/cadastrar}"
 				sec:authorize="!isAuthenticated()">Cadastre-se</a> <a
 				class="logo text-white" th:href="@{/usuario/formulario/editar}"
 				sec:authorize="isAuthenticated()">Meus dados</a> <a

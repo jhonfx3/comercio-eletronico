@@ -40,6 +40,8 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler i
 			e.printStackTrace();
 			urlAnterior = "/";
 		}
+		int status = response.getStatus();
+		System.out.println("Status code: " + status);
 		response.sendRedirect(urlAnterior);
 	}
 
