@@ -15,7 +15,6 @@ import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
-import com.mercadopago.core.annotations.validation.NotNull;
 
 import br.com.comercio.interfaces.AntiXss;
 

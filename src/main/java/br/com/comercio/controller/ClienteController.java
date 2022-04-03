@@ -1,11 +1,9 @@
 package br.com.comercio.controller;
 
 import java.beans.PropertyEditorSupport;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.com.comercio.hibernategroups.PersistirUsuario;
 import br.com.comercio.model.ClienteFisico;
+import br.com.comercio.model.ClienteJuridico;
 import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.ClienteRepository;
 import br.com.comercio.repository.UsuarioRepository;
@@ -62,8 +61,7 @@ public class ClienteController {
 	@PostMapping("/novo")
 	public String novo(@Validated(PersistirUsuario.class) ClienteFisico cliente, BindingResult result,
 			@Validated(PersistirUsuario.class) Usuario usuario, BindingResult result2, Model model,
-			String confirmarPassword, HttpServletRequest request)
-			throws Exception {
+			String confirmarPassword, HttpServletRequest request) throws Exception {
 		usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
 		if (result2.hasErrors()) {
 			if (result2.hasFieldErrors("email")) {
@@ -91,6 +89,37 @@ public class ClienteController {
 		return "home";
 	}
 
+	@PostMapping("/novoJuridico")
+	public String novoJuridico(@Validated(PersistirUsuario.class) ClienteJuridico cliente, BindingResult result,
+			@Validated(PersistirUsuario.class) Usuario usuario, BindingResult result2, Model model,
+			String confirmarPassword, HttpServletRequest request) throws Exception {
+		usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
+		if (result2.hasErrors()) {
+			if (result2.hasFieldErrors("email")) {
+				model.addAttribute("erroEmail", result2.getFieldError("email").getDefaultMessage());
+			}
+			if (result2.hasFieldErrors("password")) {
+				model.addAttribute("erroPassword", result2.getFieldError("password").getDefaultMessage());
+			}
+			return "cliente/formularioJuridico";
+		}
+
+		if (result.hasErrors()) {
+			return "cliente/formularioJuridico";
+		}
+		String codigo = RandomString.make(20);
+		usuario.setCodigoVerificacao(codigo);
+		cliente.setUsuario(usuario);
+		cliente.setCnpj(new CriptografiaService().encriptar(cliente.getCnpj()));
+		clienteRepository.save(cliente);
+		String content = "Bem-vindo " + cliente.getNome() + ",<br>"
+				+ "Clique no link abaixo para confirmar seu cadastro no nosso e-commerce<br>"
+				+ "<h3><a href=\"[[URL]]\">Confirme seu cadastro</a></h3>";
+		String link = "/cliente/confirmar/";
+		emailService.enviarEmail(cliente, codigo, request, content, link);
+		return "home";
+	}
+
 	@GetMapping("/confirmar/{codigo}")
 	public String confirmarCadastro(@PathVariable("codigo") String codigo, Model model) {
 		try {
@@ -108,6 +137,11 @@ public class ClienteController {
 	@GetMapping("/formulario/cadastrar")
 	public String formulario(ClienteFisico cliente) {
 		return "cliente/formulario";
+	}
+
+	@GetMapping("/formulario/juridico/cadastrar")
+	public String formulario(ClienteJuridico cliente) {
+		return "cliente/formularioJuridico";
 	}
 
 }

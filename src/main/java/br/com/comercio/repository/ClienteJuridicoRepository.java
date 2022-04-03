@@ -6,14 +6,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.comercio.model.ClienteFisico;
+import br.com.comercio.model.ClienteJuridico;
 
 @Repository
 @Transactional
-public interface ClienteFisicoRepository extends JpaRepository<ClienteFisico, Long> {
-	ClienteFisico findByCpf(String cpf);
+public interface ClienteJuridicoRepository extends JpaRepository<ClienteJuridico, Long> {
+	ClienteJuridico findByCnpj(String cnpj);
 
-	@Query(value = "SELECT * FROM cliente_fisico AS c WHERE c.usuario_email = :email", nativeQuery = true)
-	ClienteFisico findClienteByEmail(@Param("email") String email);
+	@Query(value = "SELECT * FROM cliente_juridico AS c WHERE c.usuario_email = :email", nativeQuery = true)
+	ClienteJuridico findClienteByEmail(@Param("email") String email);
 
 }

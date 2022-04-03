@@ -9,7 +9,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.mercadopago.MercadoPago;
+import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.MercadoPagoClient;
 
 import br.com.comercio.model.Categoria;
 import br.com.comercio.repository.CategoriaRepository;
@@ -32,10 +33,12 @@ public class ComercioApplication implements CommandLineRunner {
 		String mercadoPagoAccessTokenHeroku = System.getenv("mercadoPagoAccessToken");
 		// Estou usando Heroku
 		if (mercadoPagoAccessTokenHeroku != null) {
-			MercadoPago.SDK.setAccessToken(mercadoPagoAccessTokenHeroku);
+			//MercadoPago.SDK.setAccessToken(mercadoPagoAccessTokenHeroku);
+			MercadoPagoConfig.setAccessToken(mercadoPagoAccessTokenHeroku);
 		} else {
-			MercadoPago.SDK.setAccessToken(mercadoPagoAccessToken);
+			MercadoPagoConfig.setAccessToken(mercadoPagoAccessToken);
 		}
+		//MercadoPagoConfig.setIntegratorId(System.getenv("integratorId"));
 		verificaSePrecisaPersistirCategorias();
 	}
 

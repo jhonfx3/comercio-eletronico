@@ -21,7 +21,6 @@ import br.com.comercio.interfaces.UniqueColumn;
 import br.com.comercio.service.CriptografiaService;
 
 @Entity
-@PrimaryKeyJoinColumn(name = "id")
 public class ClienteFisico extends Cliente {
 
 	@NotEmpty(message = "cpf obrigatório")

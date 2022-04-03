@@ -1,0 +1,42 @@
+
+<div th:fragment="cliente-campos">
+	<div class="row">
+		<div class="form-group col-sm-10">
+			<label for="username">E-mail</label> <input type="email"
+				class="form-control" placeholder="E-mail" name="email">
+			<div class="error" th:text="${erroEmail}"></div>
+
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-sm-10">
+			<label for="username">Nome</label> <input th:errorClass="is-invalid"
+				type="text" class="form-control" placeholder="Nome"
+				th:field="*{nome}">
+			<div class="invalid-feedback" th:errors="*{nome}"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-sm-10">
+			<label for="password">Senha</label><input type="password"
+				maxlength="10" class="form-control" placeholder="Digite sua senha"
+				name="password">
+			<div class="error" th:text="${erroPassword}"></div>
+
+		</div>
+		<div class="form-group col-sm-10">
+			<label for="password">Confirme sua senha</label><input
+				type="password" class="form-control"
+				placeholder="Confirme sua senha" name="confirmarPassword">
+		</div>
+		<div class="row">
+			<div class="form-group col-sm-10">
+				<label for="telefone">Telefone</label><input type="text"
+					maxlength="15" id="telefone" onkeyup="aplicaMascaraTelefone(this);"
+					class="form-control" placeholder="Telefone"
+					name="telefone">
+			</div>
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Formulário de cadastro</title>
+<script type="text/javascript" th:src="@{/js/mascaras.js}"></script>
+<link th:href="@{/css/estilos.css}" rel="stylesheet">
+<th:block th:include="~{base::head}">/>
+
+
+
+
+</head>
+<body>
+	<div class="container-fluid">
+		<header>
+			<div th:replace="~{base::cabecalho}"></div>
+		</header>
+		<main>
+			<div class="jumbotron">
+				<h1 class="display-4">Cadastro de cliente jurídico</h1>
+			</div>
+			<div>
+				<h3 th:text="${sucesso}" class="text-success"></h3>
+			</div>
+			<form th:object="${clienteJuridico}"
+				th:action="@{/cliente/novoJuridico}" method="post">
+				<div th:replace="~{fragments/cliente::cliente-campos}"></div>
+
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="cpf">CNPJ</label><input type="text" maxlength="18"
+							id="cnpj" th:errorClass="is-invalid" class="form-control"
+							placeholder="CNPJ" th:field=*{cnpj}>
+						<div class="invalid-feedback" th:errors="*{cnpj}"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="ie">IE</label><input type="text" maxlength="18"
+							id="ie" th:errorClass="is-invalid" class="form-control"
+							placeholder="Inscrição Estadual" th:field=*{ie}>
+						<div class="invalid-feedback" th:errors="*{ie}"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="site">Site</label><input type="text" maxlength="2048"
+							th:field="*{site}" id="site" th:errorClass="is-invalid"
+							class="form-control" placeholder="Site da empresa">
+						<div class="invalid-feedback" th:errors="*{site}"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-10">
+						<label for="aniversario">Data de funcação</label><input
+							th:errorClass="is-invalid" type="date" max="31-01-4000"
+							class="form-control" placeholder="Data de fundação"
+							th:field="*{fundacao}" required>
+						<div class="invalid-feedback" th:errors="*{fundacao}"></div>
+
+					</div>
+				</div>
+				<button type="submit" class="btn btn-primary">Cadastrar</button>
+			</form>
+
+		</main>
+		<div th:replace="~{base::rodape}"></div>
+	</div>
+</body>
+</html>

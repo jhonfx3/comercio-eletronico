@@ -23,10 +23,10 @@ import br.com.comercio.hibernategroups.EditarUsuario;
 import br.com.comercio.interfaces.AntiXss;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Cliente {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.TABLE)
 	private Long id;
 	@NotEmpty(message = "Nome é obrigatório")
 	@AntiXss

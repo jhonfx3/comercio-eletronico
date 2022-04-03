@@ -3,19 +3,28 @@ package br.com.comercio.model;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.br.CNPJ;
+
+import br.com.comercio.service.CriptografiaService;
 
 @Entity
-@PrimaryKeyJoinColumn(name = "id")
 public class ClienteJuridico extends Cliente {
 
+	@NotEmpty
+	@CNPJ(message = "CNPJ inválido")
 	private String cnpj;
 	private String ie;
 	private LocalDate fundacao;
 	private String site;
 
 	public String getCnpj() {
-		return cnpj;
+		try {
+			return new CriptografiaService().decriptar(this.cnpj);
+		} catch (Exception e) {
+			return this.cnpj;
+		}
 	}
 
 	public void setCnpj(String cnpj) {

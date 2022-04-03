@@ -2,8 +2,6 @@ package br.com.comercio.controller.rest;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercadopago.client.common.IdentificationRequest;
+import com.mercadopago.client.payment.PaymentAdditionalInfoRequest;
+import com.mercadopago.client.payment.PaymentClient;
+import com.mercadopago.client.payment.PaymentCreateRequest;
+import com.mercadopago.client.payment.PaymentItemRequest;
+import com.mercadopago.client.payment.PaymentPayerRequest;
+import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
-import com.mercadopago.resources.Payment;
-import com.mercadopago.resources.datastructures.payment.AdditionalInfo;
-import com.mercadopago.resources.datastructures.payment.Address;
-import com.mercadopago.resources.datastructures.payment.Identification;
-import com.mercadopago.resources.datastructures.payment.Item;
-import com.mercadopago.resources.datastructures.payment.Payer;
+import com.mercadopago.resources.payment.Payment;
 
 import br.com.comercio.dto.PaymentResponseDTO;
 import br.com.comercio.enums.StatusPedido;
@@ -50,10 +50,11 @@ public class PagamentoController {
 	private PedidoRepository pedidoRepository;
 	@Autowired
 	private UsuarioRepository usuarioRepository;
-
 	@Autowired
 	private ClienteFisicoRepository clienteFisicoRepository;
 
+	
+	
 	@Autowired
 	private CarrinhoDeCompras carrinho;
 
@@ -61,24 +62,14 @@ public class PagamentoController {
 	@ResponseBody
 	public ResponseEntity<PaymentResponseDTO> formularioPagamento(@RequestBody CardPaymentDTO cardPaymentDTO,
 			HttpServletRequest request) throws MPException {
-		ArrayList<Item> itens = new ArrayList<Item>();
+		ArrayList<PaymentItemRequest> itens = new ArrayList<PaymentItemRequest>();
 		List<Produto> produtos = new ArrayList<>();
 		Map<CarrinhoItem, Integer> itensMap = carrinho.getItensMap();
 		List<ProdutoPedido> listaProdutosPedido = new ArrayList<ProdutoPedido>();
 
 		String name = SecurityContextHolder.getContext().getAuthentication().getName();
 		Usuario usuario = usuarioRepository.findById(name).get();
-
-		ClienteFisico clienteFisico = clienteFisicoRepository.findById(usuario.getCliente().getId()).get();
-		System.out.println("->" + usuario.getCliente().getId());
-		if (clienteFisico != null) {
-			System.out.println(clienteFisico.getNome());
-			System.out.println(clienteFisico.getSobrenome());
-			System.out.println(clienteFisico.getCpf());
-		} else {
-			System.out.println("cliente fisico e null");
-		}
-
+		ClienteFisico cliente = clienteFisicoRepository.findClienteByEmail(usuario.getEmail());
 		for (Map.Entry<CarrinhoItem, Integer> entry : itensMap.entrySet()) {
 			System.out.println(entry.getKey().getProduto().getNome());
 			CarrinhoItem carrinhoItem = entry.getKey();
@@ -88,80 +79,91 @@ public class PagamentoController {
 			produtoPedido.setQuantidade(entry.getValue());
 
 			if (cardPaymentDTO.getInstallments() != null && cardPaymentDTO.getInstallments() > 1) {
-				produtoPedido.setTotal(new BigDecimal(
-						carrinho.calculaValorAPrazo(carrinhoItem.getTotalCarrinhoItem(entry.getValue()).floatValue(),
-								cardPaymentDTO.getInstallments())));
+				produtoPedido.setTotal(calculaValorAPrazo(
+						carrinhoItem.getTotalCarrinhoItem(entry.getValue()).floatValue(),
+						cardPaymentDTO.getInstallments()));
 			} else {
 				produtoPedido.setTotal(carrinhoItem.getTotalCarrinhoItem(entry.getValue()));
 			}
 
 			listaProdutosPedido.add(produtoPedido);
-			Item item = new Item();
-			item.setId(String.valueOf(carrinhoItem.getProduto().getId()));
-			item.setPictureUrl(carrinhoItem.getProduto().getUrlImagem());
-			item.setTitle(carrinhoItem.getProduto().getNome());
-			item.setUnitPrice(carrinhoItem.getProduto().getPreco().floatValue());
-			item.setQuantity(entry.getValue());
+			PaymentItemRequest item = PaymentItemRequest.builder().title(carrinhoItem.getProduto().getNome())
+					.id(String.valueOf(carrinhoItem.getProduto().getId()))
+					.pictureUrl(carrinhoItem.getProduto().getUrlImagem())
+					.unitPrice(carrinhoItem.getProduto().getPreco()).quantity(entry.getValue())
+					.build();
 			itens.add(item);
 		}
 		// Tabela de cálculo de porcentagem a prazo do mercado livre
 		// https://www.mercadopago.com.br/ajuda/Custos-de-parcelamento_322
-
-		Payment payment = new Payment();
-
-		if (cardPaymentDTO.getInstallments() != null && cardPaymentDTO.getInstallments() > 1) {
-			payment.setTransactionAmount(carrinho.calculaValorAPrazo(cardPaymentDTO.getTransactionAmount(),
-					cardPaymentDTO.getInstallments()));
-		} else {
-			payment.setTransactionAmount(cardPaymentDTO.getTransactionAmount());
-		}
+		PaymentAdditionalInfoRequest additionalInfo = PaymentAdditionalInfoRequest.builder().items(itens).build();
+		BigDecimal transactionAmount;
+		String token = "";
 
 		if (cardPaymentDTO.getToken() != null) {
-			payment.setToken(cardPaymentDTO.getToken());
+			token = cardPaymentDTO.getToken();
 		}
-		payment.setDescription(cardPaymentDTO.getProductDescription());
-		if (cardPaymentDTO.getInstallments() != null) {
-			payment.setInstallments(cardPaymentDTO.getInstallments());
+
+		if (cardPaymentDTO.getInstallments() != null && cardPaymentDTO.getInstallments() > 1) {
+			transactionAmount = 
+					calculaValorAPrazo(cardPaymentDTO.getTransactionAmount(), cardPaymentDTO.getInstallments());
+		} else {
+			transactionAmount = new BigDecimal(cardPaymentDTO.getTransactionAmount());
 		}
-		payment.setPaymentMethodId(cardPaymentDTO.getPaymentMethodId());
-		Address endereco = new Address();
 
-		endereco.setZipCode("06233200");
-		endereco.setStreetName("Av. das Nações Unidas");
-		endereco.setStreetNumber(3003);
-		endereco.setNeighborhood("Bonfim");
-		endereco.setCity("Osasco");
-		endereco.setFederalUnit("SP");
-		Identification identification = new Identification();
-		String cpfLimpo = clienteFisico.getCpf().replace(".", "").replace("-", "");
-		identification.setType("CPF").setNumber(cpfLimpo);
-		Payer payer = new Payer();
-		payer.setEmail(usuario.getEmail());
-		payer.setIdentification(identification);
-		payer.setAddress(endereco);
-		payer.setFirstName(clienteFisico.getNome());
-		payer.setLastName(clienteFisico.getSobrenome());
-		payment.setPayer(payer);
+		String cpfLimpo = cliente.getCpf().replace(".", "").replace("-", "");
 
-		AdditionalInfo infoAdicionais = new AdditionalInfo();
-		infoAdicionais.setItems(itens);
-		payment.setAdditionalInfo(infoAdicionais);
-		Payment pagamentoGerado = payment.save();
-		PaymentResponseDTO pagamentoRespostaDTO = new PaymentResponseDTO(pagamentoGerado.getId(),
+		IdentificationRequest identification = IdentificationRequest.builder().type("CPF").number(cpfLimpo).build();
+
+		PaymentPayerRequest payer = PaymentPayerRequest.builder().firstName(cliente.getNome())
+				.lastName(cliente.getSobrenome()).email(usuario.getEmail()).identification(identification).build();
+
+		PaymentClient client = new PaymentClient();
+
+		PaymentCreateRequest paymentCreateRequest = PaymentCreateRequest.builder().transactionAmount(transactionAmount)
+				.additionalInfo(additionalInfo).token(cardPaymentDTO.getToken())
+				.description(cardPaymentDTO.getProductDescription()).installments(cardPaymentDTO.getInstallments())
+				.paymentMethodId(cardPaymentDTO.getPaymentMethodId()).payer(payer).build();
+
+		System.out.println("====");
+
+		System.out.println(paymentCreateRequest.getTransactionAmount());
+		System.out.println(paymentCreateRequest.getPayer().getFirstName());
+		System.out.println(paymentCreateRequest.getPayer().getLastName());
+		System.out.println(paymentCreateRequest.getPayer().getEmail());
+		System.out.println(paymentCreateRequest.getInstallments());
+		System.out.println(paymentCreateRequest.getPayer().getIdentification().getNumber());
+		System.out.println(paymentCreateRequest.getPayer().getIdentification().getType());
+		System.out.println(paymentCreateRequest.getPaymentMethodId());
+
+		System.out.println("====");
+
+		Payment pagamentoGerado = new Payment();
+		try {
+			pagamentoGerado = client.create(paymentCreateRequest);
+		} catch (MPException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} catch (MPApiException e) {
+			System.out.println(e.getApiResponse().getContent());
+			e.printStackTrace();
+		}
+
+		PaymentResponseDTO pagamentoRespostaDTO = new PaymentResponseDTO(String.valueOf(pagamentoGerado.getId()),
 				String.valueOf(pagamentoGerado.getStatus()), pagamentoGerado.getStatusDetail());
 		System.out.println("id ->" + pagamentoGerado.getId() + " status ->" + pagamentoGerado.getStatus()
 				+ "status detail -> " + pagamentoGerado.getStatusDetail());
 		Pedido pedido = new Pedido();
-		pedido.setId(pagamentoGerado.getId());
+		pedido.setId(String.valueOf(pagamentoGerado.getId()));
 		StatusPedido status = Enum.valueOf(StatusPedido.class, pagamentoGerado.getStatus().toString());
 		pedido.setStatus(status);
 		System.out.println(pagamentoGerado.getTransactionAmount());
-		pedido.setTotal(new BigDecimal(pagamentoGerado.getTransactionAmount()));
+		pedido.setTotal(pagamentoGerado.getTransactionAmount());
 		pedido.setUsuario(usuario);
 		pedido.setParcelas(pagamentoGerado.getInstallments());
 		pedido.setValorParcela(
-				new BigDecimal(pagamentoGerado.getTransactionAmount() / pagamentoGerado.getInstallments()));
-		pedido.setData(LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(pagamentoGerado.getDateCreated())));
+				pagamentoGerado.getTransactionAmount().divide(new BigDecimal(pagamentoGerado.getInstallments())));
+		pedido.setData(pagamentoGerado.getDateCreated().toLocalDate());
 		pedido.setMetodoPagamento(pagamentoGerado.getPaymentMethodId());
 		// Se o pagamento gerado foi com pix
 		if (pagamentoGerado.getPaymentMethodId().equals("pix")) {
@@ -186,7 +188,7 @@ public class PagamentoController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(pagamentoRespostaDTO);
 	}
 
-	private float calculaValorAPrazo(float valorDaCompra, Integer quantidadeParcelas) {
+	private BigDecimal calculaValorAPrazo(float valorDaCompra, Integer quantidadeParcelas) {
 		float porcentagemDeAcrescimo = 0;
 
 		switch (quantidadeParcelas) {
@@ -229,7 +231,7 @@ public class PagamentoController {
 		valorDaCompra += valor;
 		BigDecimal setScale = new BigDecimal(valorDaCompra).setScale(2, RoundingMode.HALF_UP);
 		System.out.println(setScale);
-		return new BigDecimal(valorDaCompra).setScale(2, RoundingMode.HALF_UP).floatValue();
+		return new BigDecimal(valorDaCompra).setScale(2, RoundingMode.HALF_UP);
 	}
 	/*
 	 * Função de teste que usei para processar um pagamento com pix separadamente

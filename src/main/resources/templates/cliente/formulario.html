@@ -22,6 +22,7 @@
 			<div>
 				<h3 th:text="${sucesso}" class="text-success"></h3>
 			</div>
+			<a th:href="@{/cliente/formulario/juridico/cadastrar}">É empresa? Cadastre-se</a>
 			<form th:object="${clienteFisico}" th:action="@{/cliente/novo}"
 				method="post">
 				<div class="row">
