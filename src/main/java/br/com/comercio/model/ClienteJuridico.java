@@ -12,7 +12,7 @@ import br.com.comercio.service.CriptografiaService;
 @Entity
 public class ClienteJuridico extends Cliente {
 
-	@NotEmpty
+	@NotEmpty(message = "CNPJ é obrigatório")
 	@CNPJ(message = "CNPJ inválido")
 	private String cnpj;
 	private String ie;

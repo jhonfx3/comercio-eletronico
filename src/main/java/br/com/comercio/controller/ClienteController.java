@@ -1,9 +1,11 @@
 package br.com.comercio.controller;
 
 import java.beans.PropertyEditorSupport;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.com.comercio.hibernategroups.PersistirUsuario;
+import br.com.comercio.model.Cliente;
 import br.com.comercio.model.ClienteFisico;
 import br.com.comercio.model.ClienteJuridico;
 import br.com.comercio.model.Usuario;
@@ -81,12 +84,17 @@ public class ClienteController {
 		cliente.setUsuario(usuario);
 		cliente.setCpf(new CriptografiaService().encriptar(cliente.getCpf()));
 		clienteRepository.save(cliente);
+		enviaEmailDeConfirmacao(cliente, request, codigo);
+		return "home";
+	}
+
+	private void enviaEmailDeConfirmacao(Cliente cliente, HttpServletRequest request, String codigo)
+			throws MessagingException, UnsupportedEncodingException {
 		String content = "Bem-vindo " + cliente.getNome() + ",<br>"
 				+ "Clique no link abaixo para confirmar seu cadastro no nosso e-commerce<br>"
 				+ "<h3><a href=\"[[URL]]\">Confirme seu cadastro</a></h3>";
 		String link = "/cliente/confirmar/";
 		emailService.enviarEmail(cliente, codigo, request, content, link);
-		return "home";
 	}
 
 	@PostMapping("/novoJuridico")
@@ -112,11 +120,7 @@ public class ClienteController {
 		cliente.setUsuario(usuario);
 		cliente.setCnpj(new CriptografiaService().encriptar(cliente.getCnpj()));
 		clienteRepository.save(cliente);
-		String content = "Bem-vindo " + cliente.getNome() + ",<br>"
-				+ "Clique no link abaixo para confirmar seu cadastro no nosso e-commerce<br>"
-				+ "<h3><a href=\"[[URL]]\">Confirme seu cadastro</a></h3>";
-		String link = "/cliente/confirmar/";
-		emailService.enviarEmail(cliente, codigo, request, content, link);
+		enviaEmailDeConfirmacao(cliente, request, codigo);
 		return "home";
 	}
 

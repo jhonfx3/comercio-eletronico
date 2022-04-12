@@ -36,15 +36,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.comercio.hibernategroups.EditarUsuario;
-import br.com.comercio.impl.UsuarioRepositoryImpl;
 import br.com.comercio.model.Authorities;
 import br.com.comercio.model.ClienteFisico;
+import br.com.comercio.model.ClienteJuridico;
 import br.com.comercio.model.Email;
 import br.com.comercio.model.Endereco;
 import br.com.comercio.model.Pedido;
 import br.com.comercio.model.Usuario;
 import br.com.comercio.repository.AuthoritiesRepository;
 import br.com.comercio.repository.ClienteFisicoRepository;
+import br.com.comercio.repository.ClienteJuridicoRepository;
 import br.com.comercio.repository.PedidoRepository;
 import br.com.comercio.repository.UsuarioRepository;
 import br.com.comercio.service.EmailService;
@@ -63,9 +64,11 @@ public class UsuarioController {
 
 	@Autowired
 	private ClienteFisicoRepository clienteFisicoRepository;
+	@Autowired
+	private ClienteJuridicoRepository clienteJuridicoRepository;
 
-	//@Autowired
-	//private UsuarioRepositoryImpl usuarioImpl;
+	// @Autowired
+	// private UsuarioRepositoryImpl usuarioImpl;
 
 	@Autowired
 	private EmailService emailService;
@@ -84,7 +87,7 @@ public class UsuarioController {
 			}
 		});
 		binder.setAllowedFields("usuario.email", "nome", "sobrenome", "password", "cpf", "rg", "telefone",
-				"nascimento");
+				"nascimento", "cnpj","fundacao","ie","site");
 
 	}
 
@@ -275,8 +278,19 @@ public class UsuarioController {
 	@GetMapping("/formulario/editar")
 	public String formularioEditar(Usuario usuario, Model model, Endereco endereco) throws Exception {
 		Usuario usuarioLogado = getUsuarioLogado();
-		ClienteFisico clienteFisico = clienteFisicoRepository.findById(usuarioLogado.getCliente().getId()).get();
-		model.addAttribute("clienteFisico", clienteFisico);
+
+		ClienteFisico clienteFisico = null;
+		ClienteJuridico clienteJuridico = null;
+		clienteFisico = clienteFisicoRepository.findClienteByEmail(getUsuarioLogado().getEmail());
+		if (clienteFisico == null) {
+			clienteJuridico = clienteJuridicoRepository.findClienteByEmail(getUsuarioLogado().getEmail());
+		}
+		if (clienteFisico != null) {
+			model.addAttribute("clienteFisico", clienteFisico);
+		} else {
+			System.out.println(clienteJuridico.getNome());
+			model.addAttribute("clienteJuridico", clienteJuridico);
+		}
 		return "usuario/formularioEditar";
 	}
 
@@ -304,6 +318,36 @@ public class UsuarioController {
 		Long idCliente = clienteFisicoRepository.findById(getUsuarioLogado().getCliente().getId()).get().getId();
 		cliente.setId(idCliente);
 		clienteFisicoRepository.save(cliente);
+		attributes.addFlashAttribute("sucesso", "Usuário alterado com sucesso");
+		if (!usuario.getEmail().equals(getUsuarioLogado().getEmail())) {
+			usuarioRepository.deletaUsuario(getUsuarioLogado().getEmail());
+			atualizaUsuarioLogado(usuario);
+		}
+		return "redirect:/usuario/formulario/editar";
+	}
+
+	@PostMapping("/editarJuridico")
+	public String editarUsuarioJuridico(@Validated(EditarUsuario.class) ClienteJuridico cliente, BindingResult result,
+			RedirectAttributes attributes, Endereco endereco, Model model, String email) throws Exception {
+		Usuario usuario = cliente.getUsuario();
+		// a senha não é alterada nessa view logo eu posso setar o password
+		usuario.setPassword(getUsuarioLogado().getPassword());
+		usuario.setRoles(getUsuarioLogado().getRoles());
+		/*
+		 * 1 erro sempre vai dar por causa do password por causa disso o ErrorCount > 1
+		 * significa que deu erros o bindingresult ja esta com todos os erros carregados
+		 * portanto mesmo setando o password, eu teria que atualizar o bindingresult
+		 */
+		if (result.hasErrors() && result.getErrorCount() > 1) {
+			List<ObjectError> allErrors = result.getAllErrors();
+			for (ObjectError objectError : allErrors) {
+				System.out.println(objectError.getDefaultMessage());
+			}
+			return "usuario/formularioEditar";
+		}
+		Long idCliente = clienteJuridicoRepository.findById(getUsuarioLogado().getCliente().getId()).get().getId();
+		cliente.setId(idCliente);
+		clienteJuridicoRepository.save(cliente);
 		attributes.addFlashAttribute("sucesso", "Usuário alterado com sucesso");
 		if (!usuario.getEmail().equals(getUsuarioLogado().getEmail())) {
 			usuarioRepository.deletaUsuario(getUsuarioLogado().getEmail());

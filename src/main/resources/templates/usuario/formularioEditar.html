@@ -13,6 +13,8 @@
 
 
 
+
+
 </head>
 <body>
 	<div class="container-fluid">
@@ -24,7 +26,7 @@
 				Pedidos</a> <a th:href="@{/usuario/mudar-senha}" class="btn btn-success">Mudar
 				Senha</a>
 			<div class="row">
-				<div class="col-6">
+				<div th:if="${clienteFisico} != null" class="col-6">
 					<h1 class="text-success" th:text="${sucesso}"></h1>
 					<form th:object="${clienteFisico}" th:action="@{/usuario/editar}"
 						method="post">
@@ -61,6 +63,52 @@
 								class="form-control" placeholder="Data de nascimento"
 								th:field="*{nascimento}" required>
 							<div class="invalid-feedback" th:errors="*{nascimento}"></div>
+
+						</div>
+						<div class="form-group">
+							<label for="telefone">Telefone</label><input type="text"
+								class="form-control" placeholder="Telefone para contato"
+								th:field="*{telefone}">
+						</div>
+						<button type="submit" class="btn btn-primary">Editar</button>
+					</form>
+				</div>
+				<div th:unless="${clienteFisico} != null" class="col-6">
+					<h1 class="text-success" th:text="${sucesso}"></h1>
+					<form th:object="${clienteJuridico}" th:action="@{/usuario/editarJuridico}"
+						method="post">
+						<div class="form-group">
+							<label for="username">E-mail</label> <input
+								th:errorClass="is-invalid" type="text" class="form-control"
+								placeholder="E-mail" th:field="*{usuario.email}">
+							<div class="error" th:text="${erroEmail}"></div>
+							<div class="invalid-feedback" th:errors="*{usuario.email}"></div>
+
+						</div>
+						<div class="form-group">
+							<label for="username">Nome</label> <input
+								th:errorClass="is-invalid" type="text" class="form-control"
+								placeholder="Seu nome" th:field="*{nome}">
+							<div class="invalid-feedback" th:errors="*{nome}"></div>
+						</div>
+						<div class="form-group">
+							<label for="username">Inscrição Estadual</label> <input
+								th:errorClass="is-invalid" type="text" class="form-control"
+								placeholder="Inscrição Estadual" th:field="*{ie}">
+							<div class="invalid-feedback" th:errors="*{ie}"></div>
+						</div>
+						<div class="form-group">
+							<label for="cnpj">CNPJ</label><input type="text" maxlength="14"
+								id="cnpf" th:errorClass="is-invalid" class="form-control"
+								placeholder="Seu CNPJ" th:field=*{cnpj}>
+							<div class="invalid-feedback" th:errors="*{cnpj}"></div>
+						</div>
+						<div class="form-group">
+							<label for="fundacao">Data de fundação</label><input
+								th:errorClass="is-invalid" type="date" max="31-01-4000"
+								class="form-control" placeholder="Data de fundação"
+								th:field="*{fundacao}" required>
+							<div class="invalid-feedback" th:errors="*{fundacao}"></div>
 
 						</div>
 						<div class="form-group">
