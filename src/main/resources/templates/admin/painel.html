@@ -4,6 +4,14 @@
 <head>
 <th:block th:include="~{base::head}">/>
 
+
+
+
+
+
+
+
+
 </head>
 
 
@@ -14,7 +22,23 @@
 		</header>
 		<main>
 			<h1 class="text-danger">Bem-vindo ao painel administrativo</h1>
+			<h2>Categorias</h2>
+			<table>
+				<thead>
+					<tr>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="categoria: ${categorias}">
+						<td th:text="${categoria.nome}"></td>
+						<td><a th:href="@{'/categoria/editar/' + ${categoria.id}}">Editar</a></td>
 
+					</tr>
+
+				</tbody>
+			</table>
 		</main>
 		<div th:replace="~{base::rodape}"></div>
 	</div>

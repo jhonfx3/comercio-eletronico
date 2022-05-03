@@ -39,6 +39,15 @@ public class CategoriaController {
 		return "categoria/formulario";
 	}
 
+	@GetMapping("/editar/{id}")
+	public String editar(@PathVariable("id") String id, Model model, RedirectAttributes attributes) {
+		System.out.println("Id->" + id);
+		attributes.addFlashAttribute("id", id);
+		Categoria categoria = categoriaRepository.findById(Long.valueOf(id)).get();
+		model.addAttribute("categoria", categoria);
+		return "categoria/formulario";
+	}
+
 	@PostMapping("/novo")
 	public String novo(@Valid Categoria categoria, BindingResult result, RedirectAttributes attributes) {
 		if (result.hasErrors()) {

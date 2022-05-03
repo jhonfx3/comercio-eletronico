@@ -86,8 +86,8 @@ public class UsuarioController {
 				}
 			}
 		});
-		binder.setAllowedFields("usuario.email", "nome", "sobrenome", "password", "cpf", "rg", "telefone",
-				"nascimento", "cnpj","fundacao","ie","site");
+		binder.setAllowedFields("usuario.email", "nome", "sobrenome", "password", "cpf", "rg", "telefone", "nascimento",
+				"cnpj", "fundacao", "ie", "site");
 
 	}
 
@@ -315,14 +315,15 @@ public class UsuarioController {
 			}
 			return "usuario/formularioEditar";
 		}
-		Long idCliente = clienteFisicoRepository.findById(getUsuarioLogado().getCliente().getId()).get().getId();
-		cliente.setId(idCliente);
-		clienteFisicoRepository.save(cliente);
 		attributes.addFlashAttribute("sucesso", "Usuário alterado com sucesso");
 		if (!usuario.getEmail().equals(getUsuarioLogado().getEmail())) {
 			usuarioRepository.deletaUsuario(getUsuarioLogado().getEmail());
 			atualizaUsuarioLogado(usuario);
 		}
+		cliente.getUsuario().setEnabled(true);
+		Long idCliente = clienteFisicoRepository.findById(getUsuarioLogado().getCliente().getId()).get().getId();
+		cliente.setId(idCliente);
+		clienteFisicoRepository.save(cliente);
 		return "redirect:/usuario/formulario/editar";
 	}
 
@@ -345,14 +346,15 @@ public class UsuarioController {
 			}
 			return "usuario/formularioEditar";
 		}
-		Long idCliente = clienteJuridicoRepository.findById(getUsuarioLogado().getCliente().getId()).get().getId();
-		cliente.setId(idCliente);
-		clienteJuridicoRepository.save(cliente);
 		attributes.addFlashAttribute("sucesso", "Usuário alterado com sucesso");
 		if (!usuario.getEmail().equals(getUsuarioLogado().getEmail())) {
 			usuarioRepository.deletaUsuario(getUsuarioLogado().getEmail());
 			atualizaUsuarioLogado(usuario);
 		}
+		cliente.getUsuario().setEnabled(true);
+		Long idCliente = clienteJuridicoRepository.findById(getUsuarioLogado().getCliente().getId()).get().getId();
+		cliente.setId(idCliente);
+		clienteJuridicoRepository.save(cliente);
 		return "redirect:/usuario/formulario/editar";
 	}
 
