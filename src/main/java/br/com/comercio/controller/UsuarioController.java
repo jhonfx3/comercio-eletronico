@@ -189,6 +189,7 @@ public class UsuarioController {
 			Usuario usuarioCodigo = usuarioRepository.findByCodigoVerificacao(codigo);
 			usuarioCodigo.setCodigoVerificacao(null);
 			usuarioCodigo.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
+			usuarioCodigo.setEnabled(true);
 			usuarioRepository.save(usuarioCodigo);
 			attributes.addFlashAttribute("sucessoAlteracaoSenha",
 					"Sua senha foi recuperada com sucesso, faça login com sua nova senha");

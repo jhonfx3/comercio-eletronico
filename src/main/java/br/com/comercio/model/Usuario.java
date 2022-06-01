@@ -19,7 +19,6 @@ import javax.validation.constraints.NotEmpty;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.group.GroupSequenceProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -175,6 +174,4 @@ public class Usuario implements UserDetails {
 		this.cliente = cliente;
 	}
 
-	
-	
 }
