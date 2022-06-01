@@ -30,6 +30,7 @@ import br.com.comercio.repository.ClienteRepository;
 import br.com.comercio.repository.UsuarioRepository;
 import br.com.comercio.service.CriptografiaService;
 import br.com.comercio.service.EmailService;
+import br.com.comercio.service.RecaptchaService;
 import net.bytebuddy.utility.RandomString;
 
 @Controller
@@ -66,6 +67,13 @@ public class ClienteController {
 			@Validated(PersistirUsuario.class) Usuario usuario, BindingResult result2, Model model,
 			String confirmarPassword, HttpServletRequest request) throws Exception {
 		usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
+		String recaptcha = request.getParameter("g-recaptcha-response");
+		System.out.println("RECAPTCHA?->"+recaptcha);
+		boolean verificaRecaptcha = new RecaptchaService().verificaRecaptcha(recaptcha);
+		if(!verificaRecaptcha) {
+			System.out.println("falha no recaptcha!..");
+			return "cliente/formulario";
+		}
 		if (result2.hasErrors()) {
 			if (result2.hasFieldErrors("email")) {
 				model.addAttribute("erroEmail", result2.getFieldError("email").getDefaultMessage());

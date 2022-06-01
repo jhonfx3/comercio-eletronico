@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Formulário de cadastro</title>
+<script src="https://www.google.com/recaptcha/api.js"></script>
 <script type="text/javascript" th:src="@{/js/mascaras.js}"></script>
 <link th:href="@{/css/estilos.css}" rel="stylesheet">
 <th:block th:include="~{base::head}">/>
@@ -90,6 +91,8 @@
 							placeholder="Telefone para contato" name="telefone">
 					</div>
 				</div>
+				<div class="g-recaptcha"
+							data-sitekey="6LeXC9AfAAAAALvPQPQx_pPKBzgE9b_oROalxXO6"></div>
 				<button type="submit" class="btn btn-primary">Cadastrar</button>
 			</form>
 

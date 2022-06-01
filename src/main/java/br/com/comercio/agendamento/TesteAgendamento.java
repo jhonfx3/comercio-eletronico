@@ -22,7 +22,6 @@ public class TesteAgendamento {
 	public void testeAgendamento() {
 		// Devem existir melhores formas de fazer essa rotina
 		// Preciso aprimorar...
-		System.out.println("zerando códigos de verificação...");
 		List<Usuario> usuarios = usuarioRepository.findAll();
 		for (Usuario usuario : usuarios) {
 			if (usuario.isEnabled()) {

@@ -10,7 +10,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.mercadopago.MercadoPagoConfig;
-import com.mercadopago.client.MercadoPagoClient;
 
 import br.com.comercio.model.Categoria;
 import br.com.comercio.repository.CategoriaRepository;
@@ -30,6 +29,12 @@ public class ComercioApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		setaOsTokensDeConfiguracaoDoMP();
+		//MercadoPagoConfig.setIntegratorId(System.getenv("integratorId"));
+		verificaSePrecisaPersistirCategorias();
+	}
+
+	private void setaOsTokensDeConfiguracaoDoMP() {
 		String mercadoPagoAccessTokenHeroku = System.getenv("mercadoPagoAccessToken");
 		// Estou usando Heroku
 		if (mercadoPagoAccessTokenHeroku != null) {
@@ -38,8 +43,6 @@ public class ComercioApplication implements CommandLineRunner {
 		} else {
 			MercadoPagoConfig.setAccessToken(mercadoPagoAccessToken);
 		}
-		//MercadoPagoConfig.setIntegratorId(System.getenv("integratorId"));
-		verificaSePrecisaPersistirCategorias();
 	}
 
 	private void verificaSePrecisaPersistirCategorias() {

@@ -31,13 +31,18 @@ public class HomeController {
 		model.addAttribute("produtos", produtos);
 		List<Categoria> categorias = categoriaRepository.findAll();
 		model.addAttribute("categorias", categorias);
-		System.out.println(request.getRemoteAddr());
 		return "home";
 	}
 
 	@GetMapping("/busca")
 	public String buscaProduto(@Param(value = "pesquisa") String pesquisar, Model model) {
+		pesquisaProdutoPorNome(pesquisar, model);
+		return "home";
+	}
+
+	private void pesquisaProdutoPorNome(String pesquisar, Model model) {
 		// Limpando caracteres de abrir e fechar <>
+		// Para previnir XSS
 		pesquisar = pesquisar.replace("<", "");
 		pesquisar = pesquisar.replace(">", "");
 		List<Produto> produtos = null;
@@ -53,7 +58,6 @@ public class HomeController {
 			model.addAttribute("erroPesquisa",
 					"Desculpe, não foram encontrados resultados para sua pesquisa: '" + pesquisar + "'");
 		}
-		return "home";
 	}
 
 	@GetMapping("/desenvolvedor")

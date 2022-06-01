@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <title>Login</title>
 <script type="text/javascript" th:src="@{/js/util.js}"></script>
+<script src="https://www.google.com/recaptcha/api.js"></script>
 <th:block th:include="~{base::head}">/>
+
+
+
 
 </head>
 <body>
@@ -27,6 +31,11 @@
 			<div class="row">
 				<div class="col-xs-8 col-12">
 					<form th:action="@{/login}" method="post">
+						<div class="g-recaptcha"
+							data-sitekey="6LeXC9AfAAAAALvPQPQx_pPKBzgE9b_oROalxXO6"></div>
+						<div th:if="${erroRecaptcha} != null">
+							<span class="text-danger" th:text="${erroRecaptcha}"></span>
+						</div>
 						<div class="row">
 							<div class="form-group col-sm-10">
 								<label for="username">Login</label> <input type="text"
@@ -51,7 +60,6 @@
 								<button class="btn btn-primary" type="submit">Login</button>
 							</div>
 						</div>
-
 					</form>
 					<form id="form-senha" method="post"
 						th:action="@{/usuario/recuperar-senha}">
