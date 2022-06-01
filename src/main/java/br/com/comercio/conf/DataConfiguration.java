@@ -15,6 +15,11 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 public class DataConfiguration {
 	@Bean
 	public DataSource dataSource() {
+		DriverManagerDataSource dataSource = configuraDadosDoMySQL();
+		return dataSource;
+	}
+
+	private DriverManagerDataSource configuraDadosDoMySQL() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 		dataSource.setUrl("jdbc:mysql://localhost:3306/comercio");
