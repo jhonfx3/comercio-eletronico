@@ -22,11 +22,9 @@ public class RecaptchaFilter extends UsernamePasswordAuthenticationFilter {
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
 		String recaptchaFormResponse = request.getParameter("g-recaptcha-response");
-		System.out.println("chamando...");
 		System.out.println(recaptchaFormResponse);
 		boolean verificaRecaptcha = new RecaptchaService().verificaRecaptcha(recaptchaFormResponse);
 		if (!verificaRecaptcha) {
-			System.out.println("nao apertou o recaptcha");
 			try {
 				request.getSession().setAttribute("recaptchaErro", "Por favor, confirme que você não é um robô");
 				request.setAttribute(recaptchaFormResponse, recaptchaFormResponse);

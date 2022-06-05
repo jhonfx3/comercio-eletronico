@@ -11,6 +11,8 @@
 </style>
 <th:block th:include="~{base::head}">/>
 
+
+
 </head>
 <body>
 
@@ -21,11 +23,11 @@
 			</div>
 		</header>
 		<main>
-			<form th:action="@{/usuario/trocarSenhaEsquecida}" th:object="${usuario}"
-				method="post">
+			<form th:action="@{/usuario/trocarSenhaEsquecida}"
+				th:object="${usuario}" method="post">
 				<div class="form-group col-sm-10">
 					<label for="password">Senha</label><input type="password"
-						maxlength="10" th:errorClass="is-invalid" class="form-control"
+						th:errorClass="is-invalid" class="form-control"
 						placeholder="Digite sua senha" th:field="*{password}">
 					<div class="invalid-feedback" th:errors="*{password}"></div>
 				</div>

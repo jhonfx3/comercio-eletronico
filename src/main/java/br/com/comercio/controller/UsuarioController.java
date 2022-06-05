@@ -75,6 +75,13 @@ public class UsuarioController {
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
+		defineConversorDeStringParaLocalDate(binder);
+		binder.setAllowedFields("usuario.email", "nome", "sobrenome", "password", "cpf", "rg", "telefone", "nascimento",
+				"cnpj", "fundacao", "ie", "site");
+
+	}
+
+	private void defineConversorDeStringParaLocalDate(WebDataBinder binder) {
 		binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
 			@Override
 			public void setAsText(String text) throws IllegalArgumentException {
@@ -86,9 +93,6 @@ public class UsuarioController {
 				}
 			}
 		});
-		binder.setAllowedFields("usuario.email", "nome", "sobrenome", "password", "cpf", "rg", "telefone", "nascimento",
-				"cnpj", "fundacao", "ie", "site");
-
 	}
 
 	@GetMapping("/meus-pedidos")
@@ -144,12 +148,7 @@ public class UsuarioController {
 		String codigo = RandomString.make(20);
 		usuario.setCodigoVerificacao(codigo);
 		usuarioRepository.save(usuario);
-		Email emailEnviar = new Email();
-		emailEnviar.setAssunto("Código de mudança de senha");
-		emailEnviar.setOrigem("jcaferreira9@gmail.com");
-		emailEnviar.setDestinatario(usuario.getEmail());
-		emailEnviar.setMensagem("Insira esse código no formulário de recuperação de senha: " + codigo);
-		emailService.enviarEmail(emailEnviar);
+		enviaEmailDeRecuperacaoDeSenha(usuario, codigo);
 		/*
 		 * String content = "Você solicitou a recuperacao de senha,<br>" +
 		 * "Clique no link abaixo para redefini-la<br>" +
@@ -158,6 +157,15 @@ public class UsuarioController {
 		 */
 		// emailService.enviarEmail(usuario, codigo, request, content, link);
 		return "usuario/formConfirmarCodigoRecuperacao";
+	}
+
+	private void enviaEmailDeRecuperacaoDeSenha(Usuario usuario, String codigo) {
+		Email emailEnviar = new Email();
+		emailEnviar.setAssunto("Código de mudança de senha");
+		emailEnviar.setOrigem("jcaferreira9@gmail.com");
+		emailEnviar.setDestinatario(usuario.getEmail());
+		emailEnviar.setMensagem("Insira esse código no formulário de recuperação de senha: " + codigo);
+		emailService.enviarEmail(emailEnviar);
 	}
 
 	// URL que chama o formulário para inserir uma nova senha em caso de
@@ -202,7 +210,6 @@ public class UsuarioController {
 
 	@GetMapping("/sucessoContaCriada")
 	public String sucessoContaCriada(Model model) {
-		System.out.println("chamando...");
 		model.addAttribute("mensagem",
 				"Parabéns, você criou sua conta com sucesso, verifique seu e-mail para confirmar seu cadastro e ter acesso ao nosso comércio");
 		return "usuario/infoSobreConta";

@@ -25,11 +25,9 @@ public class LoginController {
 		}
 		if(session.getAttribute("recaptchaErro")!=null) {
 			String erroRecaptcha = (String) session.getAttribute("recaptchaErro");
-			System.out.println("atributo ->"+erroRecaptcha);
 			model.addAttribute("erroRecaptcha",erroRecaptcha);
 			session.removeAttribute("recaptchaErro");
 		}
-		System.out.println(request.getHeader("Referer"));
 		session.setAttribute("urlAnterior", request.getHeader("Referer"));
 		return "login";
 	}
