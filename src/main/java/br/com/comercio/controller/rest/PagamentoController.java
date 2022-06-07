@@ -53,8 +53,6 @@ public class PagamentoController {
 	@Autowired
 	private ClienteFisicoRepository clienteFisicoRepository;
 
-	
-	
 	@Autowired
 	private CarrinhoDeCompras carrinho;
 
@@ -71,7 +69,6 @@ public class PagamentoController {
 		Usuario usuario = usuarioRepository.findById(name).get();
 		ClienteFisico cliente = clienteFisicoRepository.findClienteByEmail(usuario.getEmail());
 		for (Map.Entry<CarrinhoItem, Integer> entry : itensMap.entrySet()) {
-			System.out.println(entry.getKey().getProduto().getNome());
 			CarrinhoItem carrinhoItem = entry.getKey();
 			produtos.add(carrinhoItem.getProduto());
 			ProdutoPedido produtoPedido = new ProdutoPedido();
@@ -79,9 +76,9 @@ public class PagamentoController {
 			produtoPedido.setQuantidade(entry.getValue());
 
 			if (cardPaymentDTO.getInstallments() != null && cardPaymentDTO.getInstallments() > 1) {
-				produtoPedido.setTotal(calculaValorAPrazo(
-						carrinhoItem.getTotalCarrinhoItem(entry.getValue()).floatValue(),
-						cardPaymentDTO.getInstallments()));
+				produtoPedido
+						.setTotal(calculaValorAPrazo(carrinhoItem.getTotalCarrinhoItem(entry.getValue()).floatValue(),
+								cardPaymentDTO.getInstallments()));
 			} else {
 				produtoPedido.setTotal(carrinhoItem.getTotalCarrinhoItem(entry.getValue()));
 			}
@@ -90,8 +87,7 @@ public class PagamentoController {
 			PaymentItemRequest item = PaymentItemRequest.builder().title(carrinhoItem.getProduto().getNome())
 					.id(String.valueOf(carrinhoItem.getProduto().getId()))
 					.pictureUrl(carrinhoItem.getProduto().getUrlImagem())
-					.unitPrice(carrinhoItem.getProduto().getPreco()).quantity(entry.getValue())
-					.build();
+					.unitPrice(carrinhoItem.getProduto().getPreco()).quantity(entry.getValue()).build();
 			itens.add(item);
 		}
 		// Tabela de cálculo de porcentagem a prazo do mercado livre
@@ -105,8 +101,8 @@ public class PagamentoController {
 		}
 
 		if (cardPaymentDTO.getInstallments() != null && cardPaymentDTO.getInstallments() > 1) {
-			transactionAmount = 
-					calculaValorAPrazo(cardPaymentDTO.getTransactionAmount(), cardPaymentDTO.getInstallments());
+			transactionAmount = calculaValorAPrazo(cardPaymentDTO.getTransactionAmount(),
+					cardPaymentDTO.getInstallments());
 		} else {
 			transactionAmount = new BigDecimal(cardPaymentDTO.getTransactionAmount());
 		}
@@ -125,19 +121,6 @@ public class PagamentoController {
 				.description(cardPaymentDTO.getProductDescription()).installments(cardPaymentDTO.getInstallments())
 				.paymentMethodId(cardPaymentDTO.getPaymentMethodId()).payer(payer).build();
 
-		System.out.println("====");
-
-		System.out.println(paymentCreateRequest.getTransactionAmount());
-		System.out.println(paymentCreateRequest.getPayer().getFirstName());
-		System.out.println(paymentCreateRequest.getPayer().getLastName());
-		System.out.println(paymentCreateRequest.getPayer().getEmail());
-		System.out.println(paymentCreateRequest.getInstallments());
-		System.out.println(paymentCreateRequest.getPayer().getIdentification().getNumber());
-		System.out.println(paymentCreateRequest.getPayer().getIdentification().getType());
-		System.out.println(paymentCreateRequest.getPaymentMethodId());
-
-		System.out.println("====");
-
 		Payment pagamentoGerado = new Payment();
 		try {
 			pagamentoGerado = client.create(paymentCreateRequest);
@@ -151,8 +134,6 @@ public class PagamentoController {
 
 		PaymentResponseDTO pagamentoRespostaDTO = new PaymentResponseDTO(String.valueOf(pagamentoGerado.getId()),
 				String.valueOf(pagamentoGerado.getStatus()), pagamentoGerado.getStatusDetail());
-		System.out.println("id ->" + pagamentoGerado.getId() + " status ->" + pagamentoGerado.getStatus()
-				+ "status detail -> " + pagamentoGerado.getStatusDetail());
 		Pedido pedido = new Pedido();
 		pedido.setId(String.valueOf(pagamentoGerado.getId()));
 		StatusPedido status = Enum.valueOf(StatusPedido.class, pagamentoGerado.getStatus().toString());
@@ -183,8 +164,6 @@ public class PagamentoController {
 		pedidoSalvo.setProdutos(listaProdutosPedido);
 		pedidoRepository.save(pedidoSalvo);
 
-		// System.out.println(createdPayment.getExternalReference());
-		// MPApiResponse payment_methods = MercadoPago.SDK.Get("/v1/payment_methods");
 		return ResponseEntity.status(HttpStatus.CREATED).body(pagamentoRespostaDTO);
 	}
 
@@ -233,35 +212,6 @@ public class PagamentoController {
 		System.out.println(setScale);
 		return new BigDecimal(valorDaCompra).setScale(2, RoundingMode.HALF_UP);
 	}
-	/*
-	 * Função de teste que usei para processar um pagamento com pix separadamente
-	 * 
-	 * @PostMapping("/gerar/pix")
-	 * 
-	 * @ResponseBody public ResponseEntity<PixDTO> processaPix(@RequestBody PixDTO
-	 * pixDTO) throws MPException { Payment pagamento = new Payment(); String name =
-	 * SecurityContextHolder.getContext().getAuthentication().getName(); Usuario
-	 * usuario = usuarioRepository.findById(name).get();
-	 * pagamento.setTransactionAmount(carrinho.getTotalCarrinho(TipoPreco.VISTA).
-	 * floatValue()) .setPaymentMethodId("pix"); Payer pagador = new
-	 * Payer().setEmail(usuario.getEmail()).setFirstName(usuario.getNome())
-	 * .setLastName(usuario.getSobrenome()); Identification identification = new
-	 * Identification(); identification.setNumber(pixDTO.getNumeroIdentificacao());
-	 * identification.setType(pixDTO.getTipoIdentificacao());
-	 * pagador.setIdentification(identification);
-	 * 
-	 * Address endereco = new Address();
-	 * 
-	 * endereco.setZipCode("06233200");
-	 * endereco.setStreetName("Av. das Nações Unidas");
-	 * endereco.setStreetNumber(3003); endereco.setNeighborhood("Bonfim");
-	 * endereco.setCity("Osasco"); endereco.setFederalUnit("SP");
-	 * 
-	 * pagador.setAddress(endereco); pagamento.setPayer(pagador); Payment
-	 * pagamentoGerado = pagamento.save();
-	 * System.out.println(pagamentoGerado.getId()); return
-	 * ResponseEntity.status(HttpStatus.CREATED).body(pixDTO); }
-	 */
 
 	/*
 	 * Cartões de teste do mercado pago:

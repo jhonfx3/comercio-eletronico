@@ -17,7 +17,6 @@ public class RecaptchaService {
 		String conteudo = client
 				.target("https://www.google.com/recaptcha/api/siteverify?secret=" + secret + "&response=" + recaptcha)
 				.request().get(String.class);
-		System.out.println(conteudo);
 		JsonObject obj = new Gson().fromJson(conteudo, JsonObject.class);
 		boolean sucesso = obj.get("success").getAsBoolean();
 		return sucesso;

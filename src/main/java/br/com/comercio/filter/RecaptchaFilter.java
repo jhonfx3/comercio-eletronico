@@ -22,7 +22,6 @@ public class RecaptchaFilter extends UsernamePasswordAuthenticationFilter {
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
 		String recaptchaFormResponse = request.getParameter("g-recaptcha-response");
-		System.out.println(recaptchaFormResponse);
 		boolean verificaRecaptcha = new RecaptchaService().verificaRecaptcha(recaptchaFormResponse);
 		if (!verificaRecaptcha) {
 			try {
